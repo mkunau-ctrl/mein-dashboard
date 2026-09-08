@@ -4,6 +4,41 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-09 – Etappe 0: Grundgerüst gebaut (Branch `etappe-0`)
+
+**Was:** Das komplette Grundgerüst der App wurde auf dem Branch `etappe-0`
+gebaut: Test-Harness + Router (`parseHash`), Supabase-Client + Auth-Wrapper
+(Magic-Link), Modul-Registry, HTML-Shell mit Login-Flow und leerem
+Kachel-Raster, PWA-Manifest + SVG-Icon. Dazu die Modul-Schnittstellen-Doku
+(`js/module/README.md`).
+
+**Warum:** Bevor das erste Fachmodul (Ernährung) entsteht, braucht es ein
+tragfähiges, getestetes Skelett: Auth, Routing, eine Stelle, an der sich Module
+anmelden, und ein deploybares statisches Bundle.
+
+**Entscheidungen:**
+- Tests mit `node --test` (Bordmittel) statt eines Test-Frameworks – kein
+  zusätzliches Dependency, kein Build.
+- `supabase-js` exakt gepinnt auf `2.116.0` über jsDelivr-ESM nach einem
+  kurzen Supply-Chain-Review (kein `@latest`, feste Version).
+- Hosting weiterhin GitHub Pages, statisches Repo, kein Build-Schritt.
+
+**Stand danach:** 8 Unit-Tests grün (`npm test`). Aller Code liegt auf Branch
+`etappe-0`. **Deploy und Merge nach `main` stehen noch aus** – die App ist noch
+nicht live.
+
+**Offene Punkte:**
+- Branch `etappe-0` nach `main` mergen.
+- GitHub Pages aktivieren (Settings → Pages, Branch `main` / `/root`).
+- End-to-End-Test des Magic-Link-Logins auf der Live-URL (Desktop + iPhone).
+- `USER_ID` (Marks Auth-UID) nach dem ersten Login in `CLAUDE.md` eintragen.
+- Echte PNG-Icons 192/512 + `apple-touch-icon` in Etappe 1 nachliefern
+  (iOS nutzt sonst einen Screenshot für den Home-Bildschirm).
+- Evtl. eigenes SMTP für die Magic-Link-Mails (Supabase-Default hat Limits).
+- Realtime-Aktualisierung des Dashboards (später).
+
+---
+
 ## 2026-09-08 – Zentrale Projekt-Ablage eingeführt
 
 **Was:** Ab jetzt liegen alle Projekte unter `C:\Users\PC\Projekte\<name>`.
