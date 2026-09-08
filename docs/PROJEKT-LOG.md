@@ -4,6 +4,28 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-08 – Zentrale Projekt-Ablage eingeführt
+
+**Was:** Ab jetzt liegen alle Projekte unter `C:\Users\PC\Projekte\<name>`.
+`mein-dashboard` wurde nach `C:\Users\PC\Projekte\mein-dashboard` verschoben.
+Diese Konvention ist im Skill `projekt-workflow` und im Gedächtnis festgehalten.
+
+**Warum:** Marks Projekte lagen verstreut (teils direkt im Benutzerordner, teils
+auf dem Desktop). Er will einen festen großen Ordner mit einem Unterordner pro
+Projekt, damit er auf jedem Rechner alles an derselben Stelle findet.
+
+**Stand danach:** mein-dashboard, energiesparer-modus, monitor-focus-follow,
+tischlerei-kosiek, malerbetrieb-heinze-website, tobis-hausmeister-redesign sind
+umgezogen. Die geplante Aufgabe „MonitorFocusFollow" wurde auf den neuen Pfad
+angepasst und läuft. fehlzeiten-portal, tipptrainer und
+rechtschreibung-windows-verbessern konnten noch nicht umziehen (laufende
+Dev-Server / andere Session) – stehen noch aus.
+
+**Offene Punkte:** die drei verbliebenen Projekte umziehen, sobald ihre
+Prozesse beendet sind.
+
+---
+
 ## 2026-09-08 – Projekt gestartet, Gesamtkonzept geschrieben
 
 **Was:** Das Projekt "Mein Dashboard" wurde angelegt (Repo, Doku-Gerüst). Das

@@ -1,5 +1,8 @@
 # Mein Dashboard
 
+**Ablage:** `C:\Users\PC\Projekte\mein-dashboard` (alle Projekte liegen unter
+`C:\Users\PC\Projekte\<projektname>` – siehe Skill `projekt-workflow`).
+
 ## Zweck
 
 Private Web-App für Mark, aufrufbar auf jedem Gerät im Browser (iPhone: "Zum
@@ -25,7 +28,8 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 
 ## Starten / Testen / Bauen
 
-- **Lokal ansehen:** kein Build. Einen statischen Server im Repo-Wurzel starten,
+- **Lokal ansehen:** kein Build. Im Repo-Wurzel
+  (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   z. B. `python -m http.server 8000`, dann `http://localhost:8000`.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch.
