@@ -1,0 +1,29 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f4f5f7; --karte: #ffffff; --text: #1a1d21; --gedaempft: #5b6470;
+  --akzent: #2f6feb; --rand: #e2e5ea;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0f1216; --karte: #171b21; --text: #e8eaed; --gedaempft: #9aa4b2;
+          --akzent: #4f8cff; --rand: #262b33; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+       background: var(--bg); color: var(--text);
+       padding: max(16px, env(safe-area-inset-top)) 16px 32px; }
+#app { max-width: 720px; margin: 0 auto; }
+h1 { font-size: 1.4rem; }
+#login-ansicht { margin-top: 15vh; text-align: center; }
+#login-form { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 24px auto; }
+input, button { font: inherit; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--rand); }
+input { background: var(--karte); color: var(--text); }
+button { background: var(--akzent); color: #fff; border: none; cursor: pointer; }
+button:disabled { opacity: .6; cursor: default; }
+#login-hinweis { min-height: 1.5em; color: var(--gedaempft); }
+#dashboard-ansicht header { display: flex; justify-content: space-between; align-items: center; }
+#dashboard-ansicht header button { background: transparent; color: var(--gedaempft);
+       border: 1px solid var(--rand); }
+#kachel-raster { display: grid; gap: 14px; margin-top: 20px;
+       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+#dashboard-leer-hinweis { color: var(--gedaempft); margin-top: 24px; }
+#kachel-raster:not(:empty) + #dashboard-leer-hinweis { display: none; }
