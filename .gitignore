@@ -1,0 +1,13 @@
+# Secrets – niemals committen
+.env
+.env.*
+*.local
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node (falls später Test-Setup dazukommt)
+node_modules/
