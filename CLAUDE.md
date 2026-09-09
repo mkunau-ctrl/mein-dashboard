@@ -56,7 +56,7 @@ auf Deutsch. Datenschutz beachten.
   Service-Role-Key, Zugangsdaten o. Ä. niemals committen.
 - Alle Supabase-Tabellen haben `user_id` mit RLS `user_id = auth.uid()`.
 - **Claude schreibt Daten:** Beim Insert über Supabase-MCP die `user_id` explizit
-  auf Marks Auth-ID setzen: `USER_ID = <nach erstem Login eintragen>`.
+  auf Marks Auth-ID setzen: `USER_ID = df0b24a6-6a74-4830-995c-84015161dcc3`.
 - GitHub-Account: `mkunau-ctrl`. Falls ein Push blockiert wird, pusht Mark selbst
   mit `!git push`.
 - Datum im Log absolut schreiben (kein "heute").
@@ -69,5 +69,5 @@ auf Deutsch. Datenschutz beachten.
 - Auth: E-Mail-Provider an. Site URL
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Redirect-Allowlist:
   `http://localhost:8000/**` und `https://mkunau-ctrl.github.io/mein-dashboard/**`.
-- `USER_ID` (Marks Auth-UID) noch unbekannt – nach dem ersten echten Login hier
-  und oben eintragen.
+- `USER_ID` (Marks Auth-UID) = `df0b24a6-6a74-4830-995c-84015161dcc3`
+  (erster Login am 2026-09-09).
