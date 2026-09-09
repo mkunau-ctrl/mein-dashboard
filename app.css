@@ -42,3 +42,19 @@ button:disabled { opacity: .6; cursor: default; }
 .tab-leiste button.aktiv { color: var(--text); border-bottom-color: var(--akzent); }
 .kachel-zahl { display: block; font-size: 1.4rem; font-weight: 700; margin-top: 6px; }
 .lade { color: var(--gedaempft); }
+
+/* Heute-Ansicht */
+.fortschritt-ring { --prozent: 0;
+  width: 108px; height: 108px; border-radius: 50%; margin: 4px auto 20px;
+  display: grid; place-content: center; text-align: center;
+  background: conic-gradient(var(--akzent) calc(var(--prozent) * 1%), var(--rand) 0); }
+.fortschritt-ring::before { content: ''; grid-area: 1 / 1;
+  width: 84px; height: 84px; border-radius: 50%; background: var(--bg); }
+.fortschritt-ring span, .fortschritt-ring small { grid-area: 1 / 1; z-index: 1; }
+.fortschritt-ring span { font-size: 1.3rem; font-weight: 700; align-self: end; }
+.fortschritt-ring small { color: var(--gedaempft); align-self: start; margin-top: 2px; }
+.heute-gruppe { margin-bottom: 18px; }
+.heute-gruppe h3 { font-size: .95rem; color: var(--gedaempft); margin: 0 0 8px; }
+.heute-zeile { display: flex; align-items: center; gap: 12px; padding: 12px 4px;
+  border-bottom: 1px solid var(--rand); cursor: pointer; }
+.heute-zeile input { width: 22px; height: 22px; accent-color: var(--akzent); flex: none; }
