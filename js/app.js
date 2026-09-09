@@ -1,7 +1,8 @@
 import { parseHash } from './router.js';
 import { entscheideAnsicht } from './view.js';
 import { holeSession, sendeMagicLink, meldeAb, beiAuthWechsel } from './auth.js';
-import { alleModule } from './registry.js';
+import { alleModule, holeModul } from './registry.js';
+import './module/ernaehrung/index.js';
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');
@@ -9,6 +10,10 @@ const loginForm = document.getElementById('login-form');
 const emailFeld = document.getElementById('email');
 const loginHinweis = document.getElementById('login-hinweis');
 const kachelRaster = document.getElementById('kachel-raster');
+const leerHinweis = document.getElementById('dashboard-leer-hinweis');
+const modulDetail = document.getElementById('modul-detail');
+
+let aktivesModulId = null;
 
 function zeige(ansicht) {
   loginAnsicht.hidden = ansicht !== 'login';
@@ -27,10 +32,34 @@ function rendereKacheln() {
   }
 }
 
-async function aktualisiere() {
+function zeigeRaster() {
+  aktivesModulId = null;
+  modulDetail.hidden = true;
+  modulDetail.innerHTML = '';
+  kachelRaster.hidden = false;
+  leerHinweis.hidden = kachelRaster.children.length > 0;
+}
+
+async function oeffneModul(modul) {
+  kachelRaster.hidden = true;
+  leerHinweis.hidden = true;
+  modulDetail.hidden = false;
+  if (aktivesModulId !== modul.id) {
+    aktivesModulId = modul.id;
+    modulDetail.innerHTML = '';
+    await modul.init(modulDetail);
+  }
+}
+
+async function route() {
   const session = await holeSession();
   zeige(entscheideAnsicht(session));
-  if (session) rendereKacheln();
+  if (!session) return;
+  rendereKacheln();
+  const { modul } = parseHash(location.hash);
+  const gewaehlt = modul ? holeModul(modul) : null;
+  if (gewaehlt) await oeffneModul(gewaehlt);
+  else zeigeRaster();
 }
 
 loginForm.addEventListener('submit', async (e) => {
@@ -47,10 +76,11 @@ loginForm.addEventListener('submit', async (e) => {
 
 document.getElementById('logout').addEventListener('click', async () => {
   await meldeAb();
-  aktualisiere();
+  location.hash = '';
+  route();
 });
 
-beiAuthWechsel(() => aktualisiere());
-window.addEventListener('hashchange', () => { void parseHash(location.hash); });
+beiAuthWechsel(() => route());
+window.addEventListener('hashchange', () => { route(); });
 
-aktualisiere();
+route();

@@ -10,4 +10,12 @@ Ein Modul-Objekt:
 - `init(containerEl, supabase)` – optional: rendert die Detailansicht des Moduls
 
 Aktivierung: Import-Zeile in `js/app.js` ergänzen (z. B.
-`import './module/ernaehrung.js';`). Der Rest der App bleibt unangetastet.
+`import './module/ernaehrung/index.js';`). Der Rest der App bleibt unangetastet.
+
+## Ordner-Konvention (ab Etappe 1)
+
+Größere Module liegen als Ordner `js/module/<name>/` mit einer `index.js`, die
+`registriere({...})` aufruft. Reine Logik (Berechnungen, Routing-Helfer) kommt
+in eigene Dateien mit `node:test`-Tests, Supabase-Zugriff gebündelt in
+`daten.js`. Die Tab-Ansichten exportieren je eine Funktion
+`zeige<Tab>(container, zustand, aktualisieren)`.

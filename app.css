@@ -27,3 +27,18 @@ button:disabled { opacity: .6; cursor: default; }
        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 #dashboard-leer-hinweis { color: var(--gedaempft); margin-top: 24px; }
 #kachel-raster:not(:empty) + #dashboard-leer-hinweis { display: none; }
+
+/* Modul-Detail */
+#modul-detail { margin-top: 8px; }
+.modul-kopf { display: flex; align-items: center; gap: 12px; }
+.modul-kopf h2 { flex: 1; font-size: 1.2rem; margin: 0; }
+.modul-kopf button { background: transparent; color: var(--gedaempft);
+  border: 1px solid var(--rand); padding: 8px 12px; }
+.tab-leiste { display: flex; gap: 6px; overflow-x: auto; margin: 14px 0;
+  border-bottom: 1px solid var(--rand); }
+.tab-leiste button { background: transparent; color: var(--gedaempft);
+  border: none; border-bottom: 2px solid transparent; border-radius: 0;
+  padding: 10px 12px; white-space: nowrap; }
+.tab-leiste button.aktiv { color: var(--text); border-bottom-color: var(--akzent); }
+.kachel-zahl { display: block; font-size: 1.4rem; font-weight: 700; margin-top: 6px; }
+.lade { color: var(--gedaempft); }
