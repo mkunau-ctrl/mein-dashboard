@@ -204,7 +204,7 @@ kompletten Log nach (`ladeLog(null, heute)`).
 ## 9. Definition of Done
 
 - [ ] 4 Tabellen + RLS in Supabase angelegt (per `apply_migration`).
-- [ ] Startdaten geseedet (15 Items, Gewicht, 3 Settings).
+- [ ] Startdaten geseedet (14 Checklisten-Punkte, Gewicht, 3 Settings).
 - [ ] `node:test` grün: `zeitplan`, `berechnung`, `router` (+ die aus Etappe 0).
 - [ ] Heute / Liste / Gewicht / Statistik / Infos funktionieren auf
       Desktop-Chrome **und** iPhone-Safari.
