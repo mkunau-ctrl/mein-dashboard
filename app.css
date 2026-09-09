@@ -7,6 +7,7 @@
   :root { --bg: #0f1216; --karte: #171b21; --text: #e8eaed; --gedaempft: #9aa4b2;
           --akzent: #4f8cff; --rand: #262b33; }
 }
+:root { --hm-gruen: #3fae5a; --hm-gelb: #e0b73a; --hm-rot: #d1544a; }
 * { box-sizing: border-box; }
 body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
        background: var(--bg); color: var(--text);
@@ -85,3 +86,25 @@ button:disabled { opacity: .6; cursor: default; }
 .gewicht-eingabe label { flex: 1; display: flex; flex-direction: column; gap: 4px; font-size: .9rem; }
 .g-bmi { color: var(--gedaempft); margin: 4px 0 16px; }
 .g-chart-box { position: relative; height: 240px; max-width: 100%; }
+
+/* Statistik */
+.stat-karten { display: flex; gap: 12px; margin-bottom: 14px; }
+.stat-karte { flex: 1; background: var(--karte); border: 1px solid var(--rand);
+  border-radius: 12px; padding: 14px; text-align: center; }
+.stat-karte span { display: block; font-size: 1.8rem; font-weight: 700; }
+.stat-karte small { color: var(--gedaempft); }
+.stat-prognose { background: var(--karte); border: 1px solid var(--rand);
+  border-radius: 12px; padding: 12px; }
+.quote-zeile { display: grid; grid-template-columns: 1fr 90px 46px; align-items: center;
+  gap: 8px; padding: 6px 0; font-size: .9rem; }
+.quote-bar { background: var(--rand); border-radius: 5px; height: 10px; overflow: hidden; }
+.quote-bar i { display: block; height: 100%; background: var(--akzent); }
+.quote-zahl { text-align: right; color: var(--gedaempft); }
+.hm-kopf { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; }
+.hm-kopf button { background: transparent; border: 1px solid var(--rand);
+  color: var(--text); padding: 6px 12px; }
+.hm-kopf button:disabled { opacity: .4; }
+.hm-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.hm-grid > span { aspect-ratio: 1; }
+.hm-zelle { border-radius: 6px; display: grid; place-content: center;
+  font-size: .75rem; color: #0b0d10; }
