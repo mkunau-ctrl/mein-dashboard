@@ -9,6 +9,7 @@
 }
 :root { --hm-gruen: #3fae5a; --hm-gelb: #e0b73a; --hm-rot: #d1544a; }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
        background: var(--bg); color: var(--text);
        padding: max(16px, env(safe-area-inset-top)) 16px 32px; }
@@ -78,8 +79,9 @@ button:disabled { opacity: .6; cursor: default; }
   border-radius: 8px; padding: 8px; margin: 0; }
 .wt-feld label { flex-direction: row; align-items: center; gap: 4px; }
 .punkt-dialog menu { display: flex; justify-content: flex-end; gap: 8px; margin: 0; padding: 0; }
-.punkt-dialog menu button[value=abbrechen] { background: transparent;
+.punkt-dialog menu button[data-a=abbrechen] { background: transparent;
   color: var(--gedaempft); border: 1px solid var(--rand); }
+.dialog-fehler { color: #d1544a; font-size: .85rem; margin: 0; }
 
 /* Gewicht */
 .gewicht-eingabe { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 12px; }

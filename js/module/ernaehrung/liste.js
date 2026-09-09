@@ -70,7 +70,7 @@ export async function zeigeListe(container, zustand, aktualisieren) {
     const dlg = document.createElement('dialog');
     dlg.className = 'punkt-dialog';
     dlg.innerHTML = `
-      <form method="dialog">
+      <form>
         <h3>${it ? 'Punkt bearbeiten' : 'Neuer Punkt'}</h3>
         <label>Name <input name="label" required value="${esc(it?.label ?? '')}"></label>
         <label>Kategorie
@@ -92,14 +92,18 @@ export async function zeigeListe(container, zustand, aktualisieren) {
         </fieldset>
         <label class="intervall-feld">alle
           <input type="number" name="intervall" min="1" value="${it?.plan_intervall_tage ?? 5}"> Tage</label>
+        <p class="dialog-fehler" role="alert" hidden></p>
         <menu>
-          <button value="abbrechen">Abbrechen</button>
-          <button value="ok">Speichern</button>
+          <button type="button" data-a="abbrechen">Abbrechen</button>
+          <button type="submit" data-a="speichern">Speichern</button>
         </menu>
       </form>`;
     container.appendChild(dlg);
 
     const form = dlg.querySelector('form');
+    const fehlerEl = dlg.querySelector('.dialog-fehler');
+    const schliesse = () => { dlg.close(); dlg.remove(); };
+
     const sync = () => {
       const t = form.plan_typ.value;
       dlg.querySelector('.wt-feld').hidden = t !== 'wochentage';
@@ -108,10 +112,11 @@ export async function zeigeListe(container, zustand, aktualisieren) {
     form.plan_typ.addEventListener('change', sync);
     sync();
 
-    dlg.addEventListener('close', async () => {
-      const weg = () => dlg.remove();
-      if (dlg.returnValue !== 'ok') return weg();
-      if (!form.label.value.trim()) return weg();
+    dlg.querySelector('[data-a=abbrechen]').addEventListener('click', schliesse);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.label.value.trim()) { form.label.focus(); return; }
       const wt = [...form.querySelectorAll('input[name=wt]:checked')].map((c) => +c.value);
       const daten = {
         id: it?.id,
@@ -123,11 +128,17 @@ export async function zeigeListe(container, zustand, aktualisieren) {
         sortierung: it?.sortierung ?? (zustand.items.length + 1) * 10,
         pflicht: it?.pflicht ?? true,
       };
+      const knopf = form.querySelector('[data-a=speichern]');
+      knopf.disabled = true;
       try {
         await speichereItem(daten);
-        weg();
+        schliesse();
         await aktualisieren();
-      } catch (e) { alert(e.message); weg(); }
+      } catch (err) {
+        fehlerEl.textContent = err.message;
+        fehlerEl.hidden = false;
+        knopf.disabled = false;
+      }
     });
     dlg.showModal();
   }
