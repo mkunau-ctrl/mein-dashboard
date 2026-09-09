@@ -4,6 +4,25 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## Ideen für später (keine chronologischen Einträge)
+
+**Etappe 5 – Kalender + Benachrichtigungen (von Mark am 2026-09-09 gewünscht):**
+Ein eigenes Modul, das Marks **iCloud-Kalender** (Apple) in die App holt: eigener
+Kalender-View, alle Termine sichtbar. Dazu **Push-Benachrichtigungen** aufs
+iPhone, die Mark pro Termin/Kategorie selbst an- und ausschalten kann – wichtig
+ist ihm, dass er *nicht* in die App schauen muss.
+
+Technischer Rahmen (grob, noch kein Feinkonzept): kein Raspberry Pi nötig.
+Stattdessen **Supabase Edge Functions + `pg_cron`**: eine Funktion pollt den
+iCloud-Kalender per **CalDAV** (App-spezifisches Passwort) und legt Termine in
+einer Tabelle ab; eine zweite Funktion schickt zur Terminzeit die
+**Web-Push-Nachricht** (VAPID-Schlüssel, Service Worker in der PWA – iOS ≥ 16.4
+unterstützt Web-Push für Home-Bildschirm-PWAs). Das ist ein bewusster
+Architektur-Zusatz gegenüber dem Ursprungskonzept ("kein Server, kein Push") und
+bekommt ein eigenes Konzept, sobald Etappe 1–4 stehen.
+
+---
+
 ## 2026-09-09 – Etappe 0 nach `main` gemergt, GitHub Pages live
 
 **Was:** Nach dem PC-Absturz vom Vortag den Stand geprüft: der gesamte
