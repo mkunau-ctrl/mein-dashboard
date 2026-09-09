@@ -16,7 +16,7 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
-## Aufbau (Stand Etappe 0, Branch `etappe-0`)
+## Aufbau (Stand Etappe 0 – in `main` gemergt, live)
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit Kachel-Raster.
 - `app.css` – gemeinsames Design.
@@ -40,8 +40,8 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
 - **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 8 grün.
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
-  `https://mkunau-ctrl.github.io/mein-dashboard/`. Noch nicht aktiv – erst nach
-  dem Merge von `etappe-0` und dem Aktivieren von Pages im Repo.
+  `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
+  Branch `main`, Ordner `/root`). Seit 2026-09-09 live.
 
 ## Arbeitsweise
 

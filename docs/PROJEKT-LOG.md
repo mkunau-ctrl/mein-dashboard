@@ -4,6 +4,42 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-09 – Etappe 0 nach `main` gemergt, GitHub Pages live
+
+**Was:** Nach dem PC-Absturz vom Vortag den Stand geprüft: der gesamte
+Etappe-0-Code war in 6 Commits auf Branch `etappe-0` gesichert, nichts verloren,
+Arbeitsverzeichnis sauber, 8 Tests grün. Branch `etappe-0` per `--no-ff` nach
+`main` gemergt, `main` nach GitHub gepusht, GitHub Pages über die API auf
+`main` / `/root` aktiviert. Build lief durch, Seite antwortet mit HTTP 200.
+
+**Warum:** Etappe 0 war fertig gebaut, aber weder gemergt noch deployt – die
+App war noch nicht live. Das waren die offenen Punkte aus dem vorigen
+Log-Eintrag.
+
+**Entscheidungen:** Merge mit `--no-ff`, damit die Etappe als zusammenhängender
+Block in der Historie sichtbar bleibt. Pages-Aktivierung per `gh api` (Classifier
+ließ Push und API-Call durch).
+
+**Stand danach:** <https://mkunau-ctrl.github.io/mein-dashboard/> ist live. Der
+Login-Screen lädt sauber (im Browser geprüft, keine Konsolenfehler,
+`supabase-js` per jsDelivr-ESM wird ohne Fehler geladen). `index.html`, `js/*`,
+`manifest.webmanifest`, `icon.svg` werden alle mit 200 ausgeliefert. Das
+Supabase-Projekt `mein-dashboard` (Ref `vogztxoaqbnuciboughd`, Region
+`eu-west-1`) ist `ACTIVE_HEALTHY`.
+
+**Offene Punkte:**
+- Mark macht einen echten Magic-Link-Login auf der Live-URL (Desktop + iPhone
+  „Zum Home-Bildschirm"). Der eigentliche Mail-Versand wurde noch **nicht**
+  ausgelöst – wartet auf Marks Okay.
+- Danach `USER_ID` (Marks Auth-UID) per Supabase-MCP auslesen und in `CLAUDE.md`
+  eintragen (`select id, email from auth.users;`).
+- Echte PNG-Icons 192/512 + `apple-touch-icon` (Etappe 1).
+- Evtl. eigenes SMTP für die Magic-Link-Mails (Supabase-Default hat Limits).
+- Realtime-Aktualisierung des Dashboards (später).
+- Danach: Feinplan Etappe 1 (Modul Ernährung) über `superpowers:writing-plans`.
+
+---
+
 ## 2026-09-09 – Etappe 0: Grundgerüst gebaut (Branch `etappe-0`)
 
 **Was:** Das komplette Grundgerüst der App wurde auf dem Branch `etappe-0`
