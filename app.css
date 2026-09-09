@@ -58,3 +58,24 @@ button:disabled { opacity: .6; cursor: default; }
 .heute-zeile { display: flex; align-items: center; gap: 12px; padding: 12px 4px;
   border-bottom: 1px solid var(--rand); cursor: pointer; }
 .heute-zeile input { width: 22px; height: 22px; accent-color: var(--akzent); flex: none; }
+
+/* Liste bearbeiten */
+.listen-neu { margin-bottom: 14px; }
+.punkt-zeile { display: flex; align-items: center; gap: 10px; padding: 10px 4px;
+  border-bottom: 1px solid var(--rand); }
+.punkt-info { flex: 1; display: flex; flex-direction: column; }
+.punkt-info small { color: var(--gedaempft); }
+.punkt-aktionen { display: flex; gap: 4px; }
+.punkt-aktionen button { background: transparent; color: var(--gedaempft);
+  border: 1px solid var(--rand); padding: 6px 9px; }
+.punkt-dialog { border: 1px solid var(--rand); border-radius: 12px;
+  background: var(--karte); color: var(--text); max-width: 340px; width: 92vw; }
+.punkt-dialog::backdrop { background: rgba(0, 0, 0, .5); }
+.punkt-dialog form { display: flex; flex-direction: column; gap: 12px; }
+.punkt-dialog label { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; }
+.wt-feld { display: flex; flex-wrap: wrap; gap: 8px; border: 1px solid var(--rand);
+  border-radius: 8px; padding: 8px; margin: 0; }
+.wt-feld label { flex-direction: row; align-items: center; gap: 4px; }
+.punkt-dialog menu { display: flex; justify-content: flex-end; gap: 8px; margin: 0; padding: 0; }
+.punkt-dialog menu button[value=abbrechen] { background: transparent;
+  color: var(--gedaempft); border: 1px solid var(--rand); }
