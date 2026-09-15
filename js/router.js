@@ -1,6 +1,8 @@
 // Wandelt den URL-Hash in ein Routing-Ergebnis um.
-// '#/ernaehrung' -> { modul: 'ernaehrung' }; alles andere -> { modul: null }.
+// '#/ernaehrung'            -> { modul: 'ernaehrung', unterseite: null }
+// '#/ernaehrung/statistik'  -> { modul: 'ernaehrung', unterseite: 'statistik' }
+// alles andere              -> { modul: null, unterseite: null }
 export function parseHash(hash) {
-  const m = /^#\/([a-z-]+)/.exec(hash || '');
-  return { modul: m ? m[1] : null };
+  const m = /^#\/([a-z-]+)(?:\/([a-z-]+))?/.exec(hash || '');
+  return { modul: m ? m[1] : null, unterseite: m && m[2] ? m[2] : null };
 }
