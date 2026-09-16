@@ -16,19 +16,29 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
-## Aufbau (Stand Etappe 0 – in `main` gemergt, live)
+## Aufbau (Stand Etappe 1 – Modul Ernährung, in `main` gemergt, live)
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit Kachel-Raster.
 - `app.css` – gemeinsames Design.
-- `js/app.js` – Einstieg: verdrahtet Auth, Routing und Registry mit dem DOM.
-- `js/router.js` – `parseHash('#/modul')` → `{ modul }`.
+- `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry und Detail-Routing
+  (`#/modul/unterseite`) mit dem DOM.
+- `js/router.js` – `parseHash('#/modul/unterseite')` → `{ modul, unterseite }`.
 - `js/view.js` – `entscheideAnsicht(session)` → `'login'` | `'dashboard'`.
 - `js/auth.js` – Magic-Link-Wrapper: `sendeMagicLink`, `holeSession`, `meldeAb`, `beiAuthWechsel`.
 - `js/supabase.js` – Supabase-Client (Projekt-URL + Publishable-Key, öffentlich ok); `supabase-js@2.116.0` per jsDelivr-ESM.
 - `js/registry.js` – Modul-Registry: `registriere`, `alleModule`, `holeModul`, `leereRegistry`.
-- `js/module/README.md` – Modul-Schnittstelle (`id`, `titel`, `renderKachel`, `init`); Module kommen ab Etappe 1 hierher.
-- `manifest.webmanifest`, `icon.svg` – PWA (echte PNG-Icons folgen in Etappe 1).
-- `test/` – `node --test` Unit-Tests für `router`, `view`, `registry` (8 grün).
+- `js/module/README.md` – Modul-Schnittstelle (`id`, `titel`, `renderKachel`, `init`).
+- `js/module/ernaehrung/` – erstes Fachmodul:
+  - `index.js` – Registrierung, Tab-Leiste, Unter-Routing, Kachel-Text.
+  - `daten.js` – einzige Datei mit Supabase-Netzwerkzugriff (Items, Log, Gewicht, Settings).
+  - `zeitplan.js` – `istFaellig` (täglich/wochentage/intervall).
+  - `berechnung.js` – `tagesStatus`, `streak`, `quoteProPunkt`, `prognose`, `heatmapDaten`.
+  - `heute.js`, `liste.js`, `gewicht.js`, `statistik.js`, `infos.js` – die fünf Tabs.
+  Details/Entscheidungen: `docs/superpowers/specs/2026-09-09-etappe-1-ernaehrung-design.md`.
+- `manifest.webmanifest`, `icon.svg` – PWA. **Echte PNG-Icons (192/512) und
+  `apple-touch-icon` fehlen weiterhin** (offener Punkt seit Etappe 0).
+- `test/` – `node --test` Unit-Tests: `router`, `view`, `registry`,
+  `ernaehrung-zeitplan`, `ernaehrung-berechnung` (28 grün).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
 
@@ -38,7 +48,7 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 8 grün.
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 28 grün.
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.

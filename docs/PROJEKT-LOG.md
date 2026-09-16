@@ -23,6 +23,54 @@ bekommt ein eigenes Konzept, sobald Etappe 1–4 stehen.
 
 ---
 
+## 2026-09-15 – Etappe 1 (Modul Ernährung) gebaut und nach `main` gemergt
+
+**Was:** Das erste Fachmodul ist fertig: Heute-Ansicht mit Fortschrittsring,
+Liste bearbeiten (Punkte anlegen/ändern/Zeitplan setzen/sortieren/deaktivieren),
+Gewicht-Ansicht mit Chart.js-Kurve, Ziel-Linie und BMI, Statistik-Tab (Streak,
+Quote pro Punkt, Kalender-Heatmap, Ziel-Prognose) und ein reiner Lese-Infos-Tab.
+Dazu vier Supabase-Tabellen (`checklist_items`, `daily_log`, `weight_log`,
+`settings`) mit RLS und 14 Startpunkten (Ernährung + Supplements) geseedet.
+Alles auf Branch `etappe-1` in kleinen Commits gebaut, nach `main` gemergt und
+gepusht; GitHub Pages liefert den neuen Stand aus.
+
+**Warum:** Nächster Schritt laut Roadmap nach Etappe 0 – der
+Ernährungstracker war der ursprüngliche Auslöser für das ganze Projekt.
+
+**Entscheidungen (aus Design-Spec
+`docs/superpowers/specs/2026-09-09-etappe-1-ernaehrung-design.md`):**
+- Statistiken werden **im Browser** aus dem Roh-Log berechnet (reine
+  JS-Funktionen, mit `node:test` prüfbar), nicht in Postgres/SQL-Views.
+- Kalender-Heatmap als handgebautes CSS-Grid statt Chart.js-Plugin.
+- Punkte vorerst nur als Häkchen (`typ = 'haken'`); Mengen stehen im
+  Namen. Zähler-Typ (`zaehler`, `zielwert`, `einheit`) ist im Datenmodell
+  vorbereitet, aber ungenutzt.
+- Alle Punkte sind Pflicht (`pflicht = true`); Bonus-Punkte bewusst nicht
+  gebaut, Spalte bleibt für später.
+- Kein Realtime – Laden beim Öffnen + „Aktualisieren"-Knopf.
+- Löschen von Punkten ist Soft-Delete (`aktiv = false`), Historie bleibt
+  auswertbar.
+
+**Stand danach:** `main` enthält Etappe 1, live unter
+<https://mkunau-ctrl.github.io/mein-dashboard/>. 28 Unit-Tests grün
+(`npm test`). Supabase-Projekt `mein-dashboard`: alle vier Tabellen mit RLS
+aktiv, 14 Checklisten-Punkte, 3 Settings (`koerpergroesse_cm`,
+`zielgewicht_kg`, `infos_markdown`), erste echte Nutzungsdaten vorhanden
+(Gewicht 1 Eintrag, Tages-Log 6 Einträge).
+
+**Offene Punkte / Nächste Schritte:**
+- **Doku-Nachtrag:** Dieser Merge (15.09.) wurde nicht sofort dokumentiert –
+  dieser Log-Eintrag und das `CLAUDE.md`-Update holen das nach.
+- Echte PNG-Icons 192/512 + `apple-touch-icon` fehlen weiterhin (Punkt aus
+  Etappe 0, in Etappe 1 nicht nachgeliefert).
+- Manueller Testlauf auf iPhone-Safari (kompletter Ablauf aus der Design-Spec)
+  ist nicht dokumentiert bestätigt – bei Gelegenheit nachprüfen.
+- Hauptgerichte-Rotation, Zähler-Punkte-UI, Bonus-Punkte-Umschalter: bewusst
+  zurückgestellte Ideen aus der Design-Spec, nicht vergessen.
+- Danach: Etappe 2 (Modul To-dos) laut Roadmap.
+
+---
+
 ## 2026-09-09 – Etappe 0 nach `main` gemergt, GitHub Pages live
 
 **Was:** Nach dem PC-Absturz vom Vortag den Stand geprüft: der gesamte
