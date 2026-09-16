@@ -4,6 +4,46 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-16 – Etappe-5-Design-Entscheidungen + neuer Wunsch: automatisches Beleg-Tracking
+
+**Was:** Für Etappe 5 (Berichtsheft) hat Mark drei offene Fragen beantwortet.
+Zusätzlich kam ein neuer, großer Wunsch dazu: Ausgaben sollen automatisch aus
+Beleg-E-Mails im Postfach eingetragen werden, dazu soll er auch selbst
+fotografierte Belege einreichen können.
+
+**Entscheidungen (Berichtsheft):**
+- **Vorlage:** keine eigene Datei von Mark – Claude recherchiert ein
+  typisches deutsches Berichtsheft-/Ausbildungsnachweis-Format (z. B.
+  IHK-Standard) und orientiert sich daran.
+- **Rhythmus:** ein Eintrag **pro Tag** (Datum, Tätigkeiten, Stunden), aber
+  Mark diktiert unregelmäßig (mal täglich, mal im Nachhinein mehrere Tage auf
+  einmal). Das Datenmodell muss das abbilden können, unabhängig davon, wann
+  er tatsächlich mit Claude spricht.
+- **Diktat:** Mark erzählt frei, Claude fragt aktiv nach, wenn Pflichtfelder
+  (Datum, Stunden, Tätigkeiten) fehlen, bevor gespeichert wird.
+
+**Neuer Wunsch (noch nicht geplant, offene Fragen s. u.):** Automatisches
+Beleg-Tracking fürs Finanzen-Modul. Mark bekommt Kaufbelege oft per E-Mail;
+er möchte, dass Claude regelmäßig (in seiner Formulierung: "jede Stunde") ins
+Postfach schaut, Belege einsammelt und als Ausgaben einträgt. Zusätzlich will
+er selbst fotografierte Belege einreichen können.
+
+**Warum wichtig, bevor gebaut wird:** Das ist die bisher sensibelste
+Erweiterung im Projekt – dauerhafter, automatisierter Zugriff auf ein
+E-Mail-Postfach plus Geldbeträge, die ohne Marks Blick automatisch in seine
+Finanzen eingetragen würden. Datenschutz/Sorgfalt hat hier Vorrang vor
+Tempo (siehe Gedächtnis „Nutzer: Berufsschule-Kontext" – Datenschutz wichtig).
+Claude hat deshalb Rückfragen gestellt, statt direkt zu bauen (s. u.).
+
+**Offene Punkte / Nächste Schritte:**
+- Etappe 5 (Berichtsheft): Recherche + Design, dann bauen – kann mit den
+  vorliegenden Antworten direkt weitergehen.
+- Beleg-Automatisierung: wartet auf Marks Antworten zu Postfach, echtem
+  Rhythmus (stündlich vs. seltener), Automatik vs. Gegenprüfung vor dem
+  Eintragen, und wie fotografierte Belege technisch reinkommen sollen.
+
+---
+
 ## 2026-09-16 – Etappe 4 (Modul Lager/Ersatzteile) gebaut
 
 **Was:** Viertes und letztes Fachmodul der ursprünglichen Roadmap: Tab
