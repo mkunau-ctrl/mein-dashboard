@@ -148,8 +148,9 @@ Punkt-Quote, aber nicht ins Tagesziel.
 | **2 – To-dos** | Aufgaben-Modul | |
 | **3 – Finanzen** | Ausgaben + Kontostand + Monatsübersicht | |
 | **4 – Lager/Ersatzteile** | Teileliste, Status, Warenwert, Bestell-Merkliste | |
+| **5 – Berichtsheft** (ergänzt 2026-09-16) | Ausbildungsnachweis: Mark diktiert Einträge per Sprache/Chat an Claude, Claude trägt sie strukturiert ein, am Ende PDF-Export | Druckfertiges Berichtsheft-PDF |
 
-Reihenfolge von Mark bestätigt: Ernährung → To-dos → Finanzen → Lager.
+Reihenfolge von Mark bestätigt: Ernährung → To-dos → Finanzen → Lager → Berichtsheft.
 
 Jede Etappe: erst kurzer Feinplan in `docs/specs/`, dann bauen (wo sinnvoll
 Tests zuerst), dann `PROJEKT-LOG.md` + `CLAUDE.md` pflegen, dann pushen.

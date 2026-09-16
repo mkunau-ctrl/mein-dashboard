@@ -4,6 +4,40 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-16 – Planungsentscheidungen: Etappe 2–4 am Stück, neues Modul Berichtsheft
+
+**Was:** Mark hat entschieden, dass jetzt die nächsten Etappen (To-dos,
+Finanzen, Lager/Ersatzteile) direkt nacheinander gebaut werden, statt nach
+jeder Etappe anzuhalten. Zusätzlich kommt ein neues, bisher nicht geplantes
+Modul dazu: **Berichtsheft** (Ausbildungsnachweis für die Berufsschule). Mark
+will seine Einträge einfach per Sprache/Chat an Claude diktieren, Claude trägt
+sie strukturiert in die Datenbank ein, am Ende soll sich daraus ein
+druckfertiges PDF erzeugen lassen.
+
+**Warum:** Spart Rückfragen zwischen den Etappen, da die Grundstruktur (Tabellen
++ Modul-Muster) aus Etappe 1 bereits steht und für To-dos/Finanzen/Lager im
+Konzept grob vorskizziert ist. Das Berichtsheft ist ein eigenständiger,
+wiederkehrender Bedarf aus Marks Berufsschul-Alltag (siehe Gedächtnis-Eintrag
+„Nutzer: Berufsschule-Kontext").
+
+**Entscheidungen:**
+- **Wiederkehrende To-dos** (z. B. „Müll raus" jeden Montag): eigene Vorlage
+  bleibt bestehen, **jedes Abhaken legt eine neue, abgeschlossene Zeile an**
+  (mehr Historie statt ein Datum, das nur weiterspringt).
+- Reihenfolge bleibt wie im Konzept festgelegt: To-dos → Finanzen → Lager.
+  Danach neu: **Etappe 5 – Berichtsheft** (Roadmap in
+  `docs/specs/2026-09-08-dashboard-konzept.md` ergänzt).
+- Für Etappe 2–4 reicht ein kurzes Design im Log/als Datei (Muster aus
+  Etappe 1 wiederverwendet), keine erneute große Rückfrage-Runde – nur bei
+  echten offenen Fragen wird nachgefragt.
+- Etappe 5 (Berichtsheft) bekommt vor dem Bau einen eigenen Feinplan, weil PDF-
+  Export und Diktat-Format neue Fragen aufwerfen, die noch nicht geklärt sind
+  (Pflichtfelder des Berichtshefts, PDF-Layout/Vorlage der Berufsschule).
+
+**Offene Punkte / Nächste Schritte:** Etappe 2 (To-dos) beginnt jetzt.
+
+---
+
 ## Ideen für später (keine chronologischen Einträge)
 
 **Etappe 5 – Kalender + Benachrichtigungen (von Mark am 2026-09-09 gewünscht):**
