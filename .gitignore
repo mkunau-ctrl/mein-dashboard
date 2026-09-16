@@ -11,3 +11,6 @@ Thumbs.db
 
 # Node (falls später Test-Setup dazukommt)
 node_modules/
+
+# Laufzeit-Zustand der Automatisierung
+automatisierung/letzter-lauf.json
