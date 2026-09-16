@@ -4,6 +4,32 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-16 – Etappe 2 (Modul To-dos) gebaut
+
+**Was:** Zweites Fachmodul: Tab „Offen" (einmalige und wiederkehrende Todos
+anlegen, abhaken, entfernen; überfällige rot markiert) und Tab „Erledigt"
+(Historie der letzten 60 Tage). Wiederkehrende Todos (täglich, bestimmte
+Wochentage, monatlich am X.) laufen über eine eigene Vorlagen-Tabelle; jedes
+Abhaken legt eine neue erledigte Zeile an und erzeugt automatisch die nächste
+offene Instanz. Kachel zeigt Anzahl offener Todos + überfällige. Datenmodell
+und Entscheidungen: `docs/superpowers/specs/2026-09-16-etappe-2-todos-design.md`.
+
+**Warum:** Nächste Etappe laut Roadmap (Reihenfolge s. Eintrag unten).
+
+**Stand danach:** Branch `etappe-2` gebaut, 6 neue Unit-Tests für
+`planung.js` (`naechsteFaelligkeit`, `sortiereOffeneTodos`, `istUeberfaellig`),
+insgesamt 34 Tests grün. Zwei neue Supabase-Tabellen (`todo_vorlagen`,
+`todos`) mit RLS angelegt (Migration `etappe2_todos`), Security-Advisor zeigt
+keine neuen Befunde. Noch **nicht** manuell im Browser getestet (kein
+Chrome-Zugriff in dieser Session) – wie bei Etappe 1 offen.
+
+**Offene Punkte / Nächste Schritte:**
+- Manueller Testlauf (Desktop + iPhone-Safari): Todo anlegen, abhaken,
+  wiederkehrendes Todo über mehrere Zyklen prüfen.
+- Danach: Etappe 3 (Finanzen).
+
+---
+
 ## 2026-09-16 – Planungsentscheidungen: Etappe 2–4 am Stück, neues Modul Berichtsheft
 
 **Was:** Mark hat entschieden, dass jetzt die nächsten Etappen (To-dos,
