@@ -99,6 +99,17 @@ auf Deutsch. Datenschutz beachten.
 - GitHub-Account: `mkunau-ctrl`. Falls ein Push blockiert wird, pusht Mark selbst
   mit `!git push`.
 - Datum im Log absolut schreiben (kein "heute").
+- **Finanzen – Belege per Chat:** Schickt Mark im Chat ein Foto eines
+  Kassenbons, trägt Claude die Ausgabe direkt in `expenses` ein
+  (`quelle:'foto'`). Kommt eine Ausgabe später automatisiert aus E-Mails,
+  `quelle:'email'` setzen. Manuell in der App eingetragene Ausgaben haben
+  `quelle:'manuell'` (Default). Siehe auch offener Punkt „automatisches
+  Beleg-Tracking" im Log.
+- **Berichtsheft – Diktat per Chat:** Erzählt Mark Arbeitstage, fehlende
+  Pflichtfelder (Datum, Stunden, Tätigkeiten) aktiv erfragen, dann in
+  `berichtsheft_eintraege` schreiben (ein Eintrag pro Tag, `unique
+  (user_id, datum)` – bei erneutem Diktat für denselben Tag überschreibt
+  das den alten Eintrag, nicht duplizieren).
 
 ### Supabase-Projekt
 

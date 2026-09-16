@@ -4,6 +4,52 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-16 – Vorbereitung Beleg-Tracking: `quelle`-Feld + Architektur-Vorschlag
+
+**Was:** Kleine Vorbereitung fürs automatische Beleg-Tracking (Wunsch s.
+Eintrag weiter unten), ohne schon den vollen Automatisierungs-Teil zu bauen:
+`expenses` hat jetzt eine Spalte `quelle` (`manuell` \| `email` \| `foto`,
+Default `manuell`, Migration `expenses_quelle`). Der **Foto-Weg funktioniert
+damit ab sofort**: Mark schickt Claude im Chat ein Beleg-Foto, Claude trägt
+die Ausgabe mit `quelle:'foto'` ein – kein weiterer Bau nötig.
+
+**Warum:** Der Foto-Weg war laut Marks Antwort vom 2026-09-16 sowieso schon
+per Chat gewünscht ("Recommended"-Option) und brauchte nur dieses eine Feld,
+um nachvollziehbar zu bleiben. Der E-Mail-Weg braucht dagegen echte
+Automatisierung und Marks Postfach-Zugangsdaten – das ist ein eigener,
+größerer Schritt (s. u.), den Claude nicht ungefragt anstößt.
+
+**Architektur-Vorschlag für den E-Mail-Weg (noch nicht gebaut):**
+Ein taeglich laufender **Windows-Scheduled-Task** (Muster wie bei den
+Projekten `energiesparer-modus`/`auto-weiter`) startet ein kleines Skript,
+das (1) sich per **IMAP** bei `m.kunau@gmx.de` anmeldet und neue Mails seit
+dem letzten Lauf holt, (2) Beleg-Mails per `claude -p` (Claude liest die
+Mail und liefert Betrag/Händler/Datum als JSON) erkennen und auslesen lässt,
+(3) die erkannten Ausgaben mit `quelle:'email'` in Supabase einträgt.
+
+**Offene Voraussetzungen, bevor das gebaut werden kann:**
+- Mark muss in den GMX-Kontoeinstellungen den **IMAP-Fremdzugriff aktivieren**
+  und ein **App-Passwort** erzeugen (nicht das normale GMX-Passwort).
+- Für den Supabase-Insert ohne eingeloggte Session braucht das Skript einen
+  mächtigeren Zugriff als der öffentliche Anon-Key (z. B. den
+  **Service-Role-Key**) – der ist sehr sensibel (umgeht RLS komplett) und
+  darf **nur lokal** liegen (`.env`, per `.gitignore` ausgeschlossen), nie im
+  Repo. Das ist bewusst eine höhere Hürde als alles bisher im Projekt und
+  sollte Mark klar sein, bevor er zustimmt.
+- Beide Zugangsdaten (IMAP-App-Passwort, Service-Role-Key) legt Mark selbst
+  lokal ab (z. B. `.env`-Datei), nicht über den Chat einfügen.
+
+**Stand danach:** `quelle`-Feld live, Foto-Weg nutzbar. E-Mail-Automatisierung
+ist ein Vorschlag, noch nicht umgesetzt.
+
+**Offene Punkte / Nächste Schritte:**
+- Mark: GMX-IMAP aktivieren + App-Passwort erzeugen, wenn er den E-Mail-Weg
+  will.
+- Danach: eigener Feinplan + Bau für das Automatisierungs-Skript
+  ("Etappe 6").
+
+---
+
 ## 2026-09-16 – Etappe 5 (Modul Berichtsheft) gebaut
 
 **Was:** Fünftes Fachmodul, der Ausbildungsnachweis: Tab „Einträge" (ein
