@@ -16,10 +16,11 @@ export async function ladeAlles() {
   return { expenses: expenses.data, settings: settingsObj };
 }
 
-export async function legeAusgabeAn({ betrag, kategorie, notiz, datum }) {
+export async function legeAusgabeAn({ betrag, kategorie, notiz, datum, quelle }) {
   const { error } = await supabase.from('expenses').insert({
     betrag, kategorie: kategorie || 'sonstiges', notiz: notiz || null,
     datum: datum || new Date().toISOString().slice(0, 10),
+    quelle: quelle || 'manuell',
   });
   if (error) throw fehler('Ausgabe anlegen', error);
 }

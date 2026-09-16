@@ -33,7 +33,7 @@ export async function zeigeAusgaben(container, zustand, aktualisieren) {
     zeile.innerHTML = `
       <div class="punkt-info">
         <strong>${e.betrag.toFixed(2)} €${e.notiz ? ` – ${esc(e.notiz)}` : ''}</strong>
-        <small>${e.datum} · ${esc(e.kategorie)}</small>
+        <small>${e.datum} · ${esc(e.kategorie)}${e.quelle !== 'manuell' ? ` · aus ${e.quelle === 'email' ? 'E-Mail' : 'Foto'}` : ''}</small>
       </div>
       <div class="punkt-aktionen"><button data-a="weg">✕</button></div>`;
     zeile.querySelector('[data-a=weg]').addEventListener('click', async () => {
