@@ -4,6 +4,40 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-16 – Etappe 4 (Modul Lager/Ersatzteile) gebaut
+
+**Was:** Viertes und letztes Fachmodul der ursprünglichen Roadmap: Tab
+„Teile" (Bezeichnung, Bestand, Soll-Bestand, Einzelwert, Status
+fehlt/bestellt/da; anlegen/bearbeiten/entfernen; Warenwert-Summe oben) und
+Tab „Bestellen" (Merkliste = alle Teile mit Status ≠ „da", Status per Klick
+weiterschalten). Kachel zeigt Anzahl offener Bestellungen. Details:
+`docs/superpowers/specs/2026-09-16-etappe-4-lager-design.md`.
+
+**Warum:** Letzte Etappe der ursprünglichen Roadmap (Ernährung → To-dos →
+Finanzen → Lager); danach folgt die neu hinzugekommene Etappe 5 (Berichtsheft).
+
+**Entscheidungen:** Bestell-Merkliste bekommt **kein eigenes Datenmodell**,
+sondern ist nur eine gefilterte Sicht auf `parts` (Status ≠ `da`) – vermeidet
+doppelte Datenhaltung. Löschen von Teilen ist eine harte Löschung, wie bei
+Todos/Finanzen.
+
+**Stand danach:** Branch `etappe-4` gebaut, 4 neue Unit-Tests für
+`berechnung.js` (`warenwert`, `sortiereTeile`, `merkliste`,
+`naechsterStatus`), insgesamt 42 Tests grün. Neue Supabase-Tabelle `parts`
+mit RLS (Migration `etappe4_lager`), keine neuen Security-Advisor-Befunde.
+Noch nicht manuell im Browser getestet.
+
+**Offene Punkte / Nächste Schritte:**
+- Manueller Testlauf: Teil anlegen, Status durchklicken, Warenwert prüfen,
+  Merkliste-Filter prüfen.
+- **Gesamter manueller Testlauf für Etappe 2–4 steht noch aus** (kein
+  Chrome-Zugriff während des Bauens) – vor dem nächsten größeren Schritt
+  einmal am echten Gerät durchklicken.
+- Danach: Etappe 5 (Berichtsheft) – braucht vorher einen eigenen Feinplan
+  (offene Fragen: Pflichtfelder, PDF-Layout/Vorlage).
+
+---
+
 ## 2026-09-16 – Etappe 3 (Modul Finanzen) gebaut
 
 **Was:** Drittes Fachmodul: Tab „Ausgaben" (Betrag, freie Kategorie, Notiz,

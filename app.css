@@ -114,6 +114,13 @@ button:disabled { opacity: .6; cursor: default; }
 /* Todos */
 .todo-ueberfaellig { color: var(--hm-rot); }
 
+/* Lager */
+.status-badge { border-radius: 999px; padding: 4px 10px; font-size: .8rem;
+  color: #0b0d10; border: none; }
+.status-fehlt { background: var(--hm-rot); }
+.status-bestellt { background: var(--hm-gelb); }
+.status-da { background: var(--hm-gruen); }
+
 /* Infos */
 .infos-text h3 { font-size: 1rem; margin: 18px 0 6px; }
 .infos-text ul { margin: 6px 0; padding-left: 20px; }
