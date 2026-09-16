@@ -4,6 +4,35 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-16 – Etappe 3 (Modul Finanzen) gebaut
+
+**Was:** Drittes Fachmodul: Tab „Ausgaben" (Betrag, freie Kategorie, Notiz,
+Datum erfassen; Liste neueste zuerst; löschen), Tab „Kontostand" (aktueller
+Stand = gesetzter Ausgangswert minus aller Ausgaben seither; Ausgangswert
+jederzeit neu setzbar) und Tab „Monat" (Monats-Navigation, Summe gesamt +
+Balken pro Kategorie). Kachel zeigt die heutigen Ausgaben in Euro. Details:
+`docs/superpowers/specs/2026-09-16-etappe-3-finanzen-design.md`.
+
+**Warum:** Nächste Etappe laut Roadmap.
+
+**Entscheidungen:** Kategorie ist freies Textfeld statt festem Enum (Konzept
+gibt keine feste Liste vor, Mark/Claude tippen frei). Löschen von Ausgaben ist
+eine harte Löschung (keine Statistik-Historie wie bei Ernährung, die dadurch
+verfälscht würde). Keine Bank-Anbindung (Grundsatzentscheidung Gesamtkonzept).
+
+**Stand danach:** Branch `etappe-3` gebaut, 4 neue Unit-Tests für
+`berechnung.js` (`kontostand`, `summeProMonat`, `summenProKategorie`),
+insgesamt 38 Tests grün. Zwei neue Supabase-Tabellen (`expenses`,
+`finance_settings`) mit RLS (Migration `etappe3_finanzen`), keine neuen
+Security-Advisor-Befunde. Noch nicht manuell im Browser getestet.
+
+**Offene Punkte / Nächste Schritte:**
+- Manueller Testlauf: Ausgabe anlegen, Kontostand setzen und prüfen,
+  Monatsübersicht über Monatsgrenze testen.
+- Danach: Etappe 4 (Lager/Ersatzteile).
+
+---
+
 ## 2026-09-16 – Etappe 2 (Modul To-dos) gebaut
 
 **Was:** Zweites Fachmodul: Tab „Offen" (einmalige und wiederkehrende Todos

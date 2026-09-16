@@ -4,6 +4,7 @@ import { holeSession, sendeMagicLink, meldeAb, beiAuthWechsel } from './auth.js'
 import { alleModule, holeModul } from './registry.js';
 import './module/ernaehrung/index.js';
 import './module/todos/index.js';
+import './module/finanzen/index.js';
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');
