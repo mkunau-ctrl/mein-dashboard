@@ -4,6 +4,46 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-16 – Etappe 5 (Modul Berichtsheft) gebaut
+
+**Was:** Fünftes Fachmodul, der Ausbildungsnachweis: Tab „Einträge" (ein
+Eintrag pro Tag – Datum, Art [Betrieb/Berufsschule/Sonstiges], Tätigkeiten/
+Themen, Stunden; anlegen/bearbeiten/löschen) und Tab „Drucken" (Kopfdaten
+Name/Ausbildungsberuf/Ausbildungsbeginn, wochenweise Ansicht im
+IHK-typischen Layout mit Stunden-Summe und zwei Unterschriftfeldern,
+druckbar über den Browser-Druckdialog). Kachel zeigt Anzahl Einträge diese
+Woche. Format orientiert sich an recherchierten IHK/HWK-Vorlagen (Quellen in
+`docs/superpowers/specs/2026-09-16-etappe-5-berichtsheft-design.md`).
+
+**Warum:** Neu hinzugekommene Etappe (Wunsch vom 2026-09-16) – Mark will sein
+Berichtsheft für die Berufsschule per Diktat an Claude oder per Formular
+führen und am Ende ausdrucken.
+
+**Entscheidungen:** Kein PDF-Paket eingebaut – eine `@media print`-Ansicht
+pro Woche reicht für „druckfertig" (Browser-Druckdialog → „Als PDF
+speichern"), passt zum Projekt-Grundsatz "kein Framework, kein Build".
+Diktat-Weg: Mark erzählt im Chat, Claude fragt fehlende Pflichtfelder
+(Datum, Stunden, Tätigkeiten) aktiv nach und schreibt dann per Supabase-MCP
+direkt in `berichtsheft_eintraege` (wie im Gesamtkonzept vorgesehen).
+
+**Stand danach:** Branch `etappe-5` gebaut, 3 neue Unit-Tests für
+`berechnung.js` (`wochenStart`, `gruppiereNachWoche`, `ausbildungsjahr`),
+insgesamt 45 Tests grün. Zwei neue Supabase-Tabellen
+(`berichtsheft_eintraege`, `berichtsheft_settings`) mit RLS (Migration
+`etappe5_berichtsheft`), keine neuen Security-Advisor-Befunde. Noch nicht
+manuell im Browser getestet, insbesondere der Druckdialog nicht.
+
+**Offene Punkte / Nächste Schritte:**
+- Manueller Testlauf: Eintrag anlegen, Kopfdaten setzen, Druckansicht +
+  „Als PDF speichern" im echten Browser prüfen (Layout, Seitenumbruch).
+- **Kompletter manueller Testlauf für Etappe 2–5 steht weiterhin aus.**
+- Ursprüngliche Roadmap (Ernährung → To-dos → Finanzen → Lager →
+  Berichtsheft) ist damit **komplett gebaut**. Als Nächstes: der neue Wunsch
+  „automatisches Beleg-Tracking" (s. Eintrag unten) – wartet noch auf
+  technische Klärung (GMX-IMAP-Zugang).
+
+---
+
 ## 2026-09-16 – Etappe-5-Design-Entscheidungen + neuer Wunsch: automatisches Beleg-Tracking
 
 **Was:** Für Etappe 5 (Berichtsheft) hat Mark drei offene Fragen beantwortet.
