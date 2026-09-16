@@ -16,7 +16,7 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
-## Aufbau (Stand Etappe 3 – Module Ernährung + To-dos + Finanzen, in `main` gemergt, live)
+## Aufbau (Stand Etappe 4 – Module Ernährung + To-dos + Finanzen + Lager, in `main` gemergt, live)
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit Kachel-Raster.
 - `app.css` – gemeinsames Design.
@@ -47,11 +47,17 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   - `berechnung.js` – `kontostand`, `summeProMonat`, `summenProKategorie`.
   - `ausgaben.js`, `kontostand.js`, `monat.js` – die drei Tabs.
   Details: `docs/superpowers/specs/2026-09-16-etappe-3-finanzen-design.md`.
+- `js/module/lager/` – viertes Fachmodul (Teile/Ersatzteile):
+  - `index.js` – Registrierung, Tabs „Teile"/„Bestellen", Kachel-Text.
+  - `daten.js` – Supabase-Zugriff auf `parts`.
+  - `berechnung.js` – `warenwert`, `sortiereTeile`, `merkliste`, `naechsterStatus`.
+  - `teile.js`, `bestellen.js` – die zwei Tabs.
+  Details: `docs/superpowers/specs/2026-09-16-etappe-4-lager-design.md`.
 - `manifest.webmanifest`, `icon.svg` – PWA. **Echte PNG-Icons (192/512) und
   `apple-touch-icon` fehlen weiterhin** (offener Punkt seit Etappe 0).
 - `test/` – `node --test` Unit-Tests: `router`, `view`, `registry`,
   `ernaehrung-zeitplan`, `ernaehrung-berechnung`, `todos-planung`,
-  `finanzen-berechnung` (38 grün).
+  `finanzen-berechnung`, `lager-berechnung` (42 grün).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
 
@@ -61,7 +67,7 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 38 grün.
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 42 grün.
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.
