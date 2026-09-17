@@ -4,6 +4,48 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Visuelles Redesign gestartet: Finanzen als erstes Referenz-Modul
+
+**Was:** Erste Etappe des großen Redesigns (Icon-Karten-Optik aus Marks
+Mockup). Neue geteilte CSS-Bausteine in `app.css`: `.icon-badge`
+(runde Icon-Kachel), `.betrag-minus`/`.betrag-plus` (farbige Beträge),
+`.stat-karte.gross` (große, linksbündige Stat-Karte mit Icon-Kopf),
+`.quote-zeile.betrag`-Modifier (breitere letzte Spalte für Euro- statt
+Prozentwerte, damit die geteilte `.quote-zeile`-Komponente aus dem
+Ernährungs-Modul unverändert bleibt). Finanzen-Modul komplett umgebaut:
+Ausgaben-Liste mit Icon + rotem Betrag, Kontostand als große Karte mit
+Wallet-Icon + "Ausgaben diesen Monat" als Zusatzinfo, Monats-Kategorien
+mit Tag-Icon je Zeile.
+
+**Warum:** Mark wollte nach dem Farbsystem jetzt auch das große visuelle
+Redesign aus dem Referenz-Mockup (Fintech-App-Screenshot) – explizit "die
+restlichen Seiten jetzt auch machen". Finanzen zuerst, weil es inhaltlich
+am nächsten am Mockup dran ist und die Kategorie-Balken-Logik (`summenPro
+Kategorie`) schon vorhanden war.
+
+**Bewusste Abgrenzung von Marks Mockup:** Kein erfundenes
+"Einnahmen"-Feld – unser Datenmodell trackt nur Ausgaben + einen
+gesetzten Kontostand-Startwert, keine Einnahmen-Einträge. Die "Ausgaben
+diesen Monat"-Zeile unter dem Kontostand ersetzt die Einnahmen/Differenz-
+Zeilen aus dem Mockup mit echten, vorhandenen Daten statt Fantasiewerten.
+Auch keine Icons pro Händler/Kategorie (Netflix-Logo o. Ä.) – Kategorien
+sind bei uns Freitext, ein generisches Beleg-Icon für alle Ausgaben-Zeilen
+ist ehrlicher als geratene Zuordnungen.
+
+**Stand danach:** Alle 45 Tests grün (reine UI-Änderung, keine
+Berechnungslogik angefasst). Mit Beispieldaten als statische
+Vorschauseite pro Theme (hell/dunkel) per Playwright geprüft, echter
+App-Durchlauf mit Live-Daten steht noch aus (Sandbox kann Supabase-CDN
+nicht laden, s. o.).
+
+**Offene Punkte / Nächste Schritte:** Todos, Lager, Ernährung,
+Berichtsheft im selben Stil (Icon-Badges, farbige Beträge wo sinnvoll,
+`.stat-karte.gross` für Übersichtszahlen) nachziehen – auf Marks
+ausdrücklichen Wunsch als direkte Fortsetzung, nicht mehr einzeln
+freigegeben.
+
+---
+
 ## 2026-09-17 – Echtes Hell/Dunkel-Umschalten (statt nur festes Schwarz)
 
 **Was:** Neues `js/theme.js`: liest/schreibt die Theme-Wahl in
