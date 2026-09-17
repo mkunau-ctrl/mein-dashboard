@@ -26,6 +26,8 @@ button:disabled { opacity: .6; cursor: default; }
 #dashboard-ansicht header .kopf-aktionen { display: flex; gap: 8px; }
 #dashboard-ansicht header button { background: transparent; color: var(--gedaempft);
        border: 1px solid var(--rand); }
+#passkey-hinweis { min-height: 1.2em; color: var(--gedaempft); font-size: .85rem; margin: 6px 0 0; }
+#passkey-hinweis:empty { display: none; }
 
 /* Tab-Leiste unten */
 #tab-leiste-unten { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;

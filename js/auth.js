@@ -21,15 +21,23 @@ export async function meldeAb() {
 }
 
 export async function meldeAnMitPasskey() {
-  const { error } = await supabase.auth.signInWithPasskey();
-  if (error) return { ok: false, fehler: error.message };
-  return { ok: true };
+  try {
+    const { error } = await supabase.auth.signInWithPasskey();
+    if (error) return { ok: false, fehler: error.message };
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, fehler: e.message || String(e) };
+  }
 }
 
 export async function registrierePasskey() {
-  const { error } = await supabase.auth.registerPasskey();
-  if (error) return { ok: false, fehler: error.message };
-  return { ok: true };
+  try {
+    const { error } = await supabase.auth.registerPasskey();
+    if (error) return { ok: false, fehler: error.message };
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, fehler: e.message || String(e) };
+  }
 }
 
 export function beiAuthWechsel(callback) {
