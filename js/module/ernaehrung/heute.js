@@ -44,7 +44,7 @@ export async function zeigeHeute(container, zustand) {
       const zeile = document.createElement('label');
       zeile.className = 'heute-zeile';
       const icon = document.createElement('div');
-      icon.className = `icon-badge${istErledigt(it.id) ? ' gruen' : ''}`;
+      icon.className = 'icon-badge';
       icon.innerHTML = KATEGORIE_ICON[kategorie];
       zeile.appendChild(icon);
       const box = document.createElement('input');
@@ -57,11 +57,9 @@ export async function zeigeHeute(container, zustand) {
           const vorhanden = zustand.logs.find((l) => l.datum === d && l.item_id === it.id);
           if (vorhanden) vorhanden.erledigt = box.checked;
           else zustand.logs.push({ datum: d, item_id: it.id, erledigt: box.checked });
-          icon.classList.toggle('gruen', box.checked);
           ringNeu();
         } catch (e) {
           box.checked = !box.checked;
-          icon.classList.toggle('gruen', box.checked);
           alert(e.message);
         } finally {
           box.disabled = false;

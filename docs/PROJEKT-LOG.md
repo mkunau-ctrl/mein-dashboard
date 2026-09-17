@@ -4,6 +4,62 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Design-Korrektur: gemessene Werte statt geschätzter Farben
+
+**Was:** Mark war mit dem vorigen Redesign unzufrieden und schickte eine
+sehr detaillierte Bauanweisung (React+Vite+Tailwind, exakte Hex-Werte
+"per Pixelanalyse gemessen"). Vor dem Umbau die zentralen Behauptungen
+per Python/PIL direkt an den Original-Screenshots nachgemessen (nicht
+blind übernommen) – bestätigt: App-Hintergrund hell `#E8EAED`, Karten-
+Hintergrund hell `#F2F4F7` und dunkel `#1B2025` stimmen exakt. Wichtigste
+bestätigte Erkenntnis: **Icon-Kreise sind im Original immer neutral grau
+(`#EFF2F3`), nie pro Kategorie/Status eingefärbt** – nur Text/Zahlen sind
+grün oder rot. Genau das hatte ich im vorigen Redesign falsch gemacht
+(rote/gelbe/grüne Icon-Badges).
+
+**Umgesetzt (Vanilla-CSS, kein Framework-Wechsel):**
+- Alle Farb-Tokens in `app.css` auf die gemessenen Werte umgestellt
+  (Hell: `--bg:#E8EAED`, `--karte:#F2F4F7`, `--text:#000`, `--gedaempft:
+  #707B82`; Dunkel: `--bg:#090F14`, `--karte:#1B2025`, `--text:#fff`,
+  `--gedaempft:#C0CDD5`; Grün `#1A6C3B`/`#255F42` (hell/dunkel), Rot
+  `#F62727` (beide gleich)).
+- `.icon-badge` ist jetzt IMMER neutral (`--icon-bg`/`--icon-farbe`) – die
+  Klassen `.gruen`/`.rot`/`.gelb` komplett aus allen 5 Modulen entfernt
+  (Finanzen, Todos, Lager, Ernährung).
+- Neue `.badge-ueberfaellig`-Pille (helles Rot-BG `#F7E8E8`, Text
+  `#F0645C`) für überfällige Todos statt nur farbigem Text.
+- `.tab-leiste` (Modul-interne Tabs) von Unterstrich-Stil auf
+  Pillen-Segmented-Control umgestellt: dunkle Pille (`#191D20`, weißer
+  Text) für den aktiven Tab, passend zum Original.
+- Bottom-Tab-Leiste: aktiver Zustand jetzt Primärtext-Farbe statt Blau
+  (Original nutzt dafür keinen Akzent).
+- Karten-Radius von 12px auf 20–22px, dezenter Box-Shadow statt Rahmen.
+- Schriftgrößen in Listenzeilen/Stat-Karten an die gemessenen ~13–15px
+  angenähert.
+
+**Bewusst NICHT gemacht – abgelehnter Scope, keine Rückfrage nötig:**
+- **Kein React/Vite/Tailwind-Umstieg.** War explizit gefordert, aber
+  Pixel-Genauigkeit ist ein CSS-Werte-Problem, kein Framework-Problem.
+  Ein Umstieg hätte alle 5 Module neu geschrieben, alle 45 Tests riskiert
+  und einen Build-Schritt eingeführt, den GitHub Pages bisher bewusst
+  nicht braucht – Mark nach Rückfrage einverstanden, bei Vanilla zu
+  bleiben, solange das Ergebnis pixelgenau aussieht.
+- Keine neuen Screens (Profil, Einstellungen, Suche, Sendungen,
+  Rechnungen) – die gibt es in unserer App nicht, das wäre erfundene
+  Funktionalität statt Design-Korrektur.
+- Kein Zeitraum-Selector (7T/30T/…), keine Sparkline-Chart, kein
+  Auge-Icon zum Kontostand-Ausblenden, keine Notification-Glocke – alles
+  Features aus dem Referenz-Screenshot, die unsere App nicht hat.
+- Toggle-Switches (schwarz statt grün) nicht gebaut – es gibt keinen
+  Einstellungen-Screen mit Toggles im Projekt.
+
+**Stand danach:** Alle 45 Tests grün. Visuell direkt mit dem Original-
+Screenshot verglichen (Finanzen-Modul, hell + dunkel) – deutlich näher
+dran als das vorige Redesign. Echter Test auf einem Gerät steht weiter
+aus.
+
+---
+
 ## 2026-09-17 – Redesign Teil 5 (letzter Teil): Berichtsheft
 
 **Was:** Einträge-Liste bekommt ein Icon-Badge je Zeile passend zur Art

@@ -42,12 +42,14 @@ export async function zeigeOffen(container, zustand, aktualisieren) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
     zeile.innerHTML = `
-      <div class="icon-badge${ueberfaellig ? ' rot' : ''}">${icon}</div>
+      <div class="icon-badge">${icon}</div>
       <label class="heute-zeile" style="flex:1; padding:0;">
         <input type="checkbox">
         <span>${esc(t.text)}${t.faellig
-          ? ` <small class="${ueberfaellig ? 'todo-ueberfaellig' : ''}">
-              (${ueberfaellig ? 'überfällig, ' : ''}${t.faellig})</small>` : ''}</span>
+          ? (ueberfaellig
+              ? ` <span class="badge-ueberfaellig">überfällig, ${t.faellig}</span>`
+              : ` <small>(${t.faellig})</small>`)
+          : ''}</span>
       </label>
       <div class="punkt-aktionen"><button data-a="weg">✕</button></div>`;
 
