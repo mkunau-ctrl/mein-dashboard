@@ -1,6 +1,7 @@
 import { parseHash } from './router.js';
 import { entscheideAnsicht } from './view.js';
-import { holeSession, sendeMagicLink, meldeAb, beiAuthWechsel } from './auth.js';
+import { holeSession, sendeMagicLink, meldeAb, beiAuthWechsel,
+         meldeAnMitPasskey, registrierePasskey } from './auth.js';
 import { alleModule, holeModul } from './registry.js';
 import './module/ernaehrung/index.js';
 import './module/todos/index.js';
@@ -64,6 +65,21 @@ loginForm.addEventListener('submit', async (e) => {
     ? 'Link ist unterwegs. Schau in dein Postfach.'
     : `Fehler: ${fehler}`;
   knopf.disabled = false;
+});
+
+document.getElementById('passkey-login').addEventListener('click', async () => {
+  loginHinweis.textContent = 'Passkey wird abgefragt …';
+  const { ok, fehler } = await meldeAnMitPasskey();
+  if (!ok) loginHinweis.textContent = `Fehler: ${fehler}`;
+});
+
+document.getElementById('passkey-registrieren').addEventListener('click', async (e) => {
+  const knopf = e.currentTarget;
+  const text = knopf.textContent;
+  knopf.disabled = true;
+  const { ok, fehler } = await registrierePasskey();
+  knopf.textContent = ok ? 'Passkey gespeichert' : `Fehler: ${fehler}`;
+  setTimeout(() => { knopf.textContent = text; knopf.disabled = false; }, 2500);
 });
 
 document.getElementById('logout').addEventListener('click', async () => {

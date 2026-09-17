@@ -27,7 +27,12 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   erste registrierte Modul.
 - `js/router.js` – `parseHash('#/modul/unterseite')` → `{ modul, unterseite }`.
 - `js/view.js` – `entscheideAnsicht(session)` → `'login'` | `'dashboard'`.
-- `js/auth.js` – Magic-Link-Wrapper: `sendeMagicLink`, `holeSession`, `meldeAb`, `beiAuthWechsel`.
+- `js/auth.js` – Auth-Wrapper: `sendeMagicLink`, `holeSession`, `meldeAb`,
+  `beiAuthWechsel` (Magic-Link) sowie `registrierePasskey`, `meldeAnMitPasskey`
+  (Passkey/WebAuthn, seit 2026-09-17 – Supabase-Feature ist "Experimental",
+  Magic-Link bleibt als Fallback). Passkey funktioniert nur auf der echten
+  Live-Domain, nicht auf `localhost` (Relying-Party-ID ist fest auf
+  `mkunau-ctrl.github.io`).
 - `js/supabase.js` – Supabase-Client (Projekt-URL + Publishable-Key, öffentlich ok); `supabase-js@2.116.0` per jsDelivr-ESM.
 - `js/registry.js` – Modul-Registry: `registriere`, `alleModule`, `holeModul`, `leereRegistry`.
 - `js/module/README.md` – Modul-Schnittstelle (`id`, `titel`, `renderKachel`, `init`).
@@ -124,3 +129,12 @@ auf Deutsch. Datenschutz beachten.
   `http://localhost:8000/**` und `https://mkunau-ctrl.github.io/mein-dashboard/**`.
 - `USER_ID` (Marks Auth-UID) = `df0b24a6-6a74-4830-995c-84015161dcc3`
   (erster Login am 2026-09-09).
+- **Passkeys (offener manueller Schritt für Mark):** Claude hat keinen
+  Zugriff auf die Auth-Konfiguration (nur übers Dashboard/Management-API
+  mit Access-Token einstellbar). Im Supabase-Dashboard unter
+  **Authentication → Passkeys** einmalig aktivieren mit:
+  - Relying Party Display Name: `Mein Dashboard`
+  - Relying Party ID: `mkunau-ctrl.github.io`
+  - Relying Party Origins: `https://mkunau-ctrl.github.io`
+  Danach in der App einloggen (Magic-Link) und oben „Passkey einrichten"
+  tippen – erst dann geht „Mit Passkey anmelden" auf dem Login-Screen.

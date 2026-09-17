@@ -4,6 +4,41 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Passkey-Login (WebAuthn) als Ergänzung zum Magic-Link
+
+**Was:** Supabase Auth unterstützt seit Kurzem Passkeys nativ (als
+"Experimental" markiert). Client-Seite gebaut: `js/supabase.js` opted mit
+`experimental: { passkey: true }` ein, `js/auth.js` bekommt
+`registrierePasskey()` und `meldeAnMitPasskey()`. Im UI: Login-Screen hat
+jetzt zusätzlich einen Button „Mit Passkey anmelden" (kein
+E-Mail/Nutzername nötig, discoverable credential), im Dashboard-Header ein
+Button „Passkey einrichten" zum Registrieren auf dem aktuellen Gerät.
+Magic-Link bleibt vollständig erhalten als Fallback.
+
+**Warum:** Marks Wunsch nach Passkey-Login.
+
+**Wichtige Einschränkungen (bewusst so gelassen, nicht Claudes
+Entscheidungsspielraum):**
+- Die Server-Konfiguration (Relying-Party-ID/Origins) kann Claude nicht
+  setzen – das geht nur über Supabase-Dashboard oder Management-API mit
+  einem Access-Token, den Claude nicht hat. **Offener Schritt für Mark**,
+  siehe `CLAUDE.md` → Abschnitt Supabase-Projekt für die genauen Werte.
+- Relying-Party-ID ist fest auf `mkunau-ctrl.github.io` geplant → Passkey
+  funktioniert **nicht** auf `localhost` beim lokalen Testen (WebAuthn
+  verlangt, dass der Origin-Hostname zur RP-ID passt). Nur auf der echten
+  Live-Seite nutzbar/testbar.
+- Ein Passkey kann erst registriert werden, wenn man schon eingeloggt ist
+  (Supabase-Vorgabe) – Ersteinrichtung läuft also immer über Magic-Link,
+  Passkey ist danach der schnellere Weg für weitere Logins auf diesem Gerät.
+- Supabase markiert die API selbst als experimentell (kann sich ändern).
+  Deshalb bewusst kein Ersatz für Magic-Link, sondern zusätzliche Option.
+
+**Stand danach:** Alle 45 Tests weiterhin grün (kein Test für `auth.js`,
+wie schon vorher – reiner Supabase-Wrapper). Noch nicht live testbar, bis
+Mark die Dashboard-Einstellung gemacht hat.
+
+---
+
 ## 2026-09-17 – Dunkles Redesign: tiefes Schwarz + feste Tab-Leiste unten
 
 **Was:** Visuelle Überarbeitung, quer zu allen Modulen. Das Farbschema ist

@@ -20,6 +20,8 @@
                placeholder="m.kunau@gmx.de" />
         <button type="submit">Login-Link senden</button>
       </form>
+      <p class="trenner">oder</p>
+      <button id="passkey-login" type="button">Mit Passkey anmelden</button>
       <p id="login-hinweis" role="status"></p>
     </section>
 
@@ -27,7 +29,10 @@
     <section id="dashboard-ansicht" hidden>
       <header>
         <h1 id="modul-titel">Mein Dashboard</h1>
-        <button id="logout">Abmelden</button>
+        <div class="kopf-aktionen">
+          <button id="passkey-registrieren" title="Passkey auf diesem Gerät einrichten">Passkey</button>
+          <button id="logout">Abmelden</button>
+        </div>
       </header>
       <section id="modul-detail"></section>
       <nav id="tab-leiste-unten"></nav>
