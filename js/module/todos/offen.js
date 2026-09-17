@@ -2,6 +2,9 @@ import { legeTodoAn, hakeAb, entferneTodo } from './daten.js';
 import { sortiereOffeneTodos, istUeberfaellig } from './planung.js';
 
 const WT = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+const WIEDERHOLUNG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v5h5M20 20v-5h-5"/><path d="M4.5 15a8 8 0 0 0 14.7 3.2M19.5 9A8 8 0 0 0 4.8 5.8"/></svg>';
+const KALENDER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
+const TODO_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h10M9 12h10M9 18h10"/><path d="m4 6 1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>';
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>
@@ -35,9 +38,11 @@ export async function zeigeOffen(container, zustand, aktualisieren) {
 
   for (const t of todos) {
     const ueberfaellig = istUeberfaellig(t, heuteStr);
+    const icon = t.vorlage_id ? WIEDERHOLUNG_ICON : t.faellig ? KALENDER_ICON : TODO_ICON;
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
     zeile.innerHTML = `
+      <div class="icon-badge${ueberfaellig ? ' rot' : ''}">${icon}</div>
       <label class="heute-zeile" style="flex:1; padding:0;">
         <input type="checkbox">
         <span>${esc(t.text)}${t.faellig

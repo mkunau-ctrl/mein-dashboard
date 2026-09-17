@@ -1,3 +1,5 @@
+const ERLEDIGT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>';
+
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -20,6 +22,7 @@ export async function zeigeErledigt(container, zustand) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
     zeile.innerHTML = `
+      <div class="icon-badge gruen">${ERLEDIGT_ICON}</div>
       <div class="punkt-info">
         <span>${esc(t.text)}</span>
         <small>erledigt am ${t.erledigt_am.slice(0, 10)}</small>

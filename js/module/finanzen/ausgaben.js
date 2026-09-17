@@ -33,7 +33,7 @@ export async function zeigeAusgaben(container, zustand, aktualisieren) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
     zeile.innerHTML = `
-      <div class="icon-badge">${AUSGABE_ICON}</div>
+      <div class="icon-badge rot">${AUSGABE_ICON}</div>
       <div class="punkt-info">
         <strong>${e.notiz ? esc(e.notiz) : esc(e.kategorie)}</strong>
         <small>${e.datum}${e.notiz ? ` · ${esc(e.kategorie)}` : ''}${e.quelle !== 'manuell' ? ` · aus ${e.quelle === 'email' ? 'E-Mail' : 'Foto'}` : ''}</small>
