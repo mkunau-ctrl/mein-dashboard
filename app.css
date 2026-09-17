@@ -93,6 +93,11 @@ button:disabled { opacity: .6; cursor: default; }
   border-bottom: 1px solid var(--rand); }
 .punkt-info { flex: 1; display: flex; flex-direction: column; }
 .punkt-info small { color: var(--gedaempft); }
+.icon-badge { flex: none; width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--rand); color: var(--text); }
+.icon-badge svg { width: 20px; height: 20px; }
+.betrag-minus { color: var(--hm-rot); }
+.betrag-plus { color: var(--hm-gruen); }
 .punkt-aktionen { display: flex; gap: 4px; }
 .punkt-aktionen button { background: transparent; color: var(--gedaempft);
   border: 1px solid var(--rand); padding: 6px 9px; }
@@ -121,10 +126,18 @@ button:disabled { opacity: .6; cursor: default; }
   border-radius: 12px; padding: 14px; text-align: center; }
 .stat-karte span { display: block; font-size: 1.8rem; font-weight: 700; }
 .stat-karte small { color: var(--gedaempft); }
+.stat-karte.gross { text-align: left; padding: 18px; margin-bottom: 14px; }
+.stat-karte.gross .stat-kopf { display: flex; align-items: center; gap: 10px; }
+.stat-karte.gross .stat-kopf small { color: var(--gedaempft); font-size: .85rem; }
+.stat-karte.gross span { font-size: 2.1rem; margin-top: 8px; }
 .stat-prognose { background: var(--karte); border: 1px solid var(--rand);
   border-radius: 12px; padding: 12px; }
 .quote-zeile { display: grid; grid-template-columns: 1fr 90px 46px; align-items: center;
   gap: 8px; padding: 6px 0; font-size: .9rem; }
+.quote-zeile.betrag { grid-template-columns: 1fr 80px 68px; }
+.quote-label { display: flex; align-items: center; gap: 8px; }
+.quote-label .icon-badge { width: 28px; height: 28px; }
+.quote-label .icon-badge svg { width: 15px; height: 15px; }
 .quote-bar { background: var(--rand); border-radius: 5px; height: 10px; overflow: hidden; }
 .quote-bar i { display: block; height: 100%; background: var(--akzent); }
 .quote-zahl { text-align: right; color: var(--gedaempft); }
