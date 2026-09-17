@@ -96,6 +96,8 @@ button:disabled { opacity: .6; cursor: default; }
 .icon-badge { flex: none; width: 40px; height: 40px; border-radius: 50%;
   display: grid; place-items: center; background: var(--rand); color: var(--text); }
 .icon-badge svg { width: 20px; height: 20px; }
+.icon-badge.gruen { background: rgba(63, 174, 90, .15); color: var(--hm-gruen); }
+.icon-badge.rot { background: rgba(209, 84, 74, .15); color: var(--hm-rot); }
 .betrag-minus { color: var(--hm-rot); }
 .betrag-plus { color: var(--hm-gruen); }
 .punkt-aktionen { display: flex; gap: 4px; }

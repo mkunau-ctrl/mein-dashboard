@@ -4,6 +4,28 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Redesign Teil 2: To-dos + Icon-Badge-Farbvarianten
+
+**Was:** To-dos im selben Icon-Badge-Stil wie Finanzen: offene Punkte
+zeigen ein Wiederhol-Icon (wiederkehrend), Kalender-Icon (feste
+Fälligkeit) oder generisches Checklisten-Icon (ohne Termin) – überfällige
+Punkte bekommen das Badge zusätzlich rot eingefärbt. Erledigte Punkte
+zeigen ein grünes Haken-Icon. Dafür zwei neue Farbvarianten in `app.css`:
+`.icon-badge.gruen` / `.icon-badge.rot`. Finanzen-Ausgaben-Icon rückwirkend
+auf `.icon-badge.rot` umgestellt, damit es zur neuen Farbsprache passt.
+
+**Warum:** Fortsetzung des Redesigns aus dem vorigen Eintrag, zweites
+Modul nach Finanzen.
+
+**Stand danach:** Alle 45 Tests grün. Mit Beispieldaten als statische
+Vorschauseite per Playwright geprüft. Echter App-Durchlauf mit Live-Daten
+steht weiterhin aus (Sandbox-Einschränkung, s. o.).
+
+**Offene Punkte / Nächste Schritte:** Lager, Ernährung, Berichtsheft im
+selben Stil nachziehen.
+
+---
+
 ## 2026-09-17 – Visuelles Redesign gestartet: Finanzen als erstes Referenz-Modul
 
 **Was:** Erste Etappe des großen Redesigns (Icon-Karten-Optik aus Marks
