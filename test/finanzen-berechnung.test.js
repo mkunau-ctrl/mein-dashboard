@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kontostand, summeProMonat, summenProKategorie }
+import { kontostand, summeProMonat, summenProKategorie, erkenneAbos }
   from '../js/module/finanzen/berechnung.js';
 
 const expenses = [
@@ -30,4 +30,30 @@ test('summenProKategorie: absteigend sortiert, nur der Monat', () => {
     { kategorie: 'lebensmittel', summe: 65 },
     { kategorie: 'tanken', summe: 20 },
   ]);
+});
+
+test('erkenneAbos: erkennt monatlich wiederkehrende gleiche Notiz', () => {
+  const abo = [
+    { betrag: 15.99, kategorie: 'abo', notiz: 'Netflix', datum: '2026-07-15' },
+    { betrag: 15.99, kategorie: 'abo', notiz: 'Netflix', datum: '2026-08-14' },
+    { betrag: 15.99, kategorie: 'abo', notiz: 'Netflix', datum: '2026-09-15' },
+  ];
+  const ergebnis = erkenneAbos(abo);
+  assert.equal(ergebnis.length, 1);
+  assert.equal(ergebnis[0].haendler, 'Netflix');
+  assert.equal(ergebnis[0].betrag, 15.99);
+});
+
+test('erkenneAbos: ignoriert unregelmaessige Abstaende', () => {
+  const unregelmaessig = [
+    { betrag: 20, kategorie: 'sonstiges', notiz: 'Werkstatt', datum: '2026-01-05' },
+    { betrag: 20, kategorie: 'sonstiges', notiz: 'Werkstatt', datum: '2026-06-20' },
+  ];
+  assert.deepEqual(erkenneAbos(unregelmaessig), []);
+});
+
+test('erkenneAbos: ignoriert einmalige Ausgaben ohne Wiederholung', () => {
+  assert.deepEqual(erkenneAbos([
+    { betrag: 50, kategorie: 'lebensmittel', notiz: 'Rewe', datum: '2026-09-01' },
+  ]), []);
 });

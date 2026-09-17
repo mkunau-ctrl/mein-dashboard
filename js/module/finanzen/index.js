@@ -2,7 +2,7 @@ import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
 
-const TABS = [['ausgaben', 'Ausgaben'], ['kontostand', 'Kontostand'], ['monat', 'Monat']];
+const TABS = [['ausgaben', 'Ausgaben'], ['kontostand', 'Kontostand'], ['monat', 'Monat'], ['abos', 'Abos']];
 
 let zustand = null;
 let containerRef = null;
@@ -44,6 +44,7 @@ const LADER = {
   ausgaben: () => import('./ausgaben.js').then((m) => m.zeigeAusgaben),
   kontostand: () => import('./kontostand.js').then((m) => m.zeigeKontostand),
   monat: () => import('./monat.js').then((m) => m.zeigeMonat),
+  abos: () => import('./abos.js').then((m) => m.zeigeAbos),
 };
 
 async function zeigeAktuellenTab() {
