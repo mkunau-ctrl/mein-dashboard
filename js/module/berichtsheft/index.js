@@ -75,6 +75,7 @@ function beiHashwechsel() {
 registriere({
   id: 'berichtsheft',
   titel: 'Berichtsheft',
+  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/></svg>',
   renderKachel(el) {
     const n = eintraegeDieseWoche();
     el.innerHTML = `Berichtsheft<span class="kachel-zahl">${n}</span><small>diese Woche</small>`;

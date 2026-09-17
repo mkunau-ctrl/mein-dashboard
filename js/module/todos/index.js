@@ -81,6 +81,7 @@ function beiHashwechsel() {
 registriere({
   id: 'todos',
   titel: 'To-dos',
+  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h10M9 12h10M9 18h10"/><path d="m4 6 1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>',
   renderKachel(el) {
     const f = offenFortschritt();
     el.innerHTML = `To-dos<span class="kachel-zahl">${f.offen}</span>

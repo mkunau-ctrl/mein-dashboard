@@ -74,6 +74,7 @@ function beiHashwechsel() {
 registriere({
   id: 'finanzen',
   titel: 'Finanzen',
+  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg>',
   renderKachel(el) {
     const summe = heutigeSumme();
     el.innerHTML = `Finanzen<span class="kachel-zahl">${summe.toFixed(2)} €</span>

@@ -5,8 +5,10 @@ Import über `registriere({...})` aus `../registry.js`.
 
 Ein Modul-Objekt:
 - `id` (string, eindeutig, kleinbuchstaben, z. B. `"ernaehrung"`)
-- `titel` (string, Anzeigename der Kachel)
-- `renderKachel(kachelEl)` – optional: befüllt die Kachel mit dem Tagesstand
+- `titel` (string, Anzeigename in der Tab-Leiste unten)
+- `icon` (string, optional: Inline-SVG-Markup fürs Icon in der Tab-Leiste)
+- `renderKachel(kachelEl)` – optional, aktuell ungenutzt (Kachel-Raster ist seit
+  der Dunkel-Umstellung durch die feste Tab-Leiste unten ersetzt)
 - `init(containerEl, supabase)` – optional: rendert die Detailansicht des Moduls
 
 Aktivierung: Import-Zeile in `js/app.js` ergänzen (z. B.

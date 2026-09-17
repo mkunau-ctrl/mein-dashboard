@@ -1,18 +1,15 @@
 :root {
-  color-scheme: light dark;
-  --bg: #f4f5f7; --karte: #ffffff; --text: #1a1d21; --gedaempft: #5b6470;
-  --akzent: #2f6feb; --rand: #e2e5ea;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #0f1216; --karte: #171b21; --text: #e8eaed; --gedaempft: #9aa4b2;
-          --akzent: #4f8cff; --rand: #262b33; }
+  color-scheme: dark;
+  --bg: #000000; --karte: #121212; --karte-hoch: #1c1c1e; --text: #f2f2f2;
+  --gedaempft: #8e8e93; --akzent: #4f8cff; --rand: #262626;
 }
 :root { --hm-gruen: #3fae5a; --hm-gelb: #e0b73a; --hm-rot: #d1544a; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
        background: var(--bg); color: var(--text);
-       padding: max(16px, env(safe-area-inset-top)) 16px 32px; }
+       padding: max(16px, env(safe-area-inset-top)) 16px
+                calc(78px + env(safe-area-inset-bottom)); }
 #app { max-width: 720px; margin: 0 auto; }
 h1 { font-size: 1.4rem; }
 #login-ansicht { margin-top: 15vh; text-align: center; }
@@ -25,10 +22,16 @@ button:disabled { opacity: .6; cursor: default; }
 #dashboard-ansicht header { display: flex; justify-content: space-between; align-items: center; }
 #dashboard-ansicht header button { background: transparent; color: var(--gedaempft);
        border: 1px solid var(--rand); }
-#kachel-raster { display: grid; gap: 14px; margin-top: 20px;
-       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-#dashboard-leer-hinweis { color: var(--gedaempft); margin-top: 24px; }
-#kachel-raster:not(:empty) + #dashboard-leer-hinweis { display: none; }
+
+/* Tab-Leiste unten */
+#tab-leiste-unten { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  display: flex; background: var(--karte); border-top: 1px solid var(--rand);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
+#tab-leiste-unten button { flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 3px; background: transparent; border: none;
+  color: var(--gedaempft); padding: 6px 2px; border-radius: 10px; font-size: .68rem; }
+#tab-leiste-unten button svg { width: 24px; height: 24px; }
+#tab-leiste-unten button.aktiv { color: var(--akzent); }
 
 /* Modul-Detail */
 #modul-detail { margin-top: 8px; }
