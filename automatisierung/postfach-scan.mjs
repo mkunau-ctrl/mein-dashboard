@@ -25,11 +25,11 @@ const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KE
 });
 
 function klassifiziereMail(text) {
-  const rohtext = execFileSync('claude', ['-p', baustePrompt()], {
+  // claude.cmd (Windows npm shim) statt 'claude' - no shell needed, direkt aufruf.
+  const rohtext = execFileSync('claude.cmd', ['-p', baustePrompt()], {
     input: text.slice(0, 8000),
     encoding: 'utf-8',
     maxBuffer: 10 * 1024 * 1024,
-    shell: true,
   });
   return parseKlassifikation(rohtext);
 }
