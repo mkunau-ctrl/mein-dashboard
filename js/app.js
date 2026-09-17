@@ -15,6 +15,7 @@ const loginForm = document.getElementById('login-form');
 const emailFeld = document.getElementById('email');
 const loginHinweis = document.getElementById('login-hinweis');
 const modulTitel = document.getElementById('modul-titel');
+const passkeyHinweis = document.getElementById('passkey-hinweis');
 const modulDetail = document.getElementById('modul-detail');
 const tabLeiste = document.getElementById('tab-leiste-unten');
 
@@ -75,11 +76,11 @@ document.getElementById('passkey-login').addEventListener('click', async () => {
 
 document.getElementById('passkey-registrieren').addEventListener('click', async (e) => {
   const knopf = e.currentTarget;
-  const text = knopf.textContent;
   knopf.disabled = true;
+  passkeyHinweis.textContent = 'Passkey wird angelegt …';
   const { ok, fehler } = await registrierePasskey();
-  knopf.textContent = ok ? 'Passkey gespeichert' : `Fehler: ${fehler}`;
-  setTimeout(() => { knopf.textContent = text; knopf.disabled = false; }, 2500);
+  passkeyHinweis.textContent = ok ? 'Passkey gespeichert.' : `Fehler: ${fehler}`;
+  knopf.disabled = false;
 });
 
 document.getElementById('logout').addEventListener('click', async () => {
