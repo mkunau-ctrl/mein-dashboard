@@ -18,10 +18,13 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 
 ## Aufbau (Stand Etappe 5 – alle 5 Module der Roadmap, in `main` gemergt, live)
 
-- `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit Kachel-Raster.
-- `app.css` – gemeinsames Design.
-- `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry und Detail-Routing
-  (`#/modul/unterseite`) mit dem DOM.
+- `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit fester
+  Tab-Leiste unten (ein Icon je Modul, app-klassisch).
+- `app.css` – gemeinsames Design, festes Dunkel-Theme (tiefes Schwarz, seit
+  2026-09-17, siehe Log).
+- `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry, Tab-Leiste unten
+  und Detail-Routing (`#/modul/unterseite`) mit dem DOM. Ohne Hash öffnet das
+  erste registrierte Modul.
 - `js/router.js` – `parseHash('#/modul/unterseite')` → `{ modul, unterseite }`.
 - `js/view.js` – `entscheideAnsicht(session)` → `'login'` | `'dashboard'`.
 - `js/auth.js` – Magic-Link-Wrapper: `sendeMagicLink`, `holeSession`, `meldeAb`, `beiAuthWechsel`.

@@ -13,9 +13,9 @@ const dashboardAnsicht = document.getElementById('dashboard-ansicht');
 const loginForm = document.getElementById('login-form');
 const emailFeld = document.getElementById('email');
 const loginHinweis = document.getElementById('login-hinweis');
-const kachelRaster = document.getElementById('kachel-raster');
-const leerHinweis = document.getElementById('dashboard-leer-hinweis');
+const modulTitel = document.getElementById('modul-titel');
 const modulDetail = document.getElementById('modul-detail');
+const tabLeiste = document.getElementById('tab-leiste-unten');
 
 let aktivesModulId = null;
 
@@ -24,30 +24,20 @@ function zeige(ansicht) {
   dashboardAnsicht.hidden = ansicht !== 'dashboard';
 }
 
-function rendereKacheln() {
-  kachelRaster.innerHTML = '';
+function rendereTabLeiste(aktivId) {
+  tabLeiste.innerHTML = '';
   for (const modul of alleModule()) {
-    const kachel = document.createElement('button');
-    kachel.className = 'kachel';
-    kachel.textContent = modul.titel;
-    kachel.addEventListener('click', () => { location.hash = `#/${modul.id}`; });
-    if (typeof modul.renderKachel === 'function') modul.renderKachel(kachel);
-    kachelRaster.appendChild(kachel);
+    const tab = document.createElement('button');
+    tab.className = modul.id === aktivId ? 'aktiv' : '';
+    tab.innerHTML = `${modul.icon || ''}<span>${modul.titel}</span>`;
+    tab.addEventListener('click', () => { location.hash = `#/${modul.id}`; });
+    tabLeiste.appendChild(tab);
   }
 }
 
-function zeigeRaster() {
-  aktivesModulId = null;
-  modulDetail.hidden = true;
-  modulDetail.innerHTML = '';
-  kachelRaster.hidden = false;
-  leerHinweis.hidden = kachelRaster.children.length > 0;
-}
-
 async function oeffneModul(modul) {
-  kachelRaster.hidden = true;
-  leerHinweis.hidden = true;
-  modulDetail.hidden = false;
+  modulTitel.textContent = modul.titel;
+  rendereTabLeiste(modul.id);
   if (aktivesModulId !== modul.id) {
     aktivesModulId = modul.id;
     modulDetail.innerHTML = '';
@@ -59,11 +49,9 @@ async function route() {
   const session = await holeSession();
   zeige(entscheideAnsicht(session));
   if (!session) return;
-  rendereKacheln();
   const { modul } = parseHash(location.hash);
-  const gewaehlt = modul ? holeModul(modul) : null;
+  const gewaehlt = (modul ? holeModul(modul) : null) || alleModule()[0];
   if (gewaehlt) await oeffneModul(gewaehlt);
-  else zeigeRaster();
 }
 
 loginForm.addEventListener('submit', async (e) => {

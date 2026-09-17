@@ -90,6 +90,7 @@ function beiHashwechsel() {
 registriere({
   id: 'ernaehrung',
   titel: 'Ernährung',
+  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8c-3 0-5 2.2-5 5.5S9 20 12 20s5-2.7 5-6.5S15 8 12 8Z"/><path d="M12 8c0-2 1-3.5 3-4"/></svg>',
   renderKachel(el) {
     const f = heuteFortschritt();
     el.innerHTML = `Ernährung<span class="kachel-zahl">${f.erledigt}/${f.faellig}</span>`;

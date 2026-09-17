@@ -4,6 +4,44 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Dunkles Redesign: tiefes Schwarz + feste Tab-Leiste unten
+
+**Was:** Visuelle Überarbeitung, quer zu allen Modulen. Das Farbschema ist
+jetzt fest ein sehr dunkles Theme (`--bg: #000000`, Karten `#121212`), nicht
+mehr abhängig von `prefers-color-scheme`. Die bisherige Start-Kachel-Raster-
+Ansicht ist ersetzt durch eine feste Tab-Leiste unten am Bildschirmrand
+("app-klassisch", iPhone-Home-Indicator-sicher via `env(safe-area-inset-
+bottom)`) mit einem Icon je Modul (Ernährung, To-dos, Finanzen, Lager,
+Berichtsheft). Ein Klick wechselt direkt in den jeweiligen Bereich, das
+aktive Icon ist in der Akzentfarbe hervorgehoben. Ohne Hash öffnet die App
+jetzt direkt das erste Modul statt eines leeren Rasters.
+
+**Warum:** Marks Wunsch nach einem klassischen App-Layout (Referenz:
+Screenshot einer Fintech-Dashboard-Mockup-Werbung – nur als Stilvorlage für
+Dunkel-Theme + Bottom-Tab-Bar übernommen, keine Marken-/Logo-Übernahme).
+
+**Entscheidungen:**
+- Modul-Schnittstelle um optionales Feld `icon` (Inline-SVG-String) ergänzt,
+  siehe `js/module/README.md`. Alle fünf Module liefern jetzt ein Icon.
+- `renderKachel` bleibt in den Modulen bestehen (Interface weiterhin
+  "optional"), wird aber aktuell nirgends mehr aufgerufen – die
+  Tagesstand-Kurzinfo (z. B. "3/5 erledigt", "2 überfällig"), die früher auf
+  der Start-Kachel stand, ist damit vorerst nicht mehr sichtbar. Bewusst
+  zurückgestellt statt in die Tab-Leiste gequetscht (zu wenig Platz für
+  Badges in dieser Runde) – falls gewünscht, später als kleines Badge auf
+  dem Tab-Icon nachrüsten.
+- `manifest.webmanifest` (`background_color`/`theme_color`) und
+  `<meta name="theme-color">` auf `#000000` gezogen, damit iOS-Statusleiste/
+  Safe-Areas beim "Zum Home-Bildschirm" zum neuen Theme passen.
+
+**Stand danach:** Alle 45 Tests weiterhin grün (Logik unverändert, nur UI).
+Visuell per Playwright-Screenshot einer statischen Vorschauseite geprüft
+(iPhone-Breite 390px). Noch **nicht** live auf einem echten Gerät getestet.
+Offene PNG-Icons (192/512, `apple-touch-icon`) weiterhin offen aus Etappe 0
+– jetzt zusätzlich relevant, weil sie zum neuen Schwarz-Theme passen sollten.
+
+---
+
 ## 2026-09-16 – Vorbereitung Beleg-Tracking: `quelle`-Feld + Architektur-Vorschlag
 
 **Was:** Kleine Vorbereitung fürs automatische Beleg-Tracking (Wunsch s.
