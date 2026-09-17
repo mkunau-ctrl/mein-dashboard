@@ -25,11 +25,18 @@ const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KE
 });
 
 function klassifiziereMail(text) {
-  // claude.cmd (Windows npm shim) statt 'claude' - no shell needed, direkt aufruf.
-  const rohtext = execFileSync('claude.cmd', ['-p', baustePrompt()], {
+  // shell:true ist hier notwendig UND sicher: Node blockt seit CVE-2024-27980
+  // den direkten Start von .cmd/.bat-Dateien (auch mit explizitem 'claude.cmd')
+  // ohne shell-Option - das schlaegt unter Windows mit EINVAL fehl. baustePrompt()
+  // ist eine feste Zeichenkette ohne jede Interpolation von E-Mail-Inhalten; die
+  // einzigen von aussen kommenden Daten (die E-Mail) laufen ausschliesslich ueber
+  // 'input' (stdin), das von shell:true nicht geparst wird - daher kein
+  // Command-Injection-Risiko trotz shell:true.
+  const rohtext = execFileSync('claude', ['-p', baustePrompt()], {
     input: text.slice(0, 8000),
     encoding: 'utf-8',
     maxBuffer: 10 * 1024 * 1024,
+    shell: true,
   });
   return parseKlassifikation(rohtext);
 }
