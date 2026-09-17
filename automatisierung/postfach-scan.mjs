@@ -29,6 +29,7 @@ function klassifiziereMail(text) {
     input: text.slice(0, 8000),
     encoding: 'utf-8',
     maxBuffer: 10 * 1024 * 1024,
+    shell: true,
   });
   return parseKlassifikation(rohtext);
 }
