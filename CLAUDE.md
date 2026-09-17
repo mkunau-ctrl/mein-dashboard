@@ -23,7 +23,10 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 - `app.css` – gemeinsames Design. Dunkel-Theme = echtes Schwarz (`#000`),
   Hell-Theme = echtes Weiß (`#fff`); Default folgt Systemeinstellung,
   überschreibbar über `js/theme.js` (`data-theme`-Attribut auf `<html>`,
-  Wahl landet in `localStorage`).
+  Wahl landet in `localStorage`). Icon-Karten-Designsprache (seit
+  2026-09-17, alle 5 Module): `.icon-badge` (rund, Varianten `.gruen`/
+  `.rot`/`.gelb`) je Listenzeile, `.betrag-minus`/`.betrag-plus` für
+  farbige Beträge, `.stat-karte.gross` für große Übersichtskarten.
 - `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry, Tab-Leiste unten
   und Detail-Routing (`#/modul/unterseite`) mit dem DOM. Ohne Hash öffnet das
   erste registrierte Modul.
