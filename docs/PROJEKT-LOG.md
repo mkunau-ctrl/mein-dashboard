@@ -4,6 +4,30 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Redesign Teil 5 (letzter Teil): Berichtsheft
+
+**Was:** Einträge-Liste bekommt ein Icon-Badge je Zeile passend zur Art
+(Koffer für Betrieb, Doktorhut für Berufsschule, Kalender für Sonstiges).
+Drucken-Tab bewusst unverändert gelassen – reines Print-Layout mit
+eigenen Tabellen-Styles, kein Ort für Icon-Badges.
+
+**Warum:** Fortsetzung und Abschluss des Redesigns, fünftes und letztes
+Modul.
+
+**Stand danach:** Alle 45 Tests grün. Statische Vorschau mit
+Beispieldaten per Playwright geprüft. Damit ist das visuelle Redesign
+(Icon-Badges, farbige Beträge, große Stat-Karten) über alle fünf Module
+durchgezogen: Finanzen, To-dos, Lager, Ernährung, Berichtsheft.
+
+**Offene Punkte / Nächste Schritte:**
+- Echter Test auf einem Gerät mit Live-Daten steht für das gesamte
+  Redesign noch aus (Sandbox konnte wegen CDN-Proxy-Problem nie den
+  vollen App-Durchlauf mit Supabase-Session testen, s. frühere Einträge).
+- Passkey-Einrichtung im Supabase-Dashboard (falls noch nicht gemacht).
+- PNG-Icons für die PWA fehlen weiterhin (offener Punkt seit Etappe 0).
+
+---
+
 ## 2026-09-17 – Redesign Teil 4: Ernährung
 
 **Was:** Heute-Tab: Icon-Badge je Punkt (Apfel für Ernährung, Kapsel für
