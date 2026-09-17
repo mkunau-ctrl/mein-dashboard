@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import 'dotenv/config';
+import { config } from 'dotenv';
 import { ImapFlow } from 'imapflow';
 import { simpleParser } from 'mailparser';
 import { execFileSync } from 'node:child_process';
@@ -11,6 +11,9 @@ import { baustePrompt, parseKlassifikation } from './klassifizieren.js';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 const ZUSTAND_PFAD = join(HIER, 'letzter-lauf.json');
+
+// Lade .env aus dem automatisierung/-Verzeichnis, unabhaengig vom Arbeitsverzeichnis
+config({ path: join(HIER, '.env') });
 
 const SUPABASE_URL = 'https://vogztxoaqbnuciboughd.supabase.co';
 // Marks Auth-UID, siehe CLAUDE.md. Service-Role-Key umgeht RLS, deshalb
