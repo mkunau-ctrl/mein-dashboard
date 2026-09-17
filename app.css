@@ -98,6 +98,7 @@ button:disabled { opacity: .6; cursor: default; }
 .icon-badge svg { width: 20px; height: 20px; }
 .icon-badge.gruen { background: rgba(63, 174, 90, .15); color: var(--hm-gruen); }
 .icon-badge.rot { background: rgba(209, 84, 74, .15); color: var(--hm-rot); }
+.icon-badge.gelb { background: rgba(224, 183, 58, .15); color: var(--hm-gelb); }
 .betrag-minus { color: var(--hm-rot); }
 .betrag-plus { color: var(--hm-gruen); }
 .punkt-aktionen { display: flex; gap: 4px; }
