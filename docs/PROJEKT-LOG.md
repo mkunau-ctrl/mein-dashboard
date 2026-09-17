@@ -4,6 +4,80 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Etappe 6 (E-Mail-Automatisierung) gebaut
+
+**Was:** Ein täglicher lokaler Scan von Marks GMX-Postfach erkennt jetzt
+automatisch Belege, Paket-/Amazon-Sendungen und Termine/Fristen und trägt sie
+in Mein Dashboard ein. Dazu gehören: das Automatisierungs-Skript
+(`automatisierung/postfach-scan.mjs`), zwei neue Supabase-Tabellen
+(`sendungen`, `termine`), ein neues Browser-Modul "Sendungen" (Tabs
+Pakete/Termine), eine Abo-Erkennung im Finanzen-Modul (Tab "Abos", rein aus
+bestehenden Ausgaben berechnet) und ein Windows-Scheduled-Task, der das Skript
+täglich um 7 Uhr startet.
+
+**Warum:** Umsetzung von Etappe 6 aus der gemeinsamen Spec vom 2026-09-16
+(`docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`).
+
+**Ergebnis des DHL/Hermes-Spikes (Task 1):** DHL/Hermes-Recherche: DHL-API
+verlangt für den produktiven/dauerhaften Zugang faktisch ein Geschäftsprofil
+(freie Stufe nur 250 Calls/Tag, Dev-Zweck), Hermes bietet keine öffentliche
+Tracking-API für Privatkunden – daher kein einfacher kostenloser Live-Status
+verfügbar. Fallback (Trackingnummer + Link zur Trackingseite) wird verwendet;
+Mark aktualisiert den Sendungsstatus bei Bedarf manuell per Klick auf den
+Status-Badge in der App.
+
+**Entscheidungen:**
+- **GMX braucht ein Anwendungsspezifisches Passwort für IMAP**, unabhängig
+  vom 2FA-Status des Accounts – das normale Login-Passwort wird von GMX für
+  Drittanbieter-IMAP-Zugriff abgelehnt (auch wenn der normale Web-Login damit
+  funktioniert). Erstellt unter Login & Sicherheit → Anwendungsspezifische
+  Passwörter verwalten. Ein alter, nie benutzter Eintrag "Mein Dashboard
+  IMAP" (aus einem früheren Versuch) blieb ungenutzt stehen und kann bei
+  Gelegenheit gelöscht werden.
+- **`claude -p` braucht `--system-prompt`, `--restricted` und
+  `--strict-mcp-config`**, sonst antwortet die Klassifikation konversationell
+  (mit Rückfragen, im Kontext des Dashboard-Projekts) statt mit reinem JSON,
+  und hätte theoretisch Zugriff auf alle MCP-Tools dieses Accounts (Gmail,
+  GitHub, Vercel, …) – ein echtes Risiko bei Prompt-Injection aus
+  E-Mail-Inhalten. `--restricted` allein deckt nur eingebaute
+  Ausführungs-Tools ab, nicht MCP-Server-Tools.
+- **`claude` wird über `cmd.exe /c` aufgerufen, nicht direkt und nicht mit
+  `shell:true`.** Unter Windows ist `claude` nur als `.cmd`-Datei installiert;
+  Node blockt seit einem Sicherheits-Patch (CVE-2024-27980) den direkten
+  Start solcher Dateien ohne Shell, aber `shell:true` hängt Argumente nur
+  unescaped aneinander (Node-Warnung DEP0190) statt sie zu quoten. Der
+  Umweg über das echte `cmd.exe`-Programm lässt Node seine normale,
+  korrekte Escaping-Logik anwenden.
+- **Anleitung + E-Mail-Text laufen komplett über stdin, nicht als
+  CLI-Argument.** Mehrzeilige Kommandozeilen-Argumente werden von cmd.exe
+  falsch zerlegt; `-p` bekommt nur einen kurzen einzeiligen Auslöser-Satz.
+- Das bestehende Diktat-Muster ("Mark erzählt Claude im Chat, Claude trägt in
+  Supabase ein") gilt ab jetzt auch für die Module To-dos und Lager, nicht
+  nur für Berichtsheft und Finanzen-Belege.
+
+**Stand danach:** `npm test` 60/60 grün. Live gegen das echte GMX-Postfach
+getestet: 5 Sendungen (DHL/DPD, korrekt mit Trackingnummern) + 1 Termin
+korrekt erkannt und in Supabase geschrieben. Scheduled Task
+`MeinDashboard-PostfachScan` läuft (`LastTaskResult = 0`), zeigt aber noch auf
+den Worktree-Ordner der Bau-Session – muss beim Zusammenführen nach `main`
+auf den echten Projektordner umgezogen werden (siehe unten).
+
+**Offene Punkte / Nächste Schritte:**
+- `automatisierung/.env` (GMX-App-Passwort + Supabase-Service-Role-Key) liegt
+  nur lokal im Bau-Worktree, nicht in git – muss nach dem Merge einmalig nach
+  `C:\Users\PC\Projekte\mein-dashboard\automatisierung\.env` kopiert werden,
+  danach den Scheduled Task auf diesen Pfad umregistrieren.
+- Bekanntes Restrisiko (bewusst nicht behoben, siehe Spec): IMAP-`SINCE`
+  filtert nur nach Tag, nicht nach Uhrzeit. Mehrfache Läufe am selben Tag
+  (z. B. manueller Test + Scheduled Task) verarbeiten dieselben Mails erneut;
+  es gibt keinen Dedup-Key in `expenses`/`sendungen`/`termine`. Bei Bedarf
+  gelegentlich auf doppelte Zeilen prüfen.
+- Danach: Etappe 7 (Passkey-Login) und Etappe 8 (Redesign nach Marks eigenem
+  Prototyp) – siehe die gemeinsame Spec
+  `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`.
+
+---
+
 ## 2026-09-16 – Vorbereitung Beleg-Tracking: `quelle`-Feld + Architektur-Vorschlag
 
 **Was:** Kleine Vorbereitung fürs automatische Beleg-Tracking (Wunsch s.

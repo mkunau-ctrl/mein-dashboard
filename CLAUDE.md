@@ -16,7 +16,7 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
-## Aufbau (Stand Etappe 5 – alle 5 Module der Roadmap, in `main` gemergt, live)
+## Aufbau (Stand Etappe 6 – alle 5 Module der Roadmap + Sendungen-Modul + E-Mail-Automatisierung)
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit Kachel-Raster.
 - `app.css` – gemeinsames Design.
@@ -42,10 +42,10 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   - `offen.js`, `erledigt.js` – die zwei Tabs.
   Details: `docs/superpowers/specs/2026-09-16-etappe-2-todos-design.md`.
 - `js/module/finanzen/` – drittes Fachmodul (Ausgaben/Kontostand):
-  - `index.js` – Registrierung, Tabs „Ausgaben"/„Kontostand"/„Monat", Kachel-Text.
+  - `index.js` – Registrierung, Tabs „Ausgaben"/„Kontostand"/„Monat"/„Abos", Kachel-Text.
   - `daten.js` – Supabase-Zugriff auf `expenses` + `finance_settings`.
-  - `berechnung.js` – `kontostand`, `summeProMonat`, `summenProKategorie`.
-  - `ausgaben.js`, `kontostand.js`, `monat.js` – die drei Tabs.
+  - `berechnung.js` – `kontostand`, `summeProMonat`, `summenProKategorie`, `erkenneAbos`.
+  - `ausgaben.js`, `kontostand.js`, `monat.js`, `abos.js` – die vier Tabs.
   Details: `docs/superpowers/specs/2026-09-16-etappe-3-finanzen-design.md`.
 - `js/module/lager/` – viertes Fachmodul (Teile/Ersatzteile):
   - `index.js` – Registrierung, Tabs „Teile"/„Bestellen", Kachel-Text.
@@ -63,11 +63,30 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   **Diktat-Weg:** Erzählt Mark im Chat einen oder mehrere Tage, fehlende
   Pflichtfelder (Datum, Stunden, Tätigkeiten) aktiv erfragen, dann direkt per
   Supabase-MCP in `berichtsheft_eintraege` schreiben (`user_id` s. u.).
+- `js/module/sendungen/` – sechstes Fachmodul (Pakete/Termine, aus der
+  E-Mail-Automatisierung befüllt, aber auch manuell nutzbar):
+  - `index.js` – Registrierung, Tabs „Pakete"/„Termine", Kachel-Text.
+  - `daten.js` – Supabase-Zugriff auf `sendungen` + `termine`.
+  - `berechnung.js` – `sortiereSendungen`, `offeneSendungen`, `sortiereTermine`, `naechsterSendungStatus`.
+  - `pakete.js`, `termine.js` – die zwei Tabs.
+  Details: `docs/superpowers/plans/2026-09-16-etappe-6-email-automatisierung.md`.
 - `manifest.webmanifest`, `icon.svg` – PWA. **Echte PNG-Icons (192/512) und
   `apple-touch-icon` fehlen weiterhin** (offener Punkt seit Etappe 0).
+- `automatisierung/` – **lokales** Node-Skript, kein Teil der Browser-App:
+  - `postfach-scan.mjs` – täglicher Scan von Marks GMX-Postfach per IMAP,
+    Klassifikation jeder Mail per `claude -p` (Details/Warum siehe
+    `docs/PROJEKT-LOG.md`, Eintrag 2026-09-17), schreibt Belege/Sendungen/
+    Termine nach Supabase.
+  - `klassifizieren.js` – `baustePrompt`, `parseKlassifikation` (reine Logik, getestet).
+  - `letzter-lauf.js` – `leseLetztenLauf`, `schreibeLetztenLauf` (reine Logik, getestet).
+  - `.env` (nicht im Repo, siehe Konventionen unten) – GMX- und Supabase-Zugangsdaten.
+  - `letzter-lauf.json` (nicht im Repo) – Zeitstempel des letzten erfolgreichen Laufs.
+  Läuft per Windows-Scheduled-Task täglich 7 Uhr, siehe unten.
 - `test/` – `node --test` Unit-Tests: `router`, `view`, `registry`,
   `ernaehrung-zeitplan`, `ernaehrung-berechnung`, `todos-planung`,
-  `finanzen-berechnung`, `lager-berechnung`, `berichtsheft-berechnung` (45 grün).
+  `finanzen-berechnung`, `lager-berechnung`, `berichtsheft-berechnung`,
+  `sendungen-berechnung`, `automatisierung-klassifizieren`,
+  `automatisierung-letzter-lauf` (60 grün).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
 
@@ -77,10 +96,12 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 45 grün.
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 60 grün.
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.
+- **Postfach-Scan manuell testen:** `node automatisierung/postfach-scan.mjs`
+  im Repo-Wurzel (braucht `automatisierung/.env`, siehe Konventionen unten).
 
 ## Arbeitsweise
 
@@ -93,6 +114,15 @@ auf Deutsch. Datenschutz beachten.
 - **Keine Geheimnisse ins Repo.** Supabase-**Anon**-Key ist unkritisch und darf
   im Quelltext stehen (Schutz kommt über Row-Level-Security + Magic-Link-Login).
   Service-Role-Key, Zugangsdaten o. Ä. niemals committen.
+- **`automatisierung/.env`** enthält GMX-App-Passwort + Supabase-
+  Service-Role-Key, liegt nur lokal (per `.gitignore` ausgeschlossen), niemals
+  committen oder in den Chat einfügen. Vorlage: `automatisierung/.env.example`.
+  GMX braucht dafür ein **Anwendungsspezifisches Passwort** (Login &
+  Sicherheit → Anwendungsspezifische Passwörter verwalten) – das normale
+  GMX-Passwort funktioniert für IMAP nicht.
+- **Scheduled Task `MeinDashboard-PostfachScan`** startet
+  `automatisierung/postfach-scan.mjs` täglich 7 Uhr. Entfernen:
+  `Unregister-ScheduledTask -TaskName "MeinDashboard-PostfachScan" -Confirm:$false`.
 - Alle Supabase-Tabellen haben `user_id` mit RLS `user_id = auth.uid()`.
 - **Claude schreibt Daten:** Beim Insert über Supabase-MCP die `user_id` explizit
   auf Marks Auth-ID setzen: `USER_ID = df0b24a6-6a74-4830-995c-84015161dcc3`.
@@ -110,6 +140,16 @@ auf Deutsch. Datenschutz beachten.
   `berichtsheft_eintraege` schreiben (ein Eintrag pro Tag, `unique
   (user_id, datum)` – bei erneutem Diktat für denselben Tag überschreibt
   das den alten Eintrag, nicht duplizieren).
+- **To-dos/Lager – auch per Chat diktierbar:** Wie bei Berichtsheft/Finanzen
+  kann Mark auch Aufgaben (`todos`) oder Lagerbestände (`parts`) einfach im
+  Chat erzählen; Claude fragt fehlende Pflichtfelder nach und trägt direkt
+  per Supabase-MCP ein, statt dass Mark es selbst in der App eingeben muss.
+- **E-Mail-Automatisierung – Duplikat-Restrisiko:** IMAP-`SINCE` filtert nur
+  nach Kalendertag, nicht nach Uhrzeit. Läuft `postfach-scan.mjs` mehrmals am
+  selben Tag (z. B. manueller Test + Scheduled Task), werden dieselben Mails
+  erneut verarbeitet – es gibt keinen Dedup-Key in `expenses`/`sendungen`/
+  `termine`. Bewusst nicht behoben (siehe Spec), bei Bedarf Duplikate manuell
+  in Supabase löschen.
 
 ### Supabase-Projekt
 
@@ -121,3 +161,7 @@ auf Deutsch. Datenschutz beachten.
   `http://localhost:8000/**` und `https://mkunau-ctrl.github.io/mein-dashboard/**`.
 - `USER_ID` (Marks Auth-UID) = `df0b24a6-6a74-4830-995c-84015161dcc3`
   (erster Login am 2026-09-09).
+- Tabellen (Stand Etappe 6): `checklist_items`, `daily_log`, `weight_log`,
+  `settings` (Ernährung), `todos`, `todo_vorlagen`, `expenses`,
+  `finance_settings`, `parts`, `berichtsheft_eintraege`,
+  `berichtsheft_settings`, `sendungen`, `termine`.
