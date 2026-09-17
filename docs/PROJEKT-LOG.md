@@ -4,6 +4,23 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Redesign Teil 3: Lager
+
+**Was:** Warenwert als große Stat-Karte mit Box-Icon. Teile-Liste und
+Bestellen-Liste: Icon-Badge je Zeile, farblich passend zum Status
+(rot=fehlt, gelb=bestellt, grün=da) – neue Variante `.icon-badge.gelb`
+in `app.css`.
+
+**Warum:** Fortsetzung des Redesigns, drittes Modul.
+
+**Stand danach:** Alle 45 Tests grün. Statische Vorschau mit
+Beispieldaten per Playwright geprüft.
+
+**Offene Punkte / Nächste Schritte:** Ernährung, Berichtsheft im selben
+Stil nachziehen.
+
+---
+
 ## 2026-09-17 – Redesign Teil 2: To-dos + Icon-Badge-Farbvarianten
 
 **Was:** To-dos im selben Icon-Badge-Stil wie Finanzen: offene Punkte
