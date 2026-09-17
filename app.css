@@ -1,7 +1,19 @@
 :root {
   color-scheme: dark;
-  --bg: #000000; --karte: #121212; --karte-hoch: #1c1c1e; --text: #f2f2f2;
+  --bg: #000000; --karte: #121212; --text: #f2f2f2;
   --gedaempft: #8e8e93; --akzent: #4f8cff; --rand: #262626;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #ffffff; --karte: #f5f5f6; --text: #0a0a0a;
+    --gedaempft: #6b7280; --akzent: #2f6feb; --rand: #e2e4e8;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #ffffff; --karte: #f5f5f6; --text: #0a0a0a;
+  --gedaempft: #6b7280; --akzent: #2f6feb; --rand: #e2e4e8;
 }
 :root { --hm-gruen: #3fae5a; --hm-gelb: #e0b73a; --hm-rot: #d1544a; }
 * { box-sizing: border-box; }
@@ -19,6 +31,11 @@ input { background: var(--karte); color: var(--text); }
 button { background: var(--akzent); color: #fff; border: none; cursor: pointer; }
 button:disabled { opacity: .6; cursor: default; }
 #login-hinweis { min-height: 1.5em; color: var(--gedaempft); }
+.login-kopf { display: flex; justify-content: flex-end; max-width: 320px; margin: 0 auto; }
+.theme-toggle { width: 40px; height: 40px; padding: 0; border-radius: 999px;
+       background: transparent; color: var(--text); border: 1px solid var(--rand);
+       display: grid; place-items: center; }
+.theme-toggle svg { width: 20px; height: 20px; }
 .trenner { color: var(--gedaempft); text-align: center; margin: 4px auto; max-width: 320px; }
 #passkey-login { display: block; margin: 0 auto; max-width: 320px; width: 100%;
        background: transparent; color: var(--text); border: 1px solid var(--rand); }
