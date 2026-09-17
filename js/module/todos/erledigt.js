@@ -22,7 +22,7 @@ export async function zeigeErledigt(container, zustand) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
     zeile.innerHTML = `
-      <div class="icon-badge gruen">${ERLEDIGT_ICON}</div>
+      <div class="icon-badge">${ERLEDIGT_ICON}</div>
       <div class="punkt-info">
         <span>${esc(t.text)}</span>
         <small>erledigt am ${t.erledigt_am.slice(0, 10)}</small>

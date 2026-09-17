@@ -20,13 +20,17 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit fester
   Tab-Leiste unten (ein Icon je Modul, app-klassisch).
-- `app.css` – gemeinsames Design. Dunkel-Theme = echtes Schwarz (`#000`),
-  Hell-Theme = echtes Weiß (`#fff`); Default folgt Systemeinstellung,
+- `app.css` – gemeinsames Design, Werte 1:1 aus Marks Referenz-Screenshot
+  gemessen (Python/PIL-Pixelanalyse, nicht geschätzt). Hell:
+  `--bg:#E8EAED`, `--karte:#F2F4F7`, `--text:#000`. Dunkel: `--bg:#090F14`,
+  `--karte:#1B2025`, `--text:#fff`. Default folgt Systemeinstellung,
   überschreibbar über `js/theme.js` (`data-theme`-Attribut auf `<html>`,
-  Wahl landet in `localStorage`). Icon-Karten-Designsprache (seit
-  2026-09-17, alle 5 Module): `.icon-badge` (rund, Varianten `.gruen`/
-  `.rot`/`.gelb`) je Listenzeile, `.betrag-minus`/`.betrag-plus` für
-  farbige Beträge, `.stat-karte.gross` für große Übersichtskarten.
+  Wahl landet in `localStorage`). Icon-Karten-Designsprache (alle 5
+  Module): `.icon-badge` (rund, **immer neutral**, `--icon-bg`/
+  `--icon-farbe` – keine Farb-Varianten mehr, nur Text/Zahlen werden
+  farbig über `.betrag-minus`/`.betrag-plus`/`.badge-ueberfaellig`),
+  `.stat-karte.gross` für große Übersichtskarten, `.tab-leiste` als
+  Pillen-Segmented-Control (aktiv = dunkle Pille `--pille-bg`).
 - `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry, Tab-Leiste unten
   und Detail-Routing (`#/modul/unterseite`) mit dem DOM. Ohne Hash öffnet das
   erste registrierte Modul.
