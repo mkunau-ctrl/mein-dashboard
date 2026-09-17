@@ -24,6 +24,21 @@ gebaut und dokumentiert:
   Referenz-Mockup (Banking-App-Look), inkl. neuer "Projekte"-Kachel mit
   Überblick über Marks andere GitHub-Projekte.
 
+  **Nachtrag 2026-09-17:** Mark hat ein eigenes, lauffähiges HTML/CSS/JS-
+  Prototyp gebaut (Quelle bei ihm: `Downloads/finanz-app.html`), gesichert
+  unter `docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`.
+  Das ersetzt den früheren Screenshot als konkrete Design-Vorlage für
+  Etappe 8: dunkel per Default (`localStorage`-Theme-Schalter), Bottom-Nav
+  mit **Home/Finanzen/Ausbildung/Suche/Profil**, Finanzen mit Tabs
+  Übersicht/Transaktionen/Analyse, eigene Sendungen- und Rechnungen-Screens,
+  Profil+Einstellungen getrennt. **Offen für die Etappe-8-Planung:** der
+  Prototyp führt eine neue "Rechnungen"-Ansicht (offen/bezahlt/überfällig)
+  ein, die im bisherigen Datenmodell (Abschnitt 3.2/3.3) nicht vorkommt –
+  muss dort eingeordnet werden (vermutlich verwandt mit der Abo-Erkennung,
+  aber nicht identisch). Auch fehlen im Prototyp eigene Screens für
+  Lager/To-dos – zu klären, ob die im "Ausbildung"-Tab, einem weiteren
+  Bottom-Nav-Punkt oder nur über "Suche" erreichbar sein sollen.
+
 Zusätzlich eine kleine Doku-Ergänzung ohne eigenen Bau-Aufwand: das
 bestehende Diktat-Muster ("Mark erzählt Claude im Chat, Claude trägt in
 Supabase ein" – bisher nur für Berichtsheft und Finanzen-Belege in
