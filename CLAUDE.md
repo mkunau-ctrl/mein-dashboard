@@ -20,8 +20,10 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit fester
   Tab-Leiste unten (ein Icon je Modul, app-klassisch).
-- `app.css` – gemeinsames Design, festes Dunkel-Theme (tiefes Schwarz, seit
-  2026-09-17, siehe Log).
+- `app.css` – gemeinsames Design. Dunkel-Theme = echtes Schwarz (`#000`),
+  Hell-Theme = echtes Weiß (`#fff`); Default folgt Systemeinstellung,
+  überschreibbar über `js/theme.js` (`data-theme`-Attribut auf `<html>`,
+  Wahl landet in `localStorage`).
 - `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry, Tab-Leiste unten
   und Detail-Routing (`#/modul/unterseite`) mit dem DOM. Ohne Hash öffnet das
   erste registrierte Modul.
@@ -34,6 +36,7 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   Live-Domain, nicht auf `localhost` (Relying-Party-ID ist fest auf
   `mkunau-ctrl.github.io`).
 - `js/supabase.js` – Supabase-Client (Projekt-URL + Publishable-Key, öffentlich ok); `supabase-js@2.116.0` per jsDelivr-ESM.
+- `js/theme.js` – Hell/Dunkel-Umschalter: `wendeThemeAn` (beim Start), `wechsleTheme`, `aufgeloestesTheme`.
 - `js/registry.js` – Modul-Registry: `registriere`, `alleModule`, `holeModul`, `leereRegistry`.
 - `js/module/README.md` – Modul-Schnittstelle (`id`, `titel`, `renderKachel`, `init`).
 - `js/module/ernaehrung/` – erstes Fachmodul:

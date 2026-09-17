@@ -4,6 +4,38 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Echtes Hell/Dunkel-Umschalten (statt nur festes Schwarz)
+
+**Was:** Neues `js/theme.js`: liest/schreibt die Theme-Wahl in
+`localStorage`, setzt `data-theme="dark"|"light"` auf `<html>`. Ohne
+gespeicherte Wahl folgt die App der Systemeinstellung
+(`prefers-color-scheme`). Ein Icon-Button (Sonne/Mond) auf dem Login-Screen
+und im Dashboard-Header schaltet manuell um. Dunkel = echtes Schwarz
+(`#000000`), Hell = echtes Weiß (`#ffffff`) – beide mit hohem Kontrast
+(Text nahezu Schwarz/Weiß), passend zu Marks Wunsch nach "LEDs auf dem
+OLED-Panel wirklich aus" im Dunkel-Modus.
+
+**Warum:** Mark hat ein Referenz-Mockup geschickt (generisches
+Finanz-App-Design, Licht- und Dunkelversion) und wollte echtes Schwarz/Weiß
+statt Grautönen, plus die Möglichkeit umzuschalten.
+
+**Bewusst nicht mitgemacht (siehe Abgrenzung mit Mark):** Das komplette
+visuelle Redesign aus dem Mockup (Icon-Karten pro Zeile, farbige Beträge,
+Kategorie-Balken, eigener Profil/Einstellungen-Screen) ist **nicht** Teil
+dieser Änderung – nur das Farbsystem. Mark hat sich explizit dafür
+entschieden, das große Redesign als eigenen, späteren Schritt Modul für
+Modul anzugehen statt alles auf einmal zu riskieren.
+
+**Stand danach:** Alle 45 Tests weiterhin grün (kein Test für `theme.js` –
+reine DOM-/`localStorage`-Logik, gleiches Muster wie bei `auth.js`). Verhalten
+isoliert per Playwright geprüft (Icon wechselt korrekt Sonne↔Mond, Hell/
+Dunkel-Hintergrund korrekt), der volle App-Durchlauf ließ sich in der
+Sandbox nicht testen (Supabase-CDN-Import schlägt dort an einem
+Proxy-Zertifikat fehl – Sandbox-Eigenheit, kein Produktionsproblem).
+**Echter Test im Browser auf einem Gerät steht noch aus.**
+
+---
+
 ## 2026-09-17 – Passkey-Login (WebAuthn) als Ergänzung zum Magic-Link
 
 **Was:** Supabase Auth unterstützt seit Kurzem Passkeys nativ (als
