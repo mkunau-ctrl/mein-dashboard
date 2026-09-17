@@ -69,17 +69,18 @@ async function main() {
   let verarbeitet = 0;
   try {
     for await (const nachricht of client.fetch({ since: new Date(seit) }, { source: true })) {
-      const geparst = await simpleParser(nachricht.source);
-      const text = geparst.text || geparst.html || '';
-      if (!text.trim()) continue;
+      let geparst;
       try {
+        geparst = await simpleParser(nachricht.source);
+        const text = geparst.text || geparst.html || '';
+        if (!text.trim()) continue;
         const klassifikation = klassifiziereMail(text);
         if (klassifikation.typ !== 'sonstiges') {
           await schreibeErgebnis(klassifikation);
           verarbeitet += 1;
         }
       } catch (fehler) {
-        console.error(`Mail "${geparst.subject}" übersprungen: ${fehler.message}`);
+        console.error(`Mail "${geparst?.subject}" übersprungen: ${fehler.message}`);
       }
     }
   } finally {
