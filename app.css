@@ -19,7 +19,11 @@ input { background: var(--karte); color: var(--text); }
 button { background: var(--akzent); color: #fff; border: none; cursor: pointer; }
 button:disabled { opacity: .6; cursor: default; }
 #login-hinweis { min-height: 1.5em; color: var(--gedaempft); }
+.trenner { color: var(--gedaempft); text-align: center; margin: 4px auto; max-width: 320px; }
+#passkey-login { display: block; margin: 0 auto; max-width: 320px; width: 100%;
+       background: transparent; color: var(--text); border: 1px solid var(--rand); }
 #dashboard-ansicht header { display: flex; justify-content: space-between; align-items: center; }
+#dashboard-ansicht header .kopf-aktionen { display: flex; gap: 8px; }
 #dashboard-ansicht header button { background: transparent; color: var(--gedaempft);
        border: 1px solid var(--rand); }
 

@@ -20,6 +20,18 @@ export async function meldeAb() {
   await supabase.auth.signOut();
 }
 
+export async function meldeAnMitPasskey() {
+  const { error } = await supabase.auth.signInWithPasskey();
+  if (error) return { ok: false, fehler: error.message };
+  return { ok: true };
+}
+
+export async function registrierePasskey() {
+  const { error } = await supabase.auth.registerPasskey();
+  if (error) return { ok: false, fehler: error.message };
+  return { ok: true };
+}
+
 export function beiAuthWechsel(callback) {
   supabase.auth.onAuthStateChange((_event, session) => callback(session ?? null));
 }
