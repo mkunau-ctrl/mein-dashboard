@@ -9,6 +9,7 @@ const STATUS_FARBE = {
 };
 const MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
   'August', 'September', 'Oktober', 'November', 'Dezember'];
+const PUNKT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8c-3 0-5 2.2-5 5.5S9 20 12 20s5-2.7 5-6.5S15 8 12 8Z"/><path d="M12 8c0-2 1-3.5 3-4"/></svg>';
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>
@@ -38,7 +39,7 @@ export async function zeigeStatistik(container, zustand) {
     <div class="quote-liste">
       ${quoten.map((q) => `
         <div class="quote-zeile">
-          <span class="quote-label">${esc(q.label)}</span>
+          <span class="quote-label"><span class="icon-badge">${PUNKT_ICON}</span>${esc(q.label)}</span>
           <span class="quote-bar"><i style="width:${Math.round(q.quote * 100)}%"></i></span>
           <span class="quote-zahl">${q.faelligeTage ? `${Math.round(q.quote * 100)} %` : '—'}</span>
         </div>`).join('')}

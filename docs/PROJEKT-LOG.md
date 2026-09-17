@@ -4,6 +4,30 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Redesign Teil 4: Ernährung
+
+**Was:** Heute-Tab: Icon-Badge je Punkt (Apfel für Ernährung, Kapsel für
+Supplemente), wird grün sobald abgehakt (live, ohne Neu-Rendern).
+Liste-Tab: gleiche Icons je Zeile. Gewicht-Tab: aktuelles Gewicht als
+große Stat-Karte mit Waage-Icon (inkl. Zielgewicht, falls gesetzt) oberhalb
+der bisherigen Eingabefelder/des Charts. Statistik-Tab: Icon in der
+"Quote je Punkt"-Liste. Fortschritts-Ring und Chart.js-Diagramm
+unverändert gelassen – waren schon eigenständige, gute Visualisierungen.
+
+**Warum:** Fortsetzung des Redesigns, viertes Modul – komplexestes Modul
+mit fünf Tabs.
+
+**Stand danach:** Alle 45 Tests grün. Statische Vorschau mit
+Beispieldaten per Playwright geprüft (Heute-Tab, Gewicht-Karte,
+Statistik-Zeile). Infos-Tab bewusst nicht angefasst (reiner
+Markdown-Text, kein natürlicher Ort für Icon-Badges).
+
+**Offene Punkte / Nächste Schritte:** Berichtsheft als letztes Modul im
+selben Stil nachziehen – damit wäre das Redesign für alle fünf Module
+durch.
+
+---
+
 ## 2026-09-17 – Redesign Teil 3: Lager
 
 **Was:** Warenwert als große Stat-Karte mit Box-Icon. Teile-Liste und
