@@ -23,7 +23,7 @@ function baueRahmen(container) {
   container.innerHTML = `
     <header class="modul-kopf">
       <button class="zurueck" type="button">‹ Dashboard</button>
-      <h2>Berichtsheft</h2>
+      <h2>Ausbildung</h2>
       <button class="neu-laden" type="button" title="Aktualisieren">⟳</button>
     </header>
     <nav class="tab-leiste">
@@ -78,7 +78,7 @@ registriere({
   icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5-10-5Z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></svg>',
   renderKachel(el) {
     const n = eintraegeDieseWoche();
-    el.innerHTML = `Berichtsheft<span class="kachel-zahl">${n}</span><small>diese Woche</small>`;
+    el.innerHTML = `Ausbildung<span class="kachel-zahl">${n}</span><small>diese Woche</small>`;
   },
   async init(container) {
     containerRef = container;
