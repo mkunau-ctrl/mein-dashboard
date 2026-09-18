@@ -2,6 +2,8 @@ import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.5.1/auto/+esm';
 import { heute } from './berechnung.js';
 import { setzeGewicht, setzeSetting } from './daten.js';
 
+const WAAGE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="13" r="4"/><path d="M12 13v-3"/></svg>';
+
 export async function zeigeGewicht(container, zustand, aktualisieren) {
   const verlauf = [...zustand.gewicht].sort((a, b) => a.datum.localeCompare(b.datum));
   const letzter = verlauf.at(-1)?.gewicht_kg ?? '';
@@ -9,6 +11,15 @@ export async function zeigeGewicht(container, zustand, aktualisieren) {
   const ziel = zustand.settings.zielgewicht_kg ?? null;
 
   container.innerHTML = `
+    ${letzter ? `
+    <div class="stat-karte gross">
+      <div class="stat-kopf">
+        <div class="icon-badge">${WAAGE_ICON}</div>
+        <small>Aktuelles Gewicht</small>
+      </div>
+      <span>${Number(letzter).toFixed(1)} kg</span>
+      ${ziel ? `<small>Ziel ${Number(ziel).toFixed(1)} kg</small>` : ''}
+    </div>` : ''}
     <div class="gewicht-eingabe">
       <label>Heutiges Gewicht (kg)
         <input type="number" step="0.1" id="g-wert" value="${letzter}"></label>

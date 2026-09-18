@@ -3,6 +3,9 @@ import { heute, letzteErledigungVor } from './berechnung.js';
 import { setzeLogEintrag } from './daten.js';
 
 const KATEGORIE_TITEL = { ernaehrung: 'Ernährung', supplement: 'Supplemente' };
+const ERNAEHRUNG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8c-3 0-5 2.2-5 5.5S9 20 12 20s5-2.7 5-6.5S15 8 12 8Z"/><path d="M12 8c0-2 1-3.5 3-4"/></svg>';
+const SUPPLEMENT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="6" rx="3" transform="rotate(45 12 12)"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>';
+const KATEGORIE_ICON = { ernaehrung: ERNAEHRUNG_ICON, supplement: SUPPLEMENT_ICON };
 
 export async function zeigeHeute(container, zustand) {
   const d = heute();
@@ -40,6 +43,10 @@ export async function zeigeHeute(container, zustand) {
     for (const it of punkte) {
       const zeile = document.createElement('label');
       zeile.className = 'heute-zeile';
+      const icon = document.createElement('div');
+      icon.className = 'icon-badge';
+      icon.innerHTML = KATEGORIE_ICON[kategorie];
+      zeile.appendChild(icon);
       const box = document.createElement('input');
       box.type = 'checkbox';
       box.checked = istErledigt(it.id);

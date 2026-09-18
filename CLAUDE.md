@@ -18,14 +18,32 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 
 ## Aufbau (Stand Etappe 5 – alle 5 Module der Roadmap, in `main` gemergt, live)
 
-- `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit Kachel-Raster.
-- `app.css` – gemeinsames Design.
-- `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry und Detail-Routing
-  (`#/modul/unterseite`) mit dem DOM.
+- `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit fester
+  Tab-Leiste unten (ein Icon je Modul, app-klassisch).
+- `app.css` – gemeinsames Design, Werte 1:1 aus Marks Referenz-Screenshot
+  gemessen (Python/PIL-Pixelanalyse, nicht geschätzt). Hell:
+  `--bg:#E8EAED`, `--karte:#F2F4F7`, `--text:#000`. Dunkel: `--bg:#090F14`,
+  `--karte:#1B2025`, `--text:#fff`. Default folgt Systemeinstellung,
+  überschreibbar über `js/theme.js` (`data-theme`-Attribut auf `<html>`,
+  Wahl landet in `localStorage`). Icon-Karten-Designsprache (alle 5
+  Module): `.icon-badge` (rund, **immer neutral**, `--icon-bg`/
+  `--icon-farbe` – keine Farb-Varianten mehr, nur Text/Zahlen werden
+  farbig über `.betrag-minus`/`.betrag-plus`/`.badge-ueberfaellig`),
+  `.stat-karte.gross` für große Übersichtskarten, `.tab-leiste` als
+  Pillen-Segmented-Control (aktiv = dunkle Pille `--pille-bg`).
+- `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry, Tab-Leiste unten
+  und Detail-Routing (`#/modul/unterseite`) mit dem DOM. Ohne Hash öffnet das
+  erste registrierte Modul.
 - `js/router.js` – `parseHash('#/modul/unterseite')` → `{ modul, unterseite }`.
 - `js/view.js` – `entscheideAnsicht(session)` → `'login'` | `'dashboard'`.
-- `js/auth.js` – Magic-Link-Wrapper: `sendeMagicLink`, `holeSession`, `meldeAb`, `beiAuthWechsel`.
+- `js/auth.js` – Auth-Wrapper: `sendeMagicLink`, `holeSession`, `meldeAb`,
+  `beiAuthWechsel` (Magic-Link) sowie `registrierePasskey`, `meldeAnMitPasskey`
+  (Passkey/WebAuthn, seit 2026-09-17 – Supabase-Feature ist "Experimental",
+  Magic-Link bleibt als Fallback). Passkey funktioniert nur auf der echten
+  Live-Domain, nicht auf `localhost` (Relying-Party-ID ist fest auf
+  `mkunau-ctrl.github.io`).
 - `js/supabase.js` – Supabase-Client (Projekt-URL + Publishable-Key, öffentlich ok); `supabase-js@2.116.0` per jsDelivr-ESM.
+- `js/theme.js` – Hell/Dunkel-Umschalter: `wendeThemeAn` (beim Start), `wechsleTheme`, `aufgeloestesTheme`.
 - `js/registry.js` – Modul-Registry: `registriere`, `alleModule`, `holeModul`, `leereRegistry`.
 - `js/module/README.md` – Modul-Schnittstelle (`id`, `titel`, `renderKachel`, `init`).
 - `js/module/ernaehrung/` – erstes Fachmodul:
@@ -121,3 +139,12 @@ auf Deutsch. Datenschutz beachten.
   `http://localhost:8000/**` und `https://mkunau-ctrl.github.io/mein-dashboard/**`.
 - `USER_ID` (Marks Auth-UID) = `df0b24a6-6a74-4830-995c-84015161dcc3`
   (erster Login am 2026-09-09).
+- **Passkeys (offener manueller Schritt für Mark):** Claude hat keinen
+  Zugriff auf die Auth-Konfiguration (nur übers Dashboard/Management-API
+  mit Access-Token einstellbar). Im Supabase-Dashboard unter
+  **Authentication → Passkeys** einmalig aktivieren mit:
+  - Relying Party Display Name: `Mein Dashboard`
+  - Relying Party ID: `mkunau-ctrl.github.io`
+  - Relying Party Origins: `https://mkunau-ctrl.github.io`
+  Danach in der App einloggen (Magic-Link) und oben „Passkey einrichten"
+  tippen – erst dann geht „Mit Passkey anmelden" auf dem Login-Screen.

@@ -4,6 +4,296 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Design-Korrektur: gemessene Werte statt geschätzter Farben
+
+**Was:** Mark war mit dem vorigen Redesign unzufrieden und schickte eine
+sehr detaillierte Bauanweisung (React+Vite+Tailwind, exakte Hex-Werte
+"per Pixelanalyse gemessen"). Vor dem Umbau die zentralen Behauptungen
+per Python/PIL direkt an den Original-Screenshots nachgemessen (nicht
+blind übernommen) – bestätigt: App-Hintergrund hell `#E8EAED`, Karten-
+Hintergrund hell `#F2F4F7` und dunkel `#1B2025` stimmen exakt. Wichtigste
+bestätigte Erkenntnis: **Icon-Kreise sind im Original immer neutral grau
+(`#EFF2F3`), nie pro Kategorie/Status eingefärbt** – nur Text/Zahlen sind
+grün oder rot. Genau das hatte ich im vorigen Redesign falsch gemacht
+(rote/gelbe/grüne Icon-Badges).
+
+**Umgesetzt (Vanilla-CSS, kein Framework-Wechsel):**
+- Alle Farb-Tokens in `app.css` auf die gemessenen Werte umgestellt
+  (Hell: `--bg:#E8EAED`, `--karte:#F2F4F7`, `--text:#000`, `--gedaempft:
+  #707B82`; Dunkel: `--bg:#090F14`, `--karte:#1B2025`, `--text:#fff`,
+  `--gedaempft:#C0CDD5`; Grün `#1A6C3B`/`#255F42` (hell/dunkel), Rot
+  `#F62727` (beide gleich)).
+- `.icon-badge` ist jetzt IMMER neutral (`--icon-bg`/`--icon-farbe`) – die
+  Klassen `.gruen`/`.rot`/`.gelb` komplett aus allen 5 Modulen entfernt
+  (Finanzen, Todos, Lager, Ernährung).
+- Neue `.badge-ueberfaellig`-Pille (helles Rot-BG `#F7E8E8`, Text
+  `#F0645C`) für überfällige Todos statt nur farbigem Text.
+- `.tab-leiste` (Modul-interne Tabs) von Unterstrich-Stil auf
+  Pillen-Segmented-Control umgestellt: dunkle Pille (`#191D20`, weißer
+  Text) für den aktiven Tab, passend zum Original.
+- Bottom-Tab-Leiste: aktiver Zustand jetzt Primärtext-Farbe statt Blau
+  (Original nutzt dafür keinen Akzent).
+- Karten-Radius von 12px auf 20–22px, dezenter Box-Shadow statt Rahmen.
+- Schriftgrößen in Listenzeilen/Stat-Karten an die gemessenen ~13–15px
+  angenähert.
+
+**Bewusst NICHT gemacht – abgelehnter Scope, keine Rückfrage nötig:**
+- **Kein React/Vite/Tailwind-Umstieg.** War explizit gefordert, aber
+  Pixel-Genauigkeit ist ein CSS-Werte-Problem, kein Framework-Problem.
+  Ein Umstieg hätte alle 5 Module neu geschrieben, alle 45 Tests riskiert
+  und einen Build-Schritt eingeführt, den GitHub Pages bisher bewusst
+  nicht braucht – Mark nach Rückfrage einverstanden, bei Vanilla zu
+  bleiben, solange das Ergebnis pixelgenau aussieht.
+- Keine neuen Screens (Profil, Einstellungen, Suche, Sendungen,
+  Rechnungen) – die gibt es in unserer App nicht, das wäre erfundene
+  Funktionalität statt Design-Korrektur.
+- Kein Zeitraum-Selector (7T/30T/…), keine Sparkline-Chart, kein
+  Auge-Icon zum Kontostand-Ausblenden, keine Notification-Glocke – alles
+  Features aus dem Referenz-Screenshot, die unsere App nicht hat.
+- Toggle-Switches (schwarz statt grün) nicht gebaut – es gibt keinen
+  Einstellungen-Screen mit Toggles im Projekt.
+
+**Stand danach:** Alle 45 Tests grün. Visuell direkt mit dem Original-
+Screenshot verglichen (Finanzen-Modul, hell + dunkel) – deutlich näher
+dran als das vorige Redesign. Echter Test auf einem Gerät steht weiter
+aus.
+
+---
+
+## 2026-09-17 – Redesign Teil 5 (letzter Teil): Berichtsheft
+
+**Was:** Einträge-Liste bekommt ein Icon-Badge je Zeile passend zur Art
+(Koffer für Betrieb, Doktorhut für Berufsschule, Kalender für Sonstiges).
+Drucken-Tab bewusst unverändert gelassen – reines Print-Layout mit
+eigenen Tabellen-Styles, kein Ort für Icon-Badges.
+
+**Warum:** Fortsetzung und Abschluss des Redesigns, fünftes und letztes
+Modul.
+
+**Stand danach:** Alle 45 Tests grün. Statische Vorschau mit
+Beispieldaten per Playwright geprüft. Damit ist das visuelle Redesign
+(Icon-Badges, farbige Beträge, große Stat-Karten) über alle fünf Module
+durchgezogen: Finanzen, To-dos, Lager, Ernährung, Berichtsheft.
+
+**Offene Punkte / Nächste Schritte:**
+- Echter Test auf einem Gerät mit Live-Daten steht für das gesamte
+  Redesign noch aus (Sandbox konnte wegen CDN-Proxy-Problem nie den
+  vollen App-Durchlauf mit Supabase-Session testen, s. frühere Einträge).
+- Passkey-Einrichtung im Supabase-Dashboard (falls noch nicht gemacht).
+- PNG-Icons für die PWA fehlen weiterhin (offener Punkt seit Etappe 0).
+
+---
+
+## 2026-09-17 – Redesign Teil 4: Ernährung
+
+**Was:** Heute-Tab: Icon-Badge je Punkt (Apfel für Ernährung, Kapsel für
+Supplemente), wird grün sobald abgehakt (live, ohne Neu-Rendern).
+Liste-Tab: gleiche Icons je Zeile. Gewicht-Tab: aktuelles Gewicht als
+große Stat-Karte mit Waage-Icon (inkl. Zielgewicht, falls gesetzt) oberhalb
+der bisherigen Eingabefelder/des Charts. Statistik-Tab: Icon in der
+"Quote je Punkt"-Liste. Fortschritts-Ring und Chart.js-Diagramm
+unverändert gelassen – waren schon eigenständige, gute Visualisierungen.
+
+**Warum:** Fortsetzung des Redesigns, viertes Modul – komplexestes Modul
+mit fünf Tabs.
+
+**Stand danach:** Alle 45 Tests grün. Statische Vorschau mit
+Beispieldaten per Playwright geprüft (Heute-Tab, Gewicht-Karte,
+Statistik-Zeile). Infos-Tab bewusst nicht angefasst (reiner
+Markdown-Text, kein natürlicher Ort für Icon-Badges).
+
+**Offene Punkte / Nächste Schritte:** Berichtsheft als letztes Modul im
+selben Stil nachziehen – damit wäre das Redesign für alle fünf Module
+durch.
+
+---
+
+## 2026-09-17 – Redesign Teil 3: Lager
+
+**Was:** Warenwert als große Stat-Karte mit Box-Icon. Teile-Liste und
+Bestellen-Liste: Icon-Badge je Zeile, farblich passend zum Status
+(rot=fehlt, gelb=bestellt, grün=da) – neue Variante `.icon-badge.gelb`
+in `app.css`.
+
+**Warum:** Fortsetzung des Redesigns, drittes Modul.
+
+**Stand danach:** Alle 45 Tests grün. Statische Vorschau mit
+Beispieldaten per Playwright geprüft.
+
+**Offene Punkte / Nächste Schritte:** Ernährung, Berichtsheft im selben
+Stil nachziehen.
+
+---
+
+## 2026-09-17 – Redesign Teil 2: To-dos + Icon-Badge-Farbvarianten
+
+**Was:** To-dos im selben Icon-Badge-Stil wie Finanzen: offene Punkte
+zeigen ein Wiederhol-Icon (wiederkehrend), Kalender-Icon (feste
+Fälligkeit) oder generisches Checklisten-Icon (ohne Termin) – überfällige
+Punkte bekommen das Badge zusätzlich rot eingefärbt. Erledigte Punkte
+zeigen ein grünes Haken-Icon. Dafür zwei neue Farbvarianten in `app.css`:
+`.icon-badge.gruen` / `.icon-badge.rot`. Finanzen-Ausgaben-Icon rückwirkend
+auf `.icon-badge.rot` umgestellt, damit es zur neuen Farbsprache passt.
+
+**Warum:** Fortsetzung des Redesigns aus dem vorigen Eintrag, zweites
+Modul nach Finanzen.
+
+**Stand danach:** Alle 45 Tests grün. Mit Beispieldaten als statische
+Vorschauseite per Playwright geprüft. Echter App-Durchlauf mit Live-Daten
+steht weiterhin aus (Sandbox-Einschränkung, s. o.).
+
+**Offene Punkte / Nächste Schritte:** Lager, Ernährung, Berichtsheft im
+selben Stil nachziehen.
+
+---
+
+## 2026-09-17 – Visuelles Redesign gestartet: Finanzen als erstes Referenz-Modul
+
+**Was:** Erste Etappe des großen Redesigns (Icon-Karten-Optik aus Marks
+Mockup). Neue geteilte CSS-Bausteine in `app.css`: `.icon-badge`
+(runde Icon-Kachel), `.betrag-minus`/`.betrag-plus` (farbige Beträge),
+`.stat-karte.gross` (große, linksbündige Stat-Karte mit Icon-Kopf),
+`.quote-zeile.betrag`-Modifier (breitere letzte Spalte für Euro- statt
+Prozentwerte, damit die geteilte `.quote-zeile`-Komponente aus dem
+Ernährungs-Modul unverändert bleibt). Finanzen-Modul komplett umgebaut:
+Ausgaben-Liste mit Icon + rotem Betrag, Kontostand als große Karte mit
+Wallet-Icon + "Ausgaben diesen Monat" als Zusatzinfo, Monats-Kategorien
+mit Tag-Icon je Zeile.
+
+**Warum:** Mark wollte nach dem Farbsystem jetzt auch das große visuelle
+Redesign aus dem Referenz-Mockup (Fintech-App-Screenshot) – explizit "die
+restlichen Seiten jetzt auch machen". Finanzen zuerst, weil es inhaltlich
+am nächsten am Mockup dran ist und die Kategorie-Balken-Logik (`summenPro
+Kategorie`) schon vorhanden war.
+
+**Bewusste Abgrenzung von Marks Mockup:** Kein erfundenes
+"Einnahmen"-Feld – unser Datenmodell trackt nur Ausgaben + einen
+gesetzten Kontostand-Startwert, keine Einnahmen-Einträge. Die "Ausgaben
+diesen Monat"-Zeile unter dem Kontostand ersetzt die Einnahmen/Differenz-
+Zeilen aus dem Mockup mit echten, vorhandenen Daten statt Fantasiewerten.
+Auch keine Icons pro Händler/Kategorie (Netflix-Logo o. Ä.) – Kategorien
+sind bei uns Freitext, ein generisches Beleg-Icon für alle Ausgaben-Zeilen
+ist ehrlicher als geratene Zuordnungen.
+
+**Stand danach:** Alle 45 Tests grün (reine UI-Änderung, keine
+Berechnungslogik angefasst). Mit Beispieldaten als statische
+Vorschauseite pro Theme (hell/dunkel) per Playwright geprüft, echter
+App-Durchlauf mit Live-Daten steht noch aus (Sandbox kann Supabase-CDN
+nicht laden, s. o.).
+
+**Offene Punkte / Nächste Schritte:** Todos, Lager, Ernährung,
+Berichtsheft im selben Stil (Icon-Badges, farbige Beträge wo sinnvoll,
+`.stat-karte.gross` für Übersichtszahlen) nachziehen – auf Marks
+ausdrücklichen Wunsch als direkte Fortsetzung, nicht mehr einzeln
+freigegeben.
+
+---
+
+## 2026-09-17 – Echtes Hell/Dunkel-Umschalten (statt nur festes Schwarz)
+
+**Was:** Neues `js/theme.js`: liest/schreibt die Theme-Wahl in
+`localStorage`, setzt `data-theme="dark"|"light"` auf `<html>`. Ohne
+gespeicherte Wahl folgt die App der Systemeinstellung
+(`prefers-color-scheme`). Ein Icon-Button (Sonne/Mond) auf dem Login-Screen
+und im Dashboard-Header schaltet manuell um. Dunkel = echtes Schwarz
+(`#000000`), Hell = echtes Weiß (`#ffffff`) – beide mit hohem Kontrast
+(Text nahezu Schwarz/Weiß), passend zu Marks Wunsch nach "LEDs auf dem
+OLED-Panel wirklich aus" im Dunkel-Modus.
+
+**Warum:** Mark hat ein Referenz-Mockup geschickt (generisches
+Finanz-App-Design, Licht- und Dunkelversion) und wollte echtes Schwarz/Weiß
+statt Grautönen, plus die Möglichkeit umzuschalten.
+
+**Bewusst nicht mitgemacht (siehe Abgrenzung mit Mark):** Das komplette
+visuelle Redesign aus dem Mockup (Icon-Karten pro Zeile, farbige Beträge,
+Kategorie-Balken, eigener Profil/Einstellungen-Screen) ist **nicht** Teil
+dieser Änderung – nur das Farbsystem. Mark hat sich explizit dafür
+entschieden, das große Redesign als eigenen, späteren Schritt Modul für
+Modul anzugehen statt alles auf einmal zu riskieren.
+
+**Stand danach:** Alle 45 Tests weiterhin grün (kein Test für `theme.js` –
+reine DOM-/`localStorage`-Logik, gleiches Muster wie bei `auth.js`). Verhalten
+isoliert per Playwright geprüft (Icon wechselt korrekt Sonne↔Mond, Hell/
+Dunkel-Hintergrund korrekt), der volle App-Durchlauf ließ sich in der
+Sandbox nicht testen (Supabase-CDN-Import schlägt dort an einem
+Proxy-Zertifikat fehl – Sandbox-Eigenheit, kein Produktionsproblem).
+**Echter Test im Browser auf einem Gerät steht noch aus.**
+
+---
+
+## 2026-09-17 – Passkey-Login (WebAuthn) als Ergänzung zum Magic-Link
+
+**Was:** Supabase Auth unterstützt seit Kurzem Passkeys nativ (als
+"Experimental" markiert). Client-Seite gebaut: `js/supabase.js` opted mit
+`experimental: { passkey: true }` ein, `js/auth.js` bekommt
+`registrierePasskey()` und `meldeAnMitPasskey()`. Im UI: Login-Screen hat
+jetzt zusätzlich einen Button „Mit Passkey anmelden" (kein
+E-Mail/Nutzername nötig, discoverable credential), im Dashboard-Header ein
+Button „Passkey einrichten" zum Registrieren auf dem aktuellen Gerät.
+Magic-Link bleibt vollständig erhalten als Fallback.
+
+**Warum:** Marks Wunsch nach Passkey-Login.
+
+**Wichtige Einschränkungen (bewusst so gelassen, nicht Claudes
+Entscheidungsspielraum):**
+- Die Server-Konfiguration (Relying-Party-ID/Origins) kann Claude nicht
+  setzen – das geht nur über Supabase-Dashboard oder Management-API mit
+  einem Access-Token, den Claude nicht hat. **Offener Schritt für Mark**,
+  siehe `CLAUDE.md` → Abschnitt Supabase-Projekt für die genauen Werte.
+- Relying-Party-ID ist fest auf `mkunau-ctrl.github.io` geplant → Passkey
+  funktioniert **nicht** auf `localhost` beim lokalen Testen (WebAuthn
+  verlangt, dass der Origin-Hostname zur RP-ID passt). Nur auf der echten
+  Live-Seite nutzbar/testbar.
+- Ein Passkey kann erst registriert werden, wenn man schon eingeloggt ist
+  (Supabase-Vorgabe) – Ersteinrichtung läuft also immer über Magic-Link,
+  Passkey ist danach der schnellere Weg für weitere Logins auf diesem Gerät.
+- Supabase markiert die API selbst als experimentell (kann sich ändern).
+  Deshalb bewusst kein Ersatz für Magic-Link, sondern zusätzliche Option.
+
+**Stand danach:** Alle 45 Tests weiterhin grün (kein Test für `auth.js`,
+wie schon vorher – reiner Supabase-Wrapper). Noch nicht live testbar, bis
+Mark die Dashboard-Einstellung gemacht hat.
+
+---
+
+## 2026-09-17 – Dunkles Redesign: tiefes Schwarz + feste Tab-Leiste unten
+
+**Was:** Visuelle Überarbeitung, quer zu allen Modulen. Das Farbschema ist
+jetzt fest ein sehr dunkles Theme (`--bg: #000000`, Karten `#121212`), nicht
+mehr abhängig von `prefers-color-scheme`. Die bisherige Start-Kachel-Raster-
+Ansicht ist ersetzt durch eine feste Tab-Leiste unten am Bildschirmrand
+("app-klassisch", iPhone-Home-Indicator-sicher via `env(safe-area-inset-
+bottom)`) mit einem Icon je Modul (Ernährung, To-dos, Finanzen, Lager,
+Berichtsheft). Ein Klick wechselt direkt in den jeweiligen Bereich, das
+aktive Icon ist in der Akzentfarbe hervorgehoben. Ohne Hash öffnet die App
+jetzt direkt das erste Modul statt eines leeren Rasters.
+
+**Warum:** Marks Wunsch nach einem klassischen App-Layout (Referenz:
+Screenshot einer Fintech-Dashboard-Mockup-Werbung – nur als Stilvorlage für
+Dunkel-Theme + Bottom-Tab-Bar übernommen, keine Marken-/Logo-Übernahme).
+
+**Entscheidungen:**
+- Modul-Schnittstelle um optionales Feld `icon` (Inline-SVG-String) ergänzt,
+  siehe `js/module/README.md`. Alle fünf Module liefern jetzt ein Icon.
+- `renderKachel` bleibt in den Modulen bestehen (Interface weiterhin
+  "optional"), wird aber aktuell nirgends mehr aufgerufen – die
+  Tagesstand-Kurzinfo (z. B. "3/5 erledigt", "2 überfällig"), die früher auf
+  der Start-Kachel stand, ist damit vorerst nicht mehr sichtbar. Bewusst
+  zurückgestellt statt in die Tab-Leiste gequetscht (zu wenig Platz für
+  Badges in dieser Runde) – falls gewünscht, später als kleines Badge auf
+  dem Tab-Icon nachrüsten.
+- `manifest.webmanifest` (`background_color`/`theme_color`) und
+  `<meta name="theme-color">` auf `#000000` gezogen, damit iOS-Statusleiste/
+  Safe-Areas beim "Zum Home-Bildschirm" zum neuen Theme passen.
+
+**Stand danach:** Alle 45 Tests weiterhin grün (Logik unverändert, nur UI).
+Visuell per Playwright-Screenshot einer statischen Vorschauseite geprüft
+(iPhone-Breite 390px). Noch **nicht** live auf einem echten Gerät getestet.
+Offene PNG-Icons (192/512, `apple-touch-icon`) weiterhin offen aus Etappe 0
+– jetzt zusätzlich relevant, weil sie zum neuen Schwarz-Theme passen sollten.
+
+---
+
 ## 2026-09-16 – Vorbereitung Beleg-Tracking: `quelle`-Feld + Architektur-Vorschlag
 
 **Was:** Kleine Vorbereitung fürs automatische Beleg-Tracking (Wunsch s.

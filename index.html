@@ -6,13 +6,16 @@
   <title>Mein Dashboard</title>
   <link rel="icon" href="icon.svg" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#111418" />
+  <meta name="theme-color" content="#000000" />
   <link rel="stylesheet" href="app.css" />
 </head>
 <body>
   <main id="app">
     <!-- Login -->
     <section id="login-ansicht" hidden>
+      <div class="login-kopf">
+        <button id="theme-toggle-login" type="button" class="theme-toggle" title="Hell/Dunkel wechseln"></button>
+      </div>
       <h1>Mein Dashboard</h1>
       <p>Melde dich mit deiner E-Mail an. Du bekommst einen Login-Link geschickt.</p>
       <form id="login-form">
@@ -20,18 +23,24 @@
                placeholder="m.kunau@gmx.de" />
         <button type="submit">Login-Link senden</button>
       </form>
+      <p class="trenner">oder</p>
+      <button id="passkey-login" type="button">Mit Passkey anmelden</button>
       <p id="login-hinweis" role="status"></p>
     </section>
 
     <!-- Dashboard -->
     <section id="dashboard-ansicht" hidden>
       <header>
-        <h1>Mein Dashboard</h1>
-        <button id="logout">Abmelden</button>
+        <h1 id="modul-titel">Mein Dashboard</h1>
+        <div class="kopf-aktionen">
+          <button id="theme-toggle-dashboard" type="button" class="theme-toggle" title="Hell/Dunkel wechseln"></button>
+          <button id="passkey-registrieren" title="Passkey auf diesem Gerät einrichten">Passkey</button>
+          <button id="logout">Abmelden</button>
+        </div>
       </header>
-      <div id="kachel-raster"></div>
-      <p id="dashboard-leer-hinweis">Noch keine Module. Kommt in den nächsten Etappen.</p>
-      <section id="modul-detail" hidden></section>
+      <p id="passkey-hinweis" role="status"></p>
+      <section id="modul-detail"></section>
+      <nav id="tab-leiste-unten"></nav>
     </section>
   </main>
   <script type="module" src="js/app.js"></script>
