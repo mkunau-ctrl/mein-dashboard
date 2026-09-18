@@ -22,9 +22,11 @@ täglich um 7 Uhr startet.
 verlangt für den produktiven/dauerhaften Zugang faktisch ein Geschäftsprofil
 (freie Stufe nur 250 Calls/Tag, Dev-Zweck), Hermes bietet keine öffentliche
 Tracking-API für Privatkunden – daher kein einfacher kostenloser Live-Status
-verfügbar. Fallback (Trackingnummer + Link zur Trackingseite) wird verwendet;
-Mark aktualisiert den Sendungsstatus bei Bedarf manuell per Klick auf den
-Status-Badge in der App.
+verfügbar. Fallback wird verwendet: nur Trackingnummer speichern, **kein**
+Link zur Trackingseite (dafür wäre noch ein eigener Baustein nötig, der die
+richtige Tracking-URL je Paketdienst zusammensetzt – nicht Teil dieser
+Etappe). Mark aktualisiert den Sendungsstatus bei Bedarf manuell per Klick
+auf den Status-Badge in der App.
 
 **Entscheidungen:**
 - **GMX braucht ein Anwendungsspezifisches Passwort für IMAP**, unabhängig
@@ -62,16 +64,30 @@ korrekt erkannt und in Supabase geschrieben. Scheduled Task
 den Worktree-Ordner der Bau-Session – muss beim Zusammenführen nach `main`
 auf den echten Projektordner umgezogen werden (siehe unten).
 
+**Korrektur nach der finalen Review (noch am 2026-09-17/18, vor dem Merge):**
+Ein erster Live-Test zeigte scheinbar nur ein Restrisiko bei mehrfachen
+Läufen am selben Tag. Die abschließende Gesamt-Review deckte auf, dass es
+gravierender ist: IMAP-`SINCE` vergleicht laut RFC 3501 nur das
+Kalenderdatum, nicht die Uhrzeit – **jeder** tägliche Lauf hätte dadurch
+ca. einen ganzen Tag bereits verarbeiteter Mails erneut verarbeitet, nicht
+nur bei zufälligen Doppelläufen am selben Tag. Das hätte laufend doppelte
+`expenses`/`sendungen`/`termine`-Zeilen erzeugt und den berechneten
+Kontostand verfälscht. Gefixt: das Skript filtert jetzt zusätzlich nach dem
+`internalDate` jeder Mail gegen den letzten Lauf-Zeitpunkt, bevor es diese
+verarbeitet.
+
 **Offene Punkte / Nächste Schritte:**
 - `automatisierung/.env` (GMX-App-Passwort + Supabase-Service-Role-Key) liegt
   nur lokal im Bau-Worktree, nicht in git – muss nach dem Merge einmalig nach
-  `C:\Users\PC\Projekte\mein-dashboard\automatisierung\.env` kopiert werden,
-  danach den Scheduled Task auf diesen Pfad umregistrieren.
-- Bekanntes Restrisiko (bewusst nicht behoben, siehe Spec): IMAP-`SINCE`
-  filtert nur nach Tag, nicht nach Uhrzeit. Mehrfache Läufe am selben Tag
-  (z. B. manueller Test + Scheduled Task) verarbeiten dieselben Mails erneut;
-  es gibt keinen Dedup-Key in `expenses`/`sendungen`/`termine`. Bei Bedarf
-  gelegentlich auf doppelte Zeilen prüfen.
+  `C:\Users\PC\Projekte\mein-dashboard\automatisierung\.env` kopiert werden.
+  **Zusätzlich `npm install` im Haupt-Projektordner ausführen** (dort gibt es
+  noch kein `node_modules/` – ohne das bricht der Postfach-Scan sofort mit
+  `ERR_MODULE_NOT_FOUND` ab), danach den Scheduled Task auf den
+  Haupt-Projektordner umregistrieren.
+- Interaktiver Klick-Test im Browser für das Sendungen-Modul (Pakete/Termine
+  anlegen, Status durchklicken, löschen/abhaken) und den neuen "Abos"-Tab im
+  Finanzen-Modul steht noch aus – brauchte einen echten Login, war in der
+  Bau-Session nicht möglich.
 - Danach: Etappe 7 (Passkey-Login) und Etappe 8 (Redesign nach Marks eigenem
   Prototyp) – siehe die gemeinsame Spec
   `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`.

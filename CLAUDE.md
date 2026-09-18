@@ -69,7 +69,8 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   - `daten.js` – Supabase-Zugriff auf `sendungen` + `termine`.
   - `berechnung.js` – `sortiereSendungen`, `offeneSendungen`, `sortiereTermine`, `naechsterSendungStatus`.
   - `pakete.js`, `termine.js` – die zwei Tabs.
-  Details: `docs/superpowers/plans/2026-09-16-etappe-6-email-automatisierung.md`.
+  Details: `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`
+  (Abschnitt 3.4) und `docs/superpowers/plans/2026-09-16-etappe-6-email-automatisierung.md`.
 - `manifest.webmanifest`, `icon.svg` – PWA. **Echte PNG-Icons (192/512) und
   `apple-touch-icon` fehlen weiterhin** (offener Punkt seit Etappe 0).
 - `automatisierung/` – **lokales** Node-Skript, kein Teil der Browser-App:
@@ -144,12 +145,14 @@ auf Deutsch. Datenschutz beachten.
   kann Mark auch Aufgaben (`todos`) oder Lagerbestände (`parts`) einfach im
   Chat erzählen; Claude fragt fehlende Pflichtfelder nach und trägt direkt
   per Supabase-MCP ein, statt dass Mark es selbst in der App eingeben muss.
-- **E-Mail-Automatisierung – Duplikat-Restrisiko:** IMAP-`SINCE` filtert nur
-  nach Kalendertag, nicht nach Uhrzeit. Läuft `postfach-scan.mjs` mehrmals am
-  selben Tag (z. B. manueller Test + Scheduled Task), werden dieselben Mails
-  erneut verarbeitet – es gibt keinen Dedup-Key in `expenses`/`sendungen`/
-  `termine`. Bewusst nicht behoben (siehe Spec), bei Bedarf Duplikate manuell
-  in Supabase löschen.
+- **E-Mail-Automatisierung – kein Dedup-Key:** IMAP-`SINCE` liefert nur
+  Tagesgenauigkeit; `postfach-scan.mjs` filtert deshalb zusätzlich selbst
+  nach `internalDate` gegen den letzten Lauf-Zeitpunkt (`letzter-lauf.json`),
+  damit nicht täglich derselbe Tag doppelt verarbeitet wird. Es gibt trotzdem
+  **keinen Dedup-Key** in `expenses`/`sendungen`/`termine` – wird
+  `letzter-lauf.json` gelöscht/zurückgesetzt (z. B. für einen manuellen
+  Test), verarbeitet der nächste Lauf denselben Zeitraum erneut. Nach einem
+  solchen Test ggf. Duplikate manuell in Supabase löschen.
 
 ### Supabase-Projekt
 

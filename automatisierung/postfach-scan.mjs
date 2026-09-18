@@ -121,8 +121,15 @@ async function main() {
   await client.connect();
   const lock = await client.getMailboxLock('INBOX');
   let verarbeitet = 0;
+  const seitDatum = new Date(seit);
   try {
-    for await (const nachricht of client.fetch({ since: new Date(seit) }, { source: true })) {
+    // IMAP SINCE vergleicht laut RFC 3501 nur das Kalenderdatum, nicht die
+    // Uhrzeit - ein Lauf am 18.9. um 7 Uhr mit seit=17.9. 20:09 bekommt vom
+    // Server den GESAMTEN 17.9. zurueck, nicht nur alles nach 20:09. Deshalb
+    // hier zusaetzlich nach internalDate filtern, sonst verarbeitet JEDER
+    // taegliche Lauf ca. einen Tag bereits verarbeiteter Mails erneut.
+    for await (const nachricht of client.fetch({ since: seitDatum }, { source: true, internalDate: true })) {
+      if (nachricht.internalDate <= seitDatum) continue;
       let geparst;
       try {
         geparst = await simpleParser(nachricht.source);
