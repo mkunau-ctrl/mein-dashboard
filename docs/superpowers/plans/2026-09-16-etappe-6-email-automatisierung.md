@@ -1098,11 +1098,24 @@ git commit -m "feat: neues Modul Sendungen (Pakete + Termine)"
 
 - [ ] **Schritt 1: Fehlschlagenden Test schreiben**
 
-An `test/finanzen-berechnung.test.js` anhängen:
+Die bestehende Importzeile ganz oben in `test/finanzen-berechnung.test.js`
 
 ```js
-import { erkenneAbos } from '../js/module/finanzen/berechnung.js';
+import { kontostand, summeProMonat, summenProKategorie }
+  from '../js/module/finanzen/berechnung.js';
+```
 
+um `erkenneAbos` erweitern (eine einzige Importzeile, kein zweiter Import
+derselben Datei):
+
+```js
+import { kontostand, summeProMonat, summenProKategorie, erkenneAbos }
+  from '../js/module/finanzen/berechnung.js';
+```
+
+Danach ans Ende der Datei anhängen:
+
+```js
 test('erkenneAbos: erkennt monatlich wiederkehrende gleiche Notiz', () => {
   const abo = [
     { betrag: 15.99, kategorie: 'abo', notiz: 'Netflix', datum: '2026-07-15' },

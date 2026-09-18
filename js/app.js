@@ -9,6 +9,7 @@ import './module/todos/index.js';
 import './module/finanzen/index.js';
 import './module/lager/index.js';
 import './module/berichtsheft/index.js';
+import './module/sendungen/index.js';
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');

@@ -172,6 +172,9 @@ button:disabled { opacity: .6; cursor: default; }
 .status-fehlt { background: var(--hm-rot); }
 .status-bestellt { background: var(--hm-gelb); }
 .status-da { background: var(--hm-gruen); }
+.status-unterwegs { background: var(--hm-gelb); }
+.status-zugestellt { background: var(--hm-gruen); }
+.status-unbekannt { background: var(--gedaempft); }
 
 /* Infos */
 .infos-text h3 { font-size: 1rem; margin: 18px 0 6px; }

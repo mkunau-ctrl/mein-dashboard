@@ -1,8 +1,9 @@
 import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
+import { offeneSendungen } from './berechnung.js';
 
-const TABS = [['ausgaben', 'Ausgaben'], ['kontostand', 'Kontostand'], ['monat', 'Monat'], ['abos', 'Abos']];
+const TABS = [['pakete', 'Pakete'], ['termine', 'Termine']];
 
 let zustand = null;
 let containerRef = null;
@@ -11,17 +12,11 @@ async function ladeZustand() {
   zustand = await ladeAlles();
 }
 
-export function heutigeSumme() {
-  if (!zustand) return 0;
-  const d = new Date().toISOString().slice(0, 10);
-  return zustand.expenses.filter((e) => e.datum === d).reduce((s, e) => s + e.betrag, 0);
-}
-
 function baueRahmen(container) {
   container.innerHTML = `
     <header class="modul-kopf">
       <button class="zurueck" type="button">‹ Dashboard</button>
-      <h2>Finanzen</h2>
+      <h2>Sendungen</h2>
       <button class="neu-laden" type="button" title="Aktualisieren">⟳</button>
     </header>
     <nav class="tab-leiste">
@@ -36,25 +31,22 @@ function baueRahmen(container) {
       zeigeAktuellenTab();
     });
   container.querySelectorAll('.tab-leiste button').forEach((b) => {
-    b.addEventListener('click', () => { location.hash = `#/finanzen/${b.dataset.tab}`; });
+    b.addEventListener('click', () => { location.hash = `#/sendungen/${b.dataset.tab}`; });
   });
 }
 
 const LADER = {
-  ausgaben: () => import('./ausgaben.js').then((m) => m.zeigeAusgaben),
-  kontostand: () => import('./kontostand.js').then((m) => m.zeigeKontostand),
-  monat: () => import('./monat.js').then((m) => m.zeigeMonat),
-  abos: () => import('./abos.js').then((m) => m.zeigeAbos),
+  pakete: () => import('./pakete.js').then((m) => m.zeigePakete),
+  termine: () => import('./termine.js').then((m) => m.zeigeTermine),
 };
 
 async function zeigeAktuellenTab() {
   const { unterseite } = parseHash(location.hash);
-  const tab = TABS.some(([id]) => id === unterseite) ? unterseite : 'ausgaben';
+  const tab = TABS.some(([id]) => id === unterseite) ? unterseite : 'pakete';
   const inhalt = containerRef.querySelector('#tab-inhalt');
   containerRef.querySelectorAll('.tab-leiste button')
     .forEach((b) => b.classList.toggle('aktiv', b.dataset.tab === tab));
   inhalt.innerHTML = '<p class="lade">Lädt …</p>';
-
   try {
     const zeigeFn = await LADER[tab]();
     inhalt.innerHTML = '';
@@ -69,17 +61,16 @@ async function zeigeAktuellenTab() {
 
 function beiHashwechsel() {
   const { modul } = parseHash(location.hash);
-  if (modul === 'finanzen' && containerRef && containerRef.isConnected) zeigeAktuellenTab();
+  if (modul === 'sendungen' && containerRef && containerRef.isConnected) zeigeAktuellenTab();
 }
 
 registriere({
-  id: 'finanzen',
-  titel: 'Finanzen',
-  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg>',
+  id: 'sendungen',
+  titel: 'Sendungen',
   renderKachel(el) {
-    const summe = heutigeSumme();
-    el.innerHTML = `Finanzen<span class="kachel-zahl">${summe.toFixed(2)} €</span>
-      <small>heute</small>`;
+    const n = zustand ? offeneSendungen(zustand.sendungen) : 0;
+    el.innerHTML = `Sendungen<span class="kachel-zahl">${n}</span>
+      <small>unterwegs</small>`;
   },
   async init(container) {
     containerRef = container;

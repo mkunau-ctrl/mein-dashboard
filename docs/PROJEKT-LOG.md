@@ -4,6 +4,96 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-17 – Etappe 6 (E-Mail-Automatisierung) gebaut
+
+**Was:** Ein täglicher lokaler Scan von Marks GMX-Postfach erkennt jetzt
+automatisch Belege, Paket-/Amazon-Sendungen und Termine/Fristen und trägt sie
+in Mein Dashboard ein. Dazu gehören: das Automatisierungs-Skript
+(`automatisierung/postfach-scan.mjs`), zwei neue Supabase-Tabellen
+(`sendungen`, `termine`), ein neues Browser-Modul "Sendungen" (Tabs
+Pakete/Termine), eine Abo-Erkennung im Finanzen-Modul (Tab "Abos", rein aus
+bestehenden Ausgaben berechnet) und ein Windows-Scheduled-Task, der das Skript
+täglich um 7 Uhr startet.
+
+**Warum:** Umsetzung von Etappe 6 aus der gemeinsamen Spec vom 2026-09-16
+(`docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`).
+
+**Ergebnis des DHL/Hermes-Spikes (Task 1):** DHL/Hermes-Recherche: DHL-API
+verlangt für den produktiven/dauerhaften Zugang faktisch ein Geschäftsprofil
+(freie Stufe nur 250 Calls/Tag, Dev-Zweck), Hermes bietet keine öffentliche
+Tracking-API für Privatkunden – daher kein einfacher kostenloser Live-Status
+verfügbar. Fallback wird verwendet: nur Trackingnummer speichern, **kein**
+Link zur Trackingseite (dafür wäre noch ein eigener Baustein nötig, der die
+richtige Tracking-URL je Paketdienst zusammensetzt – nicht Teil dieser
+Etappe). Mark aktualisiert den Sendungsstatus bei Bedarf manuell per Klick
+auf den Status-Badge in der App.
+
+**Entscheidungen:**
+- **GMX braucht ein Anwendungsspezifisches Passwort für IMAP**, unabhängig
+  vom 2FA-Status des Accounts – das normale Login-Passwort wird von GMX für
+  Drittanbieter-IMAP-Zugriff abgelehnt (auch wenn der normale Web-Login damit
+  funktioniert). Erstellt unter Login & Sicherheit → Anwendungsspezifische
+  Passwörter verwalten. Ein alter, nie benutzter Eintrag "Mein Dashboard
+  IMAP" (aus einem früheren Versuch) blieb ungenutzt stehen und kann bei
+  Gelegenheit gelöscht werden.
+- **`claude -p` braucht `--system-prompt`, `--restricted` und
+  `--strict-mcp-config`**, sonst antwortet die Klassifikation konversationell
+  (mit Rückfragen, im Kontext des Dashboard-Projekts) statt mit reinem JSON,
+  und hätte theoretisch Zugriff auf alle MCP-Tools dieses Accounts (Gmail,
+  GitHub, Vercel, …) – ein echtes Risiko bei Prompt-Injection aus
+  E-Mail-Inhalten. `--restricted` allein deckt nur eingebaute
+  Ausführungs-Tools ab, nicht MCP-Server-Tools.
+- **`claude` wird über `cmd.exe /c` aufgerufen, nicht direkt und nicht mit
+  `shell:true`.** Unter Windows ist `claude` nur als `.cmd`-Datei installiert;
+  Node blockt seit einem Sicherheits-Patch (CVE-2024-27980) den direkten
+  Start solcher Dateien ohne Shell, aber `shell:true` hängt Argumente nur
+  unescaped aneinander (Node-Warnung DEP0190) statt sie zu quoten. Der
+  Umweg über das echte `cmd.exe`-Programm lässt Node seine normale,
+  korrekte Escaping-Logik anwenden.
+- **Anleitung + E-Mail-Text laufen komplett über stdin, nicht als
+  CLI-Argument.** Mehrzeilige Kommandozeilen-Argumente werden von cmd.exe
+  falsch zerlegt; `-p` bekommt nur einen kurzen einzeiligen Auslöser-Satz.
+- Das bestehende Diktat-Muster ("Mark erzählt Claude im Chat, Claude trägt in
+  Supabase ein") gilt ab jetzt auch für die Module To-dos und Lager, nicht
+  nur für Berichtsheft und Finanzen-Belege.
+
+**Stand danach:** `npm test` 60/60 grün. Live gegen das echte GMX-Postfach
+getestet: 5 Sendungen (DHL/DPD, korrekt mit Trackingnummern) + 1 Termin
+korrekt erkannt und in Supabase geschrieben. Scheduled Task
+`MeinDashboard-PostfachScan` läuft (`LastTaskResult = 0`), zeigt aber noch auf
+den Worktree-Ordner der Bau-Session – muss beim Zusammenführen nach `main`
+auf den echten Projektordner umgezogen werden (siehe unten).
+
+**Korrektur nach der finalen Review (noch am 2026-09-17/18, vor dem Merge):**
+Ein erster Live-Test zeigte scheinbar nur ein Restrisiko bei mehrfachen
+Läufen am selben Tag. Die abschließende Gesamt-Review deckte auf, dass es
+gravierender ist: IMAP-`SINCE` vergleicht laut RFC 3501 nur das
+Kalenderdatum, nicht die Uhrzeit – **jeder** tägliche Lauf hätte dadurch
+ca. einen ganzen Tag bereits verarbeiteter Mails erneut verarbeitet, nicht
+nur bei zufälligen Doppelläufen am selben Tag. Das hätte laufend doppelte
+`expenses`/`sendungen`/`termine`-Zeilen erzeugt und den berechneten
+Kontostand verfälscht. Gefixt: das Skript filtert jetzt zusätzlich nach dem
+`internalDate` jeder Mail gegen den letzten Lauf-Zeitpunkt, bevor es diese
+verarbeitet.
+
+**Offene Punkte / Nächste Schritte:**
+- `automatisierung/.env` (GMX-App-Passwort + Supabase-Service-Role-Key) liegt
+  nur lokal im Bau-Worktree, nicht in git – muss nach dem Merge einmalig nach
+  `C:\Users\PC\Projekte\mein-dashboard\automatisierung\.env` kopiert werden.
+  **Zusätzlich `npm install` im Haupt-Projektordner ausführen** (dort gibt es
+  noch kein `node_modules/` – ohne das bricht der Postfach-Scan sofort mit
+  `ERR_MODULE_NOT_FOUND` ab), danach den Scheduled Task auf den
+  Haupt-Projektordner umregistrieren.
+- Interaktiver Klick-Test im Browser für das Sendungen-Modul (Pakete/Termine
+  anlegen, Status durchklicken, löschen/abhaken) und den neuen "Abos"-Tab im
+  Finanzen-Modul steht noch aus – brauchte einen echten Login, war in der
+  Bau-Session nicht möglich.
+- Danach: Etappe 7 (Passkey-Login) und Etappe 8 (Redesign nach Marks eigenem
+  Prototyp) – siehe die gemeinsame Spec
+  `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`.
+
+---
+
 ## 2026-09-17 – Design-Korrektur: gemessene Werte statt geschätzter Farben
 
 **Was:** Mark war mit dem vorigen Redesign unzufrieden und schickte eine
