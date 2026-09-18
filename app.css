@@ -1,31 +1,37 @@
 :root {
   color-scheme: dark;
-  --bg: #090f14; --karte: #1b2025; --text: #ffffff;
-  --gedaempft: #c0cdd5; --akzent: #4f8cff; --rand: #262c32;
-  --icon-bg: #262c32; --icon-farbe: #e5e9ec;
-  --pille-bg: #191d20; --pille-text: #ffffff;
-  --hm-gruen: #255f42; --hm-rot: #f62727; --hm-gelb: #e0b73a;
-  --ueberfaellig-bg: rgba(246, 39, 39, .12); --ueberfaellig-text: #f0645c;
+  --bg: #000000; --karte: #0A0A0B; --karte-getoent: #0D0D0F; --text: #ffffff;
+  --gedaempft: #8E9196; --akzent: #0A84FF; --rand: #232326;
+  --icon-bg: #141416; --icon-farbe: var(--text);
+  --pille-bg: var(--karte); --pille-text: var(--text);
+  --hm-gruen: #22C55E; --hm-rot: #F0473F; --hm-gelb: #e0b73a;
+  --hm-rot-bg: #3D2020; --hm-gruen-bg: #183A28; --akzent-bg: #122A47;
+  --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
+  --nav-bg: #000000EE; --schatten: none; --radius: 16px;
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     color-scheme: light;
-    --bg: #e8eaed; --karte: #f2f4f7; --text: #000000;
-    --gedaempft: #707b82; --akzent: #2f6feb; --rand: #e1e5e8;
-    --icon-bg: #eff2f3; --icon-farbe: #33383d;
-    --pille-bg: #191d20; --pille-text: #ffffff;
-    --hm-gruen: #1a6c3b; --hm-rot: #f62727; --hm-gelb: #e0b73a;
-    --ueberfaellig-bg: #f7e8e8; --ueberfaellig-text: #f0645c;
+    --bg: #F7F8FA; --karte: #ffffff; --karte-getoent: #EEF1F3; --text: #14161A;
+    --gedaempft: #868B93; --akzent: #0A84FF; --rand: #E7E9EC;
+    --icon-bg: #EEF1F3; --icon-farbe: var(--text);
+    --pille-bg: var(--karte); --pille-text: var(--text);
+    --hm-gruen: #16A34A; --hm-rot: #EF4444; --hm-gelb: #e0b73a;
+    --hm-rot-bg: #FBDAD8; --hm-gruen-bg: #DCF3E3; --akzent-bg: #DCEBFF;
+    --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
+    --nav-bg: #ffffffEE; --schatten: 0 1px 3px rgba(16,18,24,.05), 0 1px 1px rgba(16,18,24,.03); --radius: 16px;
   }
 }
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #e8eaed; --karte: #f2f4f7; --text: #000000;
-  --gedaempft: #707b82; --akzent: #2f6feb; --rand: #e1e5e8;
-  --icon-bg: #eff2f3; --icon-farbe: #33383d;
-  --pille-bg: #191d20; --pille-text: #ffffff;
-  --hm-gruen: #1a6c3b; --hm-rot: #f62727; --hm-gelb: #e0b73a;
-  --ueberfaellig-bg: #f7e8e8; --ueberfaellig-text: #f0645c;
+  --bg: #F7F8FA; --karte: #ffffff; --karte-getoent: #EEF1F3; --text: #14161A;
+  --gedaempft: #868B93; --akzent: #0A84FF; --rand: #E7E9EC;
+  --icon-bg: #EEF1F3; --icon-farbe: var(--text);
+  --pille-bg: var(--karte); --pille-text: var(--text);
+  --hm-gruen: #16A34A; --hm-rot: #EF4444; --hm-gelb: #e0b73a;
+  --hm-rot-bg: #FBDAD8; --hm-gruen-bg: #DCF3E3; --akzent-bg: #DCEBFF;
+  --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
+  --nav-bg: #ffffffEE; --schatten: 0 1px 3px rgba(16,18,24,.05), 0 1px 1px rgba(16,18,24,.03); --radius: 16px;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -59,7 +65,8 @@ button:disabled { opacity: .6; cursor: default; }
 
 /* Tab-Leiste unten */
 #tab-leiste-unten { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
-  display: flex; background: var(--karte); border-top: 1px solid var(--rand);
+  display: flex; background: var(--nav-bg); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--rand);
   padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
 #tab-leiste-unten button { flex: 1; display: flex; flex-direction: column;
   align-items: center; gap: 3px; background: transparent; border: none;
@@ -73,13 +80,24 @@ button:disabled { opacity: .6; cursor: default; }
 .modul-kopf h2 { flex: 1; font-size: 1.2rem; margin: 0; }
 .modul-kopf button { background: transparent; color: var(--gedaempft);
   border: 1px solid var(--rand); padding: 8px 12px; }
-.tab-leiste { display: flex; gap: 4px; overflow-x: auto; margin: 14px 0;
-  background: var(--bg); border: 1px solid var(--rand); border-radius: 999px; padding: 4px; }
+.tab-leiste { display: flex; gap: 6px; overflow-x: auto; margin: 14px 0;
+  background: var(--icon-bg); border: none; border-radius: 12px; padding: 4px; }
 .tab-leiste button { flex: 1; background: transparent; color: var(--gedaempft);
-  border: none; border-radius: 999px; padding: 8px 12px; white-space: nowrap; }
-.tab-leiste button.aktiv { color: var(--pille-text); background: var(--pille-bg); }
+  border: none; border-radius: 9px; padding: 9px 12px; white-space: nowrap;
+  font-weight: 600; font-size: .82rem; }
+.tab-leiste button.aktiv { color: var(--pille-text); background: var(--pille-bg);
+  box-shadow: var(--schatten); }
 .kachel-zahl { display: block; font-size: 1.4rem; font-weight: 700; margin-top: 6px; }
 .lade { color: var(--gedaempft); }
+.section-head { display: flex; justify-content: space-between; align-items: center; margin: 22px 0 12px; }
+.section-head h2 { font-size: .95rem; margin: 0; font-weight: 700; }
+.link-muted { font-size: .82rem; color: var(--gedaempft); text-decoration: none;
+  background: none; border: none; font-family: inherit; cursor: pointer; padding: 0; }
+.avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--text);
+  color: var(--bg); display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; font-weight: 700; margin: 6px auto 16px; }
+.icon-badge.gruen { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.icon-badge.rot { background: var(--hm-rot-bg); color: var(--hm-rot); }
 
 /* Heute-Ansicht */
 .fortschritt-ring { --prozent: 0;
@@ -135,14 +153,22 @@ button:disabled { opacity: .6; cursor: default; }
 
 /* Statistik */
 .stat-karten { display: flex; gap: 12px; margin-bottom: 14px; }
-.stat-karte { flex: 1; background: var(--karte); border: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
-  border-radius: 20px; padding: 14px; text-align: center; }
+.stat-karte { flex: 1; background: var(--karte); border: none; box-shadow: var(--schatten);
+  border-radius: var(--radius); padding: 14px; text-align: center; }
 .stat-karte span { display: block; font-size: 1.8rem; font-weight: 700; }
 .stat-karte small { color: var(--gedaempft); font-size: .82rem; }
-.stat-karte.gross { text-align: left; padding: 18px; margin-bottom: 14px; border-radius: 22px; }
+.stat-karte.gross { text-align: left; padding: 18px; margin-bottom: 14px; border-radius: var(--radius);
+  background: var(--karte-getoent); }
 .stat-karte.gross .stat-kopf { display: flex; align-items: center; gap: 10px; }
 .stat-karte.gross .stat-kopf small { color: var(--gedaempft); font-size: .82rem; font-weight: 500; }
 .stat-karte.gross span { font-size: 2rem; margin-top: 8px; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.stat-grid .stat { background: var(--karte-getoent); border: 1px solid var(--rand);
+  border-radius: 14px; padding: 12px; box-shadow: var(--schatten); }
+.stat-grid .icon-badge { width: 30px; height: 30px; margin-bottom: 10px; }
+.stat-grid .icon-badge svg { width: 15px; height: 15px; }
+.stat-lbl { font-size: .75rem; color: var(--gedaempft); }
+.stat-val { font-size: .88rem; font-weight: 700; margin-top: 2px; }
 .stat-prognose { background: var(--karte); border: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
   border-radius: 20px; padding: 12px; }
 .quote-zeile { display: grid; grid-template-columns: 1fr 90px 46px; align-items: center;
@@ -168,13 +194,13 @@ button:disabled { opacity: .6; cursor: default; }
 
 /* Lager */
 .status-badge { border-radius: 999px; padding: 4px 10px; font-size: .8rem;
-  color: #0b0d10; border: none; }
-.status-fehlt { background: var(--hm-rot); }
-.status-bestellt { background: var(--hm-gelb); }
-.status-da { background: var(--hm-gruen); }
-.status-unterwegs { background: var(--hm-gelb); }
-.status-zugestellt { background: var(--hm-gruen); }
-.status-unbekannt { background: var(--gedaempft); }
+  font-weight: 700; border: none; cursor: pointer; }
+.status-fehlt { background: var(--hm-rot-bg); color: var(--hm-rot); }
+.status-bestellt { background: var(--akzent-bg); color: var(--akzent); }
+.status-da { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.status-unterwegs { background: var(--akzent-bg); color: var(--akzent); }
+.status-zugestellt { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.status-unbekannt { background: var(--icon-bg); color: var(--gedaempft); }
 
 /* Infos */
 .infos-text h3 { font-size: 1rem; margin: 18px 0 6px; }
