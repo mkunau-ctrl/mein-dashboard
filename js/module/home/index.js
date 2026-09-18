@@ -1,10 +1,13 @@
 import { registriere } from '../../registry.js';
 import { ladeAlles } from './daten.js';
-import { kontostand, unechterKontostand } from '../finanzen/berechnung.js';
+import { kontostand, unechterKontostand, summeProMonat } from '../finanzen/berechnung.js';
 import { sortiereOffeneTodos } from '../todos/planung.js';
 import { sortiereSendungen, sortiereTermine } from '../sendungen/berechnung.js';
 
 const HOME_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>';
+const WALLET_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg>';
+const BOX_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>';
+const AUSGABE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6"/></svg>';
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>
@@ -37,6 +40,8 @@ registriere({
     const gesetzt = finanzen.settings.kontostand_start !== undefined;
     const stand = gesetzt ? kontostand(finanzen.settings, finanzen.expenses, heute()) : null;
     const unecht = gesetzt ? unechterKontostand(finanzen.settings, finanzen.expenses, finanzen.teile, heute()) : null;
+    const heuteDatum = new Date();
+    const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
 
     const termineHtml = sortiereTermine(sendungen.termine).slice(0, 3)
       .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div></div>`)
@@ -54,6 +59,17 @@ registriere({
         <small>Kontostand</small>
         <span>${gesetzt ? stand.toFixed(2) + ' €' : '–'}</span>
         ${gesetzt ? `<small>${unecht.toFixed(2)} € inkl. Warenwert</small>` : ''}
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="icon-badge">${WALLET_ICON}</div>
+          <div class="stat-lbl">Kontostand</div>
+          <div class="stat-val">${gesetzt ? stand.toFixed(2) + ' €' : '–'}</div></div>
+        <div class="stat"><div class="icon-badge">${BOX_ICON}</div>
+          <div class="stat-lbl">Unecht</div>
+          <div class="stat-val">${gesetzt ? unecht.toFixed(2) + ' €' : '–'}</div></div>
+        <div class="stat"><div class="icon-badge rot">${AUSGABE_ICON}</div>
+          <div class="stat-lbl">Ausgaben Monat</div>
+          <div class="stat-val">${ausgabenMonat.toFixed(2)} €</div></div>
       </div>
       <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
       <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
