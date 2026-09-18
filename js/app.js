@@ -2,14 +2,18 @@ import { parseHash } from './router.js';
 import { entscheideAnsicht } from './view.js';
 import { holeSession, sendeMagicLink, beiAuthWechsel,
          meldeAnMitPasskey, registrierePasskey } from './auth.js';
-import { alleModule, holeModul } from './registry.js';
+import { holeModul } from './registry.js';
 import { wendeThemeAn, wechsleTheme } from './theme.js';
 import './module/ernaehrung/index.js';
 import './module/todos/index.js';
 import './module/finanzen/index.js';
 import './module/berichtsheft/index.js';
 import './module/sendungen/index.js';
+import './module/home/index.js';
+import './module/suche/index.js';
 import './module/profil/index.js';
+
+const NAV_MODULE = ['home', 'finanzen', 'berichtsheft', 'suche', 'profil'];
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');
@@ -49,7 +53,9 @@ function zeige(ansicht) {
 
 function rendereTabLeiste(aktivId) {
   tabLeiste.innerHTML = '';
-  for (const modul of alleModule()) {
+  for (const modulId of NAV_MODULE) {
+    const modul = holeModul(modulId);
+    if (!modul) continue;
     const tab = document.createElement('button');
     tab.className = modul.id === aktivId ? 'aktiv' : '';
     tab.innerHTML = `${modul.icon || ''}<span>${modul.titel}</span>`;
@@ -73,7 +79,7 @@ async function route() {
   zeige(entscheideAnsicht(session));
   if (!session) return;
   const { modul } = parseHash(location.hash);
-  const gewaehlt = (modul ? holeModul(modul) : null) || alleModule()[0];
+  const gewaehlt = (modul ? holeModul(modul) : null) || holeModul('home');
   if (gewaehlt) await oeffneModul(gewaehlt);
 }
 
