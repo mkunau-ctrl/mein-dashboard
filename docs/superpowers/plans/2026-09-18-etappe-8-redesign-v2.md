@@ -819,10 +819,17 @@ git commit -m "feat: neues Modul Home (Kontostand-Ueberblick + Termine/Sendungen
 - Modify: `js/app.js`
 
 **Interfaces:**
-- Konsumiert: `holeSession`, `meldeAb` (`js/auth.js`, bestehend).
+- Konsumiert: `holeSession`, `meldeAb` (`js/auth.js`, bestehend); `.avatar`-CSS-Klasse
+  (Task 8, Optik-Addendum — sollte vor dieser Task dispatcht werden, damit
+  der Avatar von Anfang an gestylt ist; funktioniert aber auch unstyled,
+  falls die Reihenfolge doch anders läuft).
 - Produziert: registriertes Modul `id: 'profil'`.
 
 - [ ] **Schritt 1: `profil/index.js` schreiben**
+
+Zeigt einen Avatar-Kreis mit dem ersten Buchstaben der E-Mail-Adresse
+(kein erfundener Name/keine Initialen aus Daten, die nicht existieren —
+siehe Optik-Addendum-Spec Abschnitt 2).
 
 ```js
 import { registriere } from '../../registry.js';
@@ -830,15 +837,23 @@ import { holeSession, meldeAb } from '../../auth.js';
 
 const PROFIL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 6-6 8-6s6.5 2 8 6"/></svg>';
 
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
 registriere({
   id: 'profil',
   titel: 'Profil',
   icon: PROFIL_ICON,
   async init(container) {
     const session = await holeSession();
+    const email = session?.user?.email ?? '';
+    const buchstabe = email ? email[0].toUpperCase() : '?';
     container.innerHTML = `
       <header class="modul-kopf"><h2>Profil</h2></header>
-      <p>Angemeldet als <strong>${session?.user?.email ?? '–'}</strong></p>
+      <div class="avatar">${esc(buchstabe)}</div>
+      <p style="text-align:center;">Angemeldet als <strong>${esc(email) || '–'}</strong></p>
       <p class="lade">Hell/Dunkel-Umschalter findest du oben rechts im Header.</p>
       <button id="profil-abmelden" class="listen-neu">Abmelden</button>`;
     container.querySelector('#profil-abmelden').addEventListener('click', async () => {
@@ -1066,14 +1081,366 @@ git merge --no-ff <branch> -m "merge: Etappe 8 (v2) Redesign nach main"
 Push an Mark übergeben (`!git push`), falls der Push in dieser Session
 blockiert wird.
 
+---
+
+### Task 8: Optik-Addendum – Design-Tokens und neue CSS-Bausteine
+
+**Spec (zusätzlich):** `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-optik-addendum-design.md`
+
+**Files:**
+- Modify: `app.css`
+
+**Interfaces:**
+- Produziert: neue/aktualisierte CSS-Variablen (`--karte-getoent`,
+  `--schatten`, `--radius`, `--hm-rot-bg`, `--hm-gruen-bg`, `--akzent-bg`,
+  `--nav-bg`) und neue Klassen (`.stat-grid`/`.stat`, `.section-head`,
+  `.link-muted`, `.avatar`, `.icon-badge.gruen`/`.icon-badge.rot`) —
+  werden von Task 9 (Home-Stat-Raster) und Task 5 (Profil-Avatar)
+  konsumiert. Reine CSS-Änderung, kein JS betroffen, keine Tests nötig.
+
+Diese Task hat keine eigene TDD-Schleife (reines CSS, `js/module/README.md`
+verlangt Tests nur für Logik). Verifikation erfolgt über `npm test`
+(muss unverändert grün bleiben, da kein JS geändert wird) plus manuellen
+Sichtcheck im Browser.
+
+- [ ] **Schritt 1: `:root`-Block in `app.css` ersetzen**
+
+Den kompletten bestehenden Block (Zeilen 1-29 in `app.css`)
+
+```css
+:root {
+  color-scheme: dark;
+  --bg: #090f14; --karte: #1b2025; --text: #ffffff;
+  --gedaempft: #c0cdd5; --akzent: #4f8cff; --rand: #262c32;
+  --icon-bg: #262c32; --icon-farbe: #e5e9ec;
+  --pille-bg: #191d20; --pille-text: #ffffff;
+  --hm-gruen: #255f42; --hm-rot: #f62727; --hm-gelb: #e0b73a;
+  --ueberfaellig-bg: rgba(246, 39, 39, .12); --ueberfaellig-text: #f0645c;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #e8eaed; --karte: #f2f4f7; --text: #000000;
+    --gedaempft: #707b82; --akzent: #2f6feb; --rand: #e1e5e8;
+    --icon-bg: #eff2f3; --icon-farbe: #33383d;
+    --pille-bg: #191d20; --pille-text: #ffffff;
+    --hm-gruen: #1a6c3b; --hm-rot: #f62727; --hm-gelb: #e0b73a;
+    --ueberfaellig-bg: #f7e8e8; --ueberfaellig-text: #f0645c;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #e8eaed; --karte: #f2f4f7; --text: #000000;
+  --gedaempft: #707b82; --akzent: #2f6feb; --rand: #e1e5e8;
+  --icon-bg: #eff2f3; --icon-farbe: #33383d;
+  --pille-bg: #191d20; --pille-text: #ffffff;
+  --hm-gruen: #1a6c3b; --hm-rot: #f62727; --hm-gelb: #e0b73a;
+  --ueberfaellig-bg: #f7e8e8; --ueberfaellig-text: #f0645c;
+}
+```
+
+ersetzen durch:
+
+```css
+:root {
+  color-scheme: dark;
+  --bg: #000000; --karte: #0A0A0B; --karte-getoent: #0D0D0F; --text: #ffffff;
+  --gedaempft: #8E9196; --akzent: #0A84FF; --rand: #232326;
+  --icon-bg: #141416; --icon-farbe: var(--text);
+  --pille-bg: var(--karte); --pille-text: var(--text);
+  --hm-gruen: #22C55E; --hm-rot: #F0473F; --hm-gelb: #e0b73a;
+  --hm-rot-bg: #3D2020; --hm-gruen-bg: #183A28; --akzent-bg: #122A47;
+  --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
+  --nav-bg: #000000EE; --schatten: none; --radius: 16px;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #F7F8FA; --karte: #ffffff; --karte-getoent: #EEF1F3; --text: #14161A;
+    --gedaempft: #868B93; --akzent: #0A84FF; --rand: #E7E9EC;
+    --icon-bg: #EEF1F3; --icon-farbe: var(--text);
+    --pille-bg: var(--karte); --pille-text: var(--text);
+    --hm-gruen: #16A34A; --hm-rot: #EF4444; --hm-gelb: #e0b73a;
+    --hm-rot-bg: #FBDAD8; --hm-gruen-bg: #DCF3E3; --akzent-bg: #DCEBFF;
+    --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
+    --nav-bg: #ffffffEE; --schatten: 0 1px 3px rgba(16,18,24,.05), 0 1px 1px rgba(16,18,24,.03); --radius: 16px;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #F7F8FA; --karte: #ffffff; --karte-getoent: #EEF1F3; --text: #14161A;
+  --gedaempft: #868B93; --akzent: #0A84FF; --rand: #E7E9EC;
+  --icon-bg: #EEF1F3; --icon-farbe: var(--text);
+  --pille-bg: var(--karte); --pille-text: var(--text);
+  --hm-gruen: #16A34A; --hm-rot: #EF4444; --hm-gelb: #e0b73a;
+  --hm-rot-bg: #FBDAD8; --hm-gruen-bg: #DCF3E3; --akzent-bg: #DCEBFF;
+  --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
+  --nav-bg: #ffffffEE; --schatten: 0 1px 3px rgba(16,18,24,.05), 0 1px 1px rgba(16,18,24,.03); --radius: 16px;
+}
+```
+
+- [ ] **Schritt 2: `.stat-karte`-Regeln aktualisieren**
+
+Die bestehenden Regeln
+
+```css
+.stat-karte { flex: 1; background: var(--karte); border: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+  border-radius: 20px; padding: 14px; text-align: center; }
+.stat-karte span { display: block; font-size: 1.8rem; font-weight: 700; }
+.stat-karte small { color: var(--gedaempft); font-size: .82rem; }
+.stat-karte.gross { text-align: left; padding: 18px; margin-bottom: 14px; border-radius: 22px; }
+```
+
+ersetzen durch:
+
+```css
+.stat-karte { flex: 1; background: var(--karte); border: none; box-shadow: var(--schatten);
+  border-radius: var(--radius); padding: 14px; text-align: center; }
+.stat-karte span { display: block; font-size: 1.8rem; font-weight: 700; }
+.stat-karte small { color: var(--gedaempft); font-size: .82rem; }
+.stat-karte.gross { text-align: left; padding: 18px; margin-bottom: 14px; border-radius: var(--radius);
+  background: var(--karte-getoent); }
+```
+
+(Die restlichen `.stat-karte.gross`-Unterregeln — `.stat-kopf` usw. —
+bleiben unverändert, nur die zwei oben gezeigten Blöcke werden ersetzt.)
+
+- [ ] **Schritt 3: Neue `.stat-grid`/`.stat`-Klassen ergänzen**
+
+Direkt nach dem `.stat-karte.gross span { font-size: 2rem; margin-top: 8px; }`-Block
+(vor `.stat-prognose`) einfügen:
+
+```css
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.stat-grid .stat { background: var(--karte-getoent); border: 1px solid var(--rand);
+  border-radius: 14px; padding: 12px; box-shadow: var(--schatten); }
+.stat-grid .icon-badge { width: 30px; height: 30px; margin-bottom: 10px; }
+.stat-grid .icon-badge svg { width: 15px; height: 15px; }
+.stat-lbl { font-size: .75rem; color: var(--gedaempft); }
+.stat-val { font-size: .88rem; font-weight: 700; margin-top: 2px; }
+```
+
+- [ ] **Schritt 4: `.status-badge`-Familie auf getönte Pillen umstellen**
+
+Die bestehenden Regeln
+
+```css
+.status-badge { border-radius: 999px; padding: 4px 10px; font-size: .8rem;
+  color: #0b0d10; border: none; }
+.status-fehlt { background: var(--hm-rot); }
+.status-bestellt { background: var(--hm-gelb); }
+.status-da { background: var(--hm-gruen); }
+.status-unterwegs { background: var(--hm-gelb); }
+.status-zugestellt { background: var(--hm-gruen); }
+.status-unbekannt { background: var(--gedaempft); }
+```
+
+ersetzen durch:
+
+```css
+.status-badge { border-radius: 999px; padding: 4px 10px; font-size: .8rem;
+  font-weight: 700; border: none; cursor: pointer; }
+.status-fehlt { background: var(--hm-rot-bg); color: var(--hm-rot); }
+.status-bestellt { background: var(--akzent-bg); color: var(--akzent); }
+.status-da { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.status-unterwegs { background: var(--akzent-bg); color: var(--akzent); }
+.status-zugestellt { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.status-unbekannt { background: var(--icon-bg); color: var(--gedaempft); }
+```
+
+- [ ] **Schritt 5: `.tab-leiste` und `#tab-leiste-unten` retinten**
+
+Die bestehende Regel
+
+```css
+.tab-leiste { display: flex; gap: 4px; overflow-x: auto; margin: 14px 0;
+  background: var(--bg); border: 1px solid var(--rand); border-radius: 999px; padding: 4px; }
+.tab-leiste button { flex: 1; background: transparent; color: var(--gedaempft);
+  border: none; border-radius: 999px; padding: 8px 12px; white-space: nowrap; }
+.tab-leiste button.aktiv { color: var(--pille-text); background: var(--pille-bg); }
+```
+
+ersetzen durch:
+
+```css
+.tab-leiste { display: flex; gap: 6px; overflow-x: auto; margin: 14px 0;
+  background: var(--icon-bg); border: none; border-radius: 12px; padding: 4px; }
+.tab-leiste button { flex: 1; background: transparent; color: var(--gedaempft);
+  border: none; border-radius: 9px; padding: 9px 12px; white-space: nowrap;
+  font-weight: 600; font-size: .82rem; }
+.tab-leiste button.aktiv { color: var(--pille-text); background: var(--pille-bg);
+  box-shadow: var(--schatten); }
+```
+
+Die bestehende Regel
+
+```css
+#tab-leiste-unten { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  display: flex; background: var(--karte); border-top: 1px solid var(--rand);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
+```
+
+ersetzen durch:
+
+```css
+#tab-leiste-unten { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  display: flex; background: var(--nav-bg); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--rand);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
+```
+
+- [ ] **Schritt 6: Neue `.section-head`/`.link-muted`/`.avatar`/`.icon-badge`-Varianten ergänzen**
+
+Direkt nach dem `.lade { color: var(--gedaempft); }`-Block einfügen:
+
+```css
+.section-head { display: flex; justify-content: space-between; align-items: center; margin: 22px 0 12px; }
+.section-head h2 { font-size: .95rem; margin: 0; font-weight: 700; }
+.link-muted { font-size: .82rem; color: var(--gedaempft); text-decoration: none;
+  background: none; border: none; font-family: inherit; cursor: pointer; padding: 0; }
+.avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--text);
+  color: var(--bg); display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; font-weight: 700; margin: 6px auto 16px; }
+.icon-badge.gruen { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.icon-badge.rot { background: var(--hm-rot-bg); color: var(--hm-rot); }
+```
+
+- [ ] **Schritt 7: Verifizieren**
+
+Run: `npm test`
+Expected: weiterhin alle Tests grün (reine CSS-Änderung, keine
+Logikänderung). Zusätzlich `node --check` ist hier nicht relevant (kein
+JS geändert). Lokalen Server starten und optisch prüfen: dunkles Theme
+zeigt near-black Karten/Hintergrund, Status-Pillen sind jetzt getönt
+statt volltonfarbig, Tab-Leiste unten wirkt transparent/geblurrt.
+
+- [ ] **Schritt 8: Commit**
+
+```bash
+git add app.css
+git commit -m "feat: Optik-Addendum - Design-Tokens und Bausteine aus Marks Prototyp uebernommen"
+```
+
+---
+
+### Task 9: Home-Stat-Raster ergänzen (Kontostand/Unecht/Ausgaben)
+
+**Files:**
+- Modify: `js/module/home/index.js`
+
+**Interfaces:**
+- Konsumiert: `.stat-grid`/`.stat`/`.icon-badge.rot`-CSS (Task 8, muss vor
+  dieser Task fertig sein); `summeProMonat` (`finanzen/berechnung.js`,
+  bestehend, bisher von Home noch nicht importiert).
+- Produziert: keine neuen Exporte, nur UI-Ergänzung im bestehenden Modul.
+
+- [ ] **Schritt 1: Import erweitern**
+
+Die Zeile
+
+```js
+import { kontostand, unechterKontostand } from '../finanzen/berechnung.js';
+```
+
+ersetzen durch:
+
+```js
+import { kontostand, unechterKontostand, summeProMonat } from '../finanzen/berechnung.js';
+```
+
+- [ ] **Schritt 2: Icons ergänzen**
+
+Nach der Zeile mit `const HOME_ICON = ...;` einfügen (Icons 1:1 aus
+`js/module/finanzen/index.js` (Wallet), `js/module/finanzen/teile.js`
+(Box) und `js/module/finanzen/ausgaben.js` (Beleg) übernommen, damit
+gleiche Symbole wie in Finanzen verwendet werden):
+
+```js
+const WALLET_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg>';
+const BOX_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>';
+const AUSGABE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6"/></svg>';
+```
+
+- [ ] **Schritt 3: Ausgaben-diesen-Monat berechnen**
+
+In `init(container)`, direkt nach der Zeile
+`const unecht = gesetzt ? unechterKontostand(...) : null;` einfügen:
+
+```js
+    const heuteDatum = new Date();
+    const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
+```
+
+- [ ] **Schritt 4: Stat-Raster ins Template einfügen**
+
+Den bestehenden `container.innerHTML`-Template-String
+
+```js
+    container.innerHTML = `
+      <header class="modul-kopf"><h2>Home</h2></header>
+      <div class="stat-karte gross">
+        <small>Kontostand</small>
+        <span>${gesetzt ? stand.toFixed(2) + ' €' : '–'}</span>
+        ${gesetzt ? `<small>${unecht.toFixed(2)} € inkl. Warenwert</small>` : ''}
+      </div>
+      <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
+      <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
+      <section>${abschnitt('Offene To-dos', '#/todos', todosHtml)}</section>`;
+```
+
+ersetzen durch:
+
+```js
+    container.innerHTML = `
+      <header class="modul-kopf"><h2>Home</h2></header>
+      <div class="stat-karte gross">
+        <small>Kontostand</small>
+        <span>${gesetzt ? stand.toFixed(2) + ' €' : '–'}</span>
+        ${gesetzt ? `<small>${unecht.toFixed(2)} € inkl. Warenwert</small>` : ''}
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><div class="icon-badge">${WALLET_ICON}</div>
+          <div class="stat-lbl">Kontostand</div>
+          <div class="stat-val">${gesetzt ? stand.toFixed(2) + ' €' : '–'}</div></div>
+        <div class="stat"><div class="icon-badge">${BOX_ICON}</div>
+          <div class="stat-lbl">Unecht</div>
+          <div class="stat-val">${gesetzt ? unecht.toFixed(2) + ' €' : '–'}</div></div>
+        <div class="stat"><div class="icon-badge rot">${AUSGABE_ICON}</div>
+          <div class="stat-lbl">Ausgaben Monat</div>
+          <div class="stat-val">${ausgabenMonat.toFixed(2)} €</div></div>
+      </div>
+      <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
+      <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
+      <section>${abschnitt('Offene To-dos', '#/todos', todosHtml)}</section>`;
+```
+
+- [ ] **Schritt 5: Verifizieren**
+
+Run: `node --check js/module/home/index.js`
+Expected: keine Syntaxfehler. `npm test` bleibt unverändert grün (kein
+`berechnung.js` in diesem Modul, keine Logikänderung).
+
+- [ ] **Schritt 6: Commit**
+
+```bash
+git add js/module/home/index.js
+git commit -m "feat: Home-Stat-Raster ergaenzt (Kontostand/Unecht/Ausgaben Monat)"
+```
+
 ## Definition of Done
 
-- [ ] Alle 7 Tasks abgeschlossen, `npm test` durchgehend grün.
+- [ ] Alle 9 Tasks abgeschlossen, `npm test` durchgehend grün.
 - [ ] Bottom-Nav zeigt genau Home/Finanzen/Ausbildung/Suche/Profil.
 - [ ] Lager als eigenes Modul entfernt, Teile/Bestellen als Finanzen-Tabs
       funktionsfähig.
 - [ ] Finanzen zeigt echten und unechten Kontostand.
 - [ ] Home, Suche, Profil funktionieren im manuellen Test.
+- [ ] Home zeigt das 3er-Stat-Raster (Kontostand/Unecht/Ausgaben Monat).
+- [ ] Profil zeigt einen Avatar-Kreis mit dem ersten Buchstaben der
+      E-Mail-Adresse.
+- [ ] `app.css` nutzt die neuen Design-Tokens/Bausteine aus dem
+      Optik-Addendum, alle Module (auch Ernährung/To-dos/Sendungen)
+      übernehmen die neue Optik automatisch.
 - [ ] Ernährung/To-dos/Sendungen weiterhin per Hash erreichbar.
 - [ ] `docs/PROJEKT-LOG.md` + `CLAUDE.md` aktuell, nach `main` gemergt,
       gepusht.
