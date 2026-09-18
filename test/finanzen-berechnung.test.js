@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kontostand, summeProMonat, summenProKategorie, erkenneAbos }
+import { kontostand, summeProMonat, summenProKategorie, erkenneAbos,
+  warenwert, sortiereTeile, merkliste, naechsterStatus, unechterKontostand }
   from '../js/module/finanzen/berechnung.js';
 
 const expenses = [
@@ -56,4 +57,40 @@ test('erkenneAbos: ignoriert einmalige Ausgaben ohne Wiederholung', () => {
   assert.deepEqual(erkenneAbos([
     { betrag: 50, kategorie: 'lebensmittel', notiz: 'Rewe', datum: '2026-09-01' },
   ]), []);
+});
+
+const teile = [
+  { bezeichnung: 'Display iPhone 15', bestand: 2, einzelwert: 60, status: 'da' },
+  { bezeichnung: 'Akku iPhone 13', bestand: 0, einzelwert: 25, status: 'fehlt' },
+  { bezeichnung: 'Rückglas iPhone 14', bestand: 1, einzelwert: 15, status: 'bestellt' },
+  { bezeichnung: 'Schraubenset', bestand: 5, status: 'da' }, // kein einzelwert
+];
+
+test('warenwert: Summe bestand mal einzelwert, fehlender Wert zaehlt als 0', () => {
+  assert.equal(warenwert(teile), 2 * 60 + 0 * 25 + 1 * 15 + 5 * 0);
+});
+
+test('sortiereTeile: fehlt vor bestellt vor da, sonst alphabetisch', () => {
+  const namen = sortiereTeile(teile).map((t) => t.bezeichnung);
+  assert.deepEqual(namen, [
+    'Akku iPhone 13', 'Rückglas iPhone 14', 'Display iPhone 15', 'Schraubenset',
+  ]);
+});
+
+test('merkliste: nur status != da', () => {
+  const namen = merkliste(teile).map((t) => t.bezeichnung);
+  assert.deepEqual(namen, ['Akku iPhone 13', 'Rückglas iPhone 14']);
+});
+
+test('naechsterStatus: zyklisch fehlt -> bestellt -> da -> fehlt', () => {
+  assert.equal(naechsterStatus('fehlt'), 'bestellt');
+  assert.equal(naechsterStatus('bestellt'), 'da');
+  assert.equal(naechsterStatus('da'), 'fehlt');
+});
+
+test('unechterKontostand: echter Kontostand plus Warenwert', () => {
+  const settings = { kontostand_start: 500, stand_datum: '2026-09-01' };
+  const expenses = [{ betrag: 20, kategorie: 'tanken', datum: '2026-09-05' }];
+  // echter Kontostand: 500 - 20 = 480; Warenwert der 4 Testteile: 2*60+0*25+1*15+5*0 = 135
+  assert.equal(unechterKontostand(settings, expenses, teile, '2026-09-16'), 480 + 135);
 });
