@@ -1,6 +1,6 @@
 import { parseHash } from './router.js';
 import { entscheideAnsicht } from './view.js';
-import { holeSession, sendeMagicLink, meldeAb, beiAuthWechsel,
+import { holeSession, sendeMagicLink, beiAuthWechsel,
          meldeAnMitPasskey, registrierePasskey } from './auth.js';
 import { alleModule, holeModul } from './registry.js';
 import { wendeThemeAn, wechsleTheme } from './theme.js';
@@ -9,6 +9,7 @@ import './module/todos/index.js';
 import './module/finanzen/index.js';
 import './module/berichtsheft/index.js';
 import './module/sendungen/index.js';
+import './module/profil/index.js';
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');
@@ -101,12 +102,6 @@ document.getElementById('passkey-registrieren').addEventListener('click', async 
   const { ok, fehler } = await registrierePasskey();
   passkeyHinweis.textContent = ok ? 'Passkey gespeichert.' : `Fehler: ${fehler}`;
   knopf.disabled = false;
-});
-
-document.getElementById('logout').addEventListener('click', async () => {
-  await meldeAb();
-  location.hash = '';
-  route();
 });
 
 beiAuthWechsel(() => route());
