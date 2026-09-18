@@ -17,3 +17,6 @@ automatisierung/letzter-lauf.json
 
 # Claude-Code-Sessiondaten (Worktrees, Scratchpads)
 .claude/
+
+# Manuell angelegte Git-Worktrees fuer laengere Bau-Vorhaben
+.worktrees/
