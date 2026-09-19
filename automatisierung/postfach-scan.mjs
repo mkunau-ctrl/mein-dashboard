@@ -96,7 +96,9 @@ async function findeBestehendeSendung(trackingnummer) {
 async function aktualisiereSendung(bestehend, k, statusKategorie) {
   const aktualisierung = { letzte_aktualisierung: new Date().toISOString() };
   const neuePrio = STATUS_PRIORITAET[statusKategorie];
-  const aktuellePrio = STATUS_PRIORITAET[bestehend.status] ?? STATUS_PRIORITAET.unbekannt;
+  const aktuellePrio = (bestehend.status == null || bestehend.status === 'unbekannt')
+    ? -1
+    : STATUS_PRIORITAET[bestehend.status];
   if (statusKategorie !== 'unbekannt' && neuePrio >= aktuellePrio) {
     aktualisierung.status = statusKategorie;
   }
