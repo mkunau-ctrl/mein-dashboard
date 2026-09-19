@@ -117,6 +117,8 @@ button:disabled { opacity: .6; cursor: default; }
 
 /* Liste bearbeiten */
 .listen-neu { margin-bottom: 14px; }
+.knopf-neutral { width: 100%; background: transparent; color: var(--text);
+  border: 1px solid var(--rand); }
 .punkt-zeile { display: flex; align-items: center; gap: 10px; padding: 10px 4px;
   border-bottom: 1px solid var(--rand); }
 .punkt-info { flex: 1; display: flex; flex-direction: column; }
@@ -153,7 +155,7 @@ button:disabled { opacity: .6; cursor: default; }
 
 /* Statistik */
 .stat-karten { display: flex; gap: 12px; margin-bottom: 14px; }
-.stat-karte { flex: 1; background: var(--karte); border: none; box-shadow: var(--schatten);
+.stat-karte { flex: 1; background: var(--karte); border: 1px solid var(--rand); box-shadow: var(--schatten);
   border-radius: var(--radius); padding: 14px; text-align: center; }
 .stat-karte span { display: block; font-size: 1.8rem; font-weight: 700; }
 .stat-karte small { color: var(--gedaempft); font-size: .82rem; }
@@ -169,8 +171,8 @@ button:disabled { opacity: .6; cursor: default; }
 .stat-grid .icon-badge svg { width: 15px; height: 15px; }
 .stat-lbl { font-size: .75rem; color: var(--gedaempft); }
 .stat-val { font-size: .88rem; font-weight: 700; margin-top: 2px; }
-.stat-prognose { background: var(--karte); border: none; box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
-  border-radius: 20px; padding: 12px; }
+.stat-prognose { background: var(--karte); box-shadow: var(--schatten);
+  border-radius: var(--radius); border: 1px solid var(--rand); padding: 12px; }
 .quote-zeile { display: grid; grid-template-columns: 1fr 90px 46px; align-items: center;
   gap: 8px; padding: 6px 0; font-size: .9rem; }
 .quote-zeile.betrag { grid-template-columns: 1fr 80px 68px; }
@@ -192,7 +194,7 @@ button:disabled { opacity: .6; cursor: default; }
 /* Todos */
 .todo-ueberfaellig { color: var(--hm-rot); }
 
-/* Lager */
+/* Status-Pillen (Finanzen-Teile, Sendungen) */
 .status-badge { border-radius: 999px; padding: 4px 10px; font-size: .8rem;
   font-weight: 700; border: none; cursor: pointer; }
 .status-fehlt { background: var(--hm-rot-bg); color: var(--hm-rot); }

@@ -70,7 +70,12 @@ async function oeffneModul(modul) {
   if (aktivesModulId !== modul.id) {
     aktivesModulId = modul.id;
     modulDetail.innerHTML = '';
-    await modul.init(modulDetail);
+    try {
+      await modul.init(modulDetail);
+    } catch (e) {
+      aktivesModulId = null;
+      modulDetail.innerHTML = `<p class="lade">Fehler beim Laden: ${e.message}</p>`;
+    }
   }
 }
 

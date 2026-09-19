@@ -20,7 +20,7 @@ registriere({
   titel: 'Suche',
   icon: SUCHE_ICON,
   async init(container) {
-    if (!zustand) await ladeZustand();
+    await ladeZustand();
     container.innerHTML = `
       <header class="modul-kopf"><h2>Suche</h2></header>
       <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …" style="width:100%">

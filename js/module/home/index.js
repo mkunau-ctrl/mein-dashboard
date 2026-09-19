@@ -35,7 +35,7 @@ registriere({
   titel: 'Home',
   icon: HOME_ICON,
   async init(container) {
-    if (!zustand) await ladeZustand();
+    await ladeZustand();
     const { finanzen, todos, sendungen } = zustand;
     const gesetzt = finanzen.settings.kontostand_start !== undefined;
     const stand = gesetzt ? kontostand(finanzen.settings, finanzen.expenses, heute()) : null;
@@ -47,7 +47,7 @@ registriere({
       .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div></div>`)
       .join('');
     const sendungenHtml = sortiereSendungen(sendungen.sendungen).filter((s) => s.status !== 'zugestellt').slice(0, 3)
-      .map((s) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(s.haendler)}</strong><small>${s.status}</small></div></div>`)
+      .map((s) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(s.haendler)}</strong><small>${esc(s.status)}</small></div></div>`)
       .join('');
     const todosHtml = sortiereOffeneTodos(todos.offen, heute()).slice(0, 3)
       .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.text)}</strong></div></div>`)

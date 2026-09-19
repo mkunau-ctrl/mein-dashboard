@@ -21,7 +21,7 @@ registriere({
       <div class="avatar">${esc(buchstabe)}</div>
       <p style="text-align:center;">Angemeldet als <strong>${esc(email) || '–'}</strong></p>
       <p class="lade">Hell/Dunkel-Umschalter findest du oben rechts im Header.</p>
-      <button id="profil-abmelden" class="listen-neu">Abmelden</button>`;
+      <button id="profil-abmelden" class="knopf-neutral">Abmelden</button>`;
     container.querySelector('#profil-abmelden').addEventListener('click', async () => {
       await meldeAb();
       location.hash = '';
