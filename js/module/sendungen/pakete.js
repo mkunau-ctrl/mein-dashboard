@@ -1,7 +1,7 @@
 import { setzeSendungStatus, entferneSendung } from './daten.js';
 import { sortiereSendungen, naechsterSendungStatus } from './berechnung.js';
 
-const STATUS_TEXT = { unterwegs: 'unterwegs', zugestellt: 'zugestellt', unbekannt: 'unbekannt' };
+const STATUS_TEXT = { unterwegs: 'unterwegs', abholbereit: 'abholbereit', zugestellt: 'zugestellt', unbekannt: 'unbekannt' };
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>

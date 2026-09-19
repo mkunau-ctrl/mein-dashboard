@@ -5,7 +5,7 @@
   --icon-bg: #141416; --icon-farbe: var(--text);
   --pille-bg: var(--karte); --pille-text: var(--text);
   --hm-gruen: #22C55E; --hm-rot: #F0473F; --hm-gelb: #e0b73a;
-  --hm-rot-bg: #3D2020; --hm-gruen-bg: #183A28; --akzent-bg: #122A47;
+  --hm-rot-bg: #3D2020; --hm-gruen-bg: #183A28; --akzent-bg: #122A47; --hm-gelb-bg: #3D2F0F;
   --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
   --nav-bg: #000000EE; --schatten: none; --radius: 16px;
 }
@@ -17,7 +17,7 @@
     --icon-bg: #EEF1F3; --icon-farbe: var(--text);
     --pille-bg: var(--karte); --pille-text: var(--text);
     --hm-gruen: #16A34A; --hm-rot: #EF4444; --hm-gelb: #e0b73a;
-    --hm-rot-bg: #FBDAD8; --hm-gruen-bg: #DCF3E3; --akzent-bg: #DCEBFF;
+    --hm-rot-bg: #FBDAD8; --hm-gruen-bg: #DCF3E3; --akzent-bg: #DCEBFF; --hm-gelb-bg: #FBF0D6;
     --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
     --nav-bg: #ffffffEE; --schatten: 0 1px 3px rgba(16,18,24,.05), 0 1px 1px rgba(16,18,24,.03); --radius: 16px;
   }
@@ -29,7 +29,7 @@
   --icon-bg: #EEF1F3; --icon-farbe: var(--text);
   --pille-bg: var(--karte); --pille-text: var(--text);
   --hm-gruen: #16A34A; --hm-rot: #EF4444; --hm-gelb: #e0b73a;
-  --hm-rot-bg: #FBDAD8; --hm-gruen-bg: #DCF3E3; --akzent-bg: #DCEBFF;
+  --hm-rot-bg: #FBDAD8; --hm-gruen-bg: #DCF3E3; --akzent-bg: #DCEBFF; --hm-gelb-bg: #FBF0D6;
   --ueberfaellig-bg: var(--hm-rot-bg); --ueberfaellig-text: var(--hm-rot);
   --nav-bg: #ffffffEE; --schatten: 0 1px 3px rgba(16,18,24,.05), 0 1px 1px rgba(16,18,24,.03); --radius: 16px;
 }
@@ -192,6 +192,7 @@ button:disabled { opacity: .6; cursor: default; }
   font-weight: 700; border: none; cursor: pointer; }
 .status-fehlt { background: var(--hm-rot-bg); color: var(--hm-rot); }
 .status-bestellt { background: var(--akzent-bg); color: var(--akzent); }
+.status-abholbereit { background: var(--hm-gelb-bg); color: var(--hm-gelb); }
 .status-da { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
 .status-unterwegs { background: var(--akzent-bg); color: var(--akzent); }
 .status-zugestellt { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
