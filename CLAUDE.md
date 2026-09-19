@@ -142,18 +142,42 @@ unten für Details.
   E-Mail-Automatisierung befüllt, aber auch manuell nutzbar):
   - `index.js` – Registrierung, Tabs „Pakete"/„Termine", Kachel-Text.
   - `daten.js` – Supabase-Zugriff auf `sendungen` + `termine`.
-  - `berechnung.js` – `sortiereSendungen`, `offeneSendungen`, `sortiereTermine`, `naechsterSendungStatus`.
-  - `pakete.js`, `termine.js` – die zwei Tabs.
+  - `berechnung.js` – `sortiereSendungen`, `offeneSendungen`, `sortiereTermine`,
+    `naechsterSendungStatus`. Vier Status-Kategorien (`STATUS_PRIORITAET`,
+    **exportiert** für die Automatisierung, Reihenfolge `unterwegs:0 <
+    abholbereit:1 < unbekannt:2 < zugestellt:3`): **`unterwegs`** →
+    **`abholbereit`** (seit Etappe 3, 2026-09-19) → **`zugestellt`**, dazu
+    der Sonderfall **`unbekannt`** (niedrigste Priorität, außerhalb des
+    Zyklus). `STATUS_ZYKLUS` (unexportiert, nur fürs UI) definiert den
+    Klick-Zyklus `unterwegs → abholbereit → zugestellt → unterwegs`
+    (`unbekannt` klickt zu `unterwegs`).
+  - `pakete.js`, `termine.js` – die zwei Tabs; Status-Pille für
+    `abholbereit` gelb/orange getönt (`--hm-gelb-bg`).
   Details: `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`
-  (Abschnitt 3.4) und `docs/superpowers/plans/2026-09-16-etappe-6-email-automatisierung.md`.
+  (Abschnitt 3.4), `docs/superpowers/plans/2026-09-16-etappe-6-email-automatisierung.md`
+  und (Dedup/Status-Historie/Abholdaten) `docs/superpowers/specs/2026-09-19-etappe-3-sendungen-automatisierung-design.md`.
 - `manifest.webmanifest`, `icon.svg` – PWA. **Echte PNG-Icons (192/512) und
   `apple-touch-icon` fehlen weiterhin** (offener Punkt seit Etappe 0).
 - `automatisierung/` – **lokales** Node-Skript, kein Teil der Browser-App:
   - `postfach-scan.mjs` – täglicher Scan von Marks GMX-Postfach per IMAP,
     Klassifikation jeder Mail per `claude -p` (Details/Warum siehe
     `docs/PROJEKT-LOG.md`, Eintrag 2026-09-17), schreibt Belege/Sendungen/
-    Termine nach Supabase.
-  - `klassifizieren.js` – `baustePrompt`, `parseKlassifikation` (reine Logik, getestet).
+    Termine nach Supabase. **Seit Etappe 3 (2026-09-19):** erkennt
+    bestehende Sendungen per Trackingnummer wieder
+    (`findeBestehendeSendung`) und aktualisiert sie statt eine neue Zeile
+    anzulegen (behebt den seit Etappe 6 bekannten Duplikat-Bug — jede
+    Status-Mail einer Sendung erzeugte vorher eine eigene Zeile). Status
+    bewegt sich dabei nur vorwärts (`STATUS_PRIORITAET`-Vergleich,
+    `unbekannt` im Bestand zählt als niedrigste Priorität). Legt bei jedem
+    verarbeiteten Sendungs-Ereignis einen Eintrag in `sendungen_ereignisse`
+    an (Status-Historie). Ohne bekannte Trackingnummer wird weiterhin neu
+    angelegt (seltene Restlücke für Duplikate, siehe PROJEKT-LOG).
+  - `klassifizieren.js` – `baustePrompt`, `parseKlassifikation`,
+    seit Etappe 3 zusätzlich `kategorisiereStatus(statusText)` (bildet
+    Freitext per Schlüsselwort-Muster auf eine der vier Status-Kategorien
+    ab, Default `unbekannt`) — extrahiert dafür `statusText`/`ort`/
+    `abholcode`/`abholadresse`/`abholzeiten` aus Sendungs-Mails (nur wenn
+    wörtlich in der Mail vorhanden, sonst `null`) (reine Logik, getestet).
   - `letzter-lauf.js` – `leseLetztenLauf`, `schreibeLetztenLauf` (reine Logik, getestet).
   - `.env` (nicht im Repo, siehe Konventionen unten) – GMX- und Supabase-Zugangsdaten.
   - `letzter-lauf.json` (nicht im Repo) – Zeitstempel des letzten erfolgreichen Laufs.
@@ -162,10 +186,11 @@ unten für Details.
   `ernaehrung-zeitplan`, `ernaehrung-berechnung`, `todos-planung`,
   `finanzen-berechnung` (seit Etappe 8 v2 inkl. der ehemaligen
   Lager-Fälle: `warenwert`/`sortiereTeile`/`merkliste`/`naechsterStatus`/
-  `unechterKontostand`), `berichtsheft-berechnung`, `sendungen-berechnung`,
-  `suche-berechnung` (neu, Etappe 8 v2), `automatisierung-klassifizieren`,
-  `automatisierung-letzter-lauf` (65 grün; `lager-berechnung.test.js`
-  existiert seit Etappe 8 v2 nicht mehr).
+  `unechterKontostand`), `berichtsheft-berechnung`, `sendungen-berechnung`
+  (seit Etappe 3, 2026-09-19, inkl. `abholbereit`-Sortierung/-Priorität/
+  -Zyklus), `suche-berechnung` (Etappe 8 v2), `automatisierung-klassifizieren`
+  (seit Etappe 3 inkl. `kategorisiereStatus`), `automatisierung-letzter-lauf`
+  (71 grün; `lager-berechnung.test.js` existiert seit Etappe 8 v2 nicht mehr).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
 
@@ -188,7 +213,7 @@ Home-Screen. Details/Begründung: `docs/PROJEKT-LOG.md`, Eintrag
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 65 grün.
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 71 grün.
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.
@@ -264,7 +289,10 @@ auf Deutsch. Datenschutz beachten.
   - Relying Party Origins: `https://mkunau-ctrl.github.io`
   Danach in der App einloggen (Magic-Link) und oben „Passkey einrichten"
   tippen – erst dann geht „Mit Passkey anmelden" auf dem Login-Screen.
-- Tabellen (Stand Etappe 6): `checklist_items`, `daily_log`, `weight_log`,
-  `settings` (Ernährung), `todos`, `todo_vorlagen`, `expenses`,
+- Tabellen (Stand Etappe 3, 2026-09-19): `checklist_items`, `daily_log`,
+  `weight_log`, `settings` (Ernährung), `todos`, `todo_vorlagen`, `expenses`,
   `finance_settings`, `parts`, `berichtsheft_eintraege`,
-  `berichtsheft_settings`, `sendungen`, `termine`.
+  `berichtsheft_settings`, `sendungen` (seit Etappe 3 zusätzlich
+  `abholcode`/`abholadresse`/`abholzeiten`), `termine`,
+  **`sendungen_ereignisse`** (neu, Etappe 3: Status-Historie pro Sendung —
+  `sendung_id`, `beschreibung`, `status_kategorie`, `ort`).

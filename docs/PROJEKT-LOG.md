@@ -4,6 +4,91 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-19 – Etappe 3: Sendungen-Dedup-Fix + Status-Historie + Abholdaten
+
+**Was:** Der seit der E-Mail-Automatisierung (Etappe 6) bekannte, bis jetzt
+geparkte Bug ist behoben: jede der ~5 Status-Mails, die ein Paketdienst pro
+Sendung verschickt (Versandbestätigung, unterwegs, abholbereit, zugestellt
+…), erzeugte bisher eine eigene neue Zeile in `sendungen` statt die
+bestehende zu aktualisieren. `automatisierung/postfach-scan.mjs` erkennt
+Sendungen jetzt per Trackingnummer wieder (`findeBestehendeSendung`) und
+aktualisiert die bestehende Zeile statt zu duplizieren; nur wenn keine
+Trackingnummer bekannt ist, wird weiterhin neu angelegt (kann bei
+tracking-losen Mails vereinzelt noch zu Duplikaten führen — bewusst
+hingenommen, siehe „Offene Punkte" unten).
+
+Neue Tabelle **`sendungen_ereignisse`** (Status-Historie: wann war das Paket
+wo) — angelegt vom Koordinator per Supabase-Migration vor Task 1 dieser
+Etappe, nicht als eigene Code-Task (keine Migrationsdateien im Repo,
+bestehendes Projekt-Muster). Bei jedem verarbeiteten Sendungs-Ereignis legt
+`postfach-scan.mjs` jetzt einen Eintrag dort an (`beschreibung`,
+`status_kategorie`, `ort`). `sendungen` hat drei neue, ebenfalls per
+Migration angelegte Spalten: `abholcode`, `abholadresse`, `abholzeiten`.
+
+Neue Status-Kategorie **„abholbereit"** zwischen „unterwegs" und
+„zugestellt" (Statuszyklus jetzt vierstufig: `unterwegs → abholbereit →
+zugestellt → unterwegs`, `unbekannt` bleibt Sonderfall außerhalb des
+Zyklus mit niedrigster Priorität). Sichtbar in der Sendungen-Liste
+(Status-Pille, gelb/orange getönt über `--hm-gelb-bg`) und beim
+Status-Klick-Zyklus. `STATUS_PRIORITAET` (`js/module/sendungen/berechnung.js`)
+ist jetzt exportiert (`unterwegs:0, abholbereit:1, unbekannt:2,
+zugestellt:3`) und wird von der Automatisierung importiert, um zu
+entscheiden, ob ein neu erkannter Status ein Fortschritt ist — Status
+bewegt sich nur vorwärts, nie zurück (z. B. verhindert das, dass eine
+verspätet verarbeitete „unterwegs"-Mail einen bereits „zugestellt"-Status
+überschreibt). `STATUS_ZYKLUS` bleibt unexportiert, nur fürs UI gebraucht.
+
+Der Klassifikator (`automatisierung/klassifizieren.js`) extrahiert jetzt
+zusätzlich `statusText`/`ort`/`abholcode`/`abholadresse`/`abholzeiten` aus
+Sendungs-E-Mails — nur wenn der Wert wörtlich/eindeutig in der Mail steht,
+sonst `null` (keine erfundenen Werte, Klassifikator-Prompt sagt das
+explizit). Eine neue reine Funktion `kategorisiereStatus(statusText)`
+bildet `statusText` per Schlüsselwort-Muster auf eine der vier Kategorien
+ab (z. B. „zugestellt|geliefert|ausgeliefert" → `zugestellt`,
+„abholbereit|zur Abholung|Packstation…bereit" → `abholbereit`), Default
+`unbekannt` wenn nichts passt oder der Text leer ist.
+
+**Einmalige Aufräum-Aktion vor dem ersten produktiven Lauf** (vom
+Koordinator per Supabase-Migration/SQL erledigt, nicht Teil einer
+Code-Task): die bestehenden 7 Zeilen in `sendungen` wurden auf 4 reduziert.
+Gelöscht wurden drei erkennbare Duplikate: ein exaktes
+Trackingnummer-Duplikat bei DPD, ein mutmaßliches Duplikat bei DPD ohne
+Trackingnummer, und ein mutmaßliches Duplikat bei Vinted ohne
+Trackingnummer (gleicher Händler- und Abholort-Text, nur 5 Sekunden
+auseinander erstellt — klares Automatisierungs-Artefakt aus der Zeit vor
+dem Dedup-Fix).
+
+**Während der Umsetzung gefundener und behobener Bug (Task 4, vor
+Fertigstellung):** die „Status bewegt sich nur vorwärts"-Logik hatte im
+ursprünglichen Plan einen Fehler beim Sonderfall „aktueller Status ist
+unbekannt" — ein unbekannter Bestandsstatus wurde mit Priorität 2
+behandelt statt mit der niedrigsten Priorität, wodurch ein neu erkannter
+Status nicht immer als Fortschritt gegenüber „unbekannt" galt. Wurde vor
+Abschluss der Task per Fix-Commit korrigiert
+(`aktuellePrio = -1` bei `unbekannt`/`null`), re-review bestätigt korrekt.
+
+**Entscheidungen:** Dedup ausschließlich über Trackingnummer (kein
+Fuzzy-Matching über Händler/Text, um keine unterschiedlichen Sendungen
+versehentlich zusammenzuführen). Kein Bild-Parsing (QR-/Barcode bleibt
+Etappe 4). Für `postfach-scan.mjs` weiterhin keine automatisierten Tests
+(bestehendes Projekt-Muster — Netzwerk-/IMAP-Skript, nur die reine Logik
+in `klassifizieren.js`/`berechnung.js` ist getestet).
+
+**Stand danach:** `npm test` 71/71 grün (70 nach Task 1, +1 netto in
+Task 2 für die neue Status-Kategorie). Gepusht auf `main`.
+
+**Offene Punkte:**
+- Sendungs-Detail-Screen (Klick auf eine Sendung → Status-Historie aus
+  `sendungen_ereignisse` anzeigen, QR-/Barcode rendern) ist bewusst NICHT
+  Teil dieser Etappe — das ist Etappe 4 „Detail-Ansichten bauen", die
+  direkt auf den hier neu geschaffenen Daten aufbaut. Nächster Schritt.
+- Dedup greift nur bei bekannter Trackingnummer; tracking-lose Sendungen
+  (z. B. manche Vinted-Abholungen) können weiterhin vereinzelt doppelt
+  angelegt werden — bislang kein beobachtetes Problem seit der Aufräumung,
+  aber kein automatischer Schutz dagegen.
+
+---
+
 ## 2026-09-19 – Eingabe-UI entfernt (Etappe 2): nur noch Anzeigen/Status/Löschen
 
 **Was:** Alle "+ Neu"-Formulare app-weit entfernt — betrifft `finanzen/ausgaben.js`
