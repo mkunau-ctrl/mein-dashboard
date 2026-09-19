@@ -1,5 +1,4 @@
 import { gruppiereNachWoche, ausbildungsjahr } from './berechnung.js';
-import { speichereSettings } from './daten.js';
 
 const ART_TEXT = { betrieb: 'Betrieb', schule: 'Berufsschule', sonstiges: 'Sonstiges' };
 const TAG_MS = 86_400_000;
@@ -22,9 +21,7 @@ export async function zeigeDrucken(container, zustand, aktualisieren) {
     <div class="bh-einstellungen">
       <p class="lade">${settingsGesetzt
         ? `${esc(s.name)} · ${esc(s.ausbildungsberuf)} · Beginn ${s.ausbildungsbeginn}`
-        : 'Für den Ausdruck bitte einmal Name, Ausbildungsberuf und Ausbildungsbeginn eintragen.'}</p>
-      <button class="listen-neu" id="bh-einstellungen-knopf" type="button">
-        ${settingsGesetzt ? 'Kopfdaten ändern' : 'Kopfdaten eintragen'}</button>
+        : 'Noch keine Kopfdaten (Name/Ausbildungsberuf/Beginn) hinterlegt.'}</p>
     </div>`;
 
   if (gruppen.length === 0) {
@@ -88,52 +85,5 @@ export async function zeigeDrucken(container, zustand, aktualisieren) {
       if (index > 0) { index -= 1; zeichne(); }
     });
     zeichne();
-  }
-
-  container.querySelector('#bh-einstellungen-knopf').addEventListener('click', () => {
-    oeffneEinstellungen();
-  });
-
-  function oeffneEinstellungen() {
-    const dlg = document.createElement('dialog');
-    dlg.className = 'punkt-dialog';
-    dlg.innerHTML = `
-      <form>
-        <h3>Kopfdaten</h3>
-        <label>Name <input name="name" required value="${esc(s.name ?? '')}"></label>
-        <label>Ausbildungsberuf <input name="ausbildungsberuf" required
-          value="${esc(s.ausbildungsberuf ?? '')}"></label>
-        <label>Ausbildungsbeginn <input name="ausbildungsbeginn" type="date" required
-          value="${s.ausbildungsbeginn ?? ''}"></label>
-        <p class="dialog-fehler" role="alert" hidden></p>
-        <menu>
-          <button type="button" data-a="abbrechen">Abbrechen</button>
-          <button type="submit" data-a="speichern">Speichern</button>
-        </menu>
-      </form>`;
-    container.appendChild(dlg);
-    const form = dlg.querySelector('form');
-    const fehlerEl = dlg.querySelector('.dialog-fehler');
-    const schliesse = () => { dlg.close(); dlg.remove(); };
-    dlg.querySelector('[data-a=abbrechen]').addEventListener('click', schliesse);
-    form.addEventListener('submit', async (ev) => {
-      ev.preventDefault();
-      const knopf = form.querySelector('[data-a=speichern]');
-      knopf.disabled = true;
-      try {
-        await speichereSettings({
-          name: form.name.value.trim(),
-          ausbildungsberuf: form.ausbildungsberuf.value.trim(),
-          ausbildungsbeginn: form.ausbildungsbeginn.value,
-        });
-        schliesse();
-        await aktualisieren();
-      } catch (err) {
-        fehlerEl.textContent = err.message;
-        fehlerEl.hidden = false;
-        knopf.disabled = false;
-      }
-    });
-    dlg.showModal();
   }
 }

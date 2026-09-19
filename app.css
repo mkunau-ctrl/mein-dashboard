@@ -142,23 +142,8 @@ button:disabled { opacity: .6; cursor: default; }
 .punkt-aktionen { display: flex; gap: 4px; }
 .punkt-aktionen button { background: transparent; color: var(--gedaempft);
   border: 1px solid var(--rand); padding: 6px 9px; }
-.punkt-dialog { border: 1px solid var(--rand); border-radius: 20px;
-  background: var(--karte); color: var(--text); max-width: 340px; width: 92vw; }
-.punkt-dialog::backdrop { background: rgba(0, 0, 0, .5); }
-.punkt-dialog form { display: flex; flex-direction: column; gap: 12px; }
-.punkt-dialog label { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; }
-.wt-feld { display: flex; flex-wrap: wrap; gap: 8px; border: 1px solid var(--rand);
-  border-radius: 8px; padding: 8px; margin: 0; }
-.wt-feld label { flex-direction: row; align-items: center; gap: 4px; }
-.punkt-dialog menu { display: flex; justify-content: flex-end; gap: 8px; margin: 0; padding: 0; }
-.punkt-dialog menu button[data-a=abbrechen] { background: transparent;
-  color: var(--gedaempft); border: 1px solid var(--rand); }
-.dialog-fehler { color: var(--hm-rot); font-size: .85rem; margin: 0; }
 
 /* Gewicht */
-.gewicht-eingabe { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 12px; }
-.gewicht-eingabe label { flex: 1; display: flex; flex-direction: column; gap: 4px; font-size: .9rem; }
-.g-bmi { color: var(--gedaempft); margin: 4px 0 16px; }
 .g-chart-box { position: relative; height: 240px; max-width: 100%; }
 
 /* Statistik */
@@ -218,8 +203,6 @@ button:disabled { opacity: .6; cursor: default; }
 .infos-text a { color: var(--akzent); word-break: break-all; }
 
 /* Berichtsheft */
-.punkt-dialog textarea { font: inherit; padding: 10px; border-radius: 8px;
-  border: 1px solid var(--rand); background: var(--karte); color: var(--text); resize: vertical; }
 .bh-einstellungen { margin-bottom: 14px; }
 .bh-tabelle { width: 100%; border-collapse: collapse; margin: 14px 0; }
 .bh-tabelle th, .bh-tabelle td { border: 1px solid var(--rand); padding: 6px 8px;

@@ -1,4 +1,4 @@
-import { legeSendungAn, setzeSendungStatus, entferneSendung } from './daten.js';
+import { setzeSendungStatus, entferneSendung } from './daten.js';
 import { sortiereSendungen, naechsterSendungStatus } from './berechnung.js';
 
 const STATUS_TEXT = { unterwegs: 'unterwegs', zugestellt: 'zugestellt', unbekannt: 'unbekannt' };
@@ -9,12 +9,6 @@ function esc(s) {
 }
 
 export async function zeigePakete(container, zustand, aktualisieren) {
-  const neu = document.createElement('button');
-  neu.textContent = '+ Sendung hinzufügen';
-  neu.className = 'listen-neu';
-  neu.addEventListener('click', () => oeffneFormular());
-  container.appendChild(neu);
-
   const liste = document.createElement('div');
   liste.className = 'punkt-liste';
   container.appendChild(liste);
@@ -42,47 +36,5 @@ export async function zeigePakete(container, zustand, aktualisieren) {
       catch (err) { alert(err.message); }
     });
     liste.appendChild(zeile);
-  }
-
-  function oeffneFormular() {
-    const dlg = document.createElement('dialog');
-    dlg.className = 'punkt-dialog';
-    dlg.innerHTML = `
-      <form>
-        <h3>Neue Sendung</h3>
-        <label>Händler <input name="haendler" required></label>
-        <label>Trackingnummer (optional) <input name="trackingnummer"></label>
-        <label>Beschreibung (optional) <input name="beschreibung"></label>
-        <p class="dialog-fehler" role="alert" hidden></p>
-        <menu>
-          <button type="button" data-a="abbrechen">Abbrechen</button>
-          <button type="submit" data-a="speichern">Speichern</button>
-        </menu>
-      </form>`;
-    container.appendChild(dlg);
-    const form = dlg.querySelector('form');
-    const fehlerEl = dlg.querySelector('.dialog-fehler');
-    const schliesse = () => { dlg.close(); dlg.remove(); };
-    dlg.querySelector('[data-a=abbrechen]').addEventListener('click', schliesse);
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!form.haendler.value.trim()) { form.haendler.focus(); return; }
-      const knopf = form.querySelector('[data-a=speichern]');
-      knopf.disabled = true;
-      try {
-        await legeSendungAn({
-          haendler: form.haendler.value.trim(),
-          trackingnummer: form.trackingnummer.value.trim(),
-          beschreibung: form.beschreibung.value.trim(),
-        });
-        schliesse();
-        await aktualisieren();
-      } catch (err) {
-        fehlerEl.textContent = err.message;
-        fehlerEl.hidden = false;
-        knopf.disabled = false;
-      }
-    });
-    dlg.showModal();
   }
 }
