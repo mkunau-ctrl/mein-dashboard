@@ -7,7 +7,8 @@ import { createClient } from '@supabase/supabase-js';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { leseLetztenLauf, schreibeLetztenLauf } from './letzter-lauf.js';
-import { baustePrompt, parseKlassifikation } from './klassifizieren.js';
+import { baustePrompt, parseKlassifikation, kategorisiereStatus } from './klassifizieren.js';
+import { STATUS_PRIORITAET } from '../js/module/sendungen/berechnung.js';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 const ZUSTAND_PFAD = join(HIER, 'letzter-lauf.json');
@@ -84,6 +85,63 @@ function klassifiziereMail(text) {
   return parseKlassifikation(rohtext);
 }
 
+async function findeBestehendeSendung(trackingnummer) {
+  const { data, error } = await supabase.from('sendungen')
+    .select('*').eq('user_id', DASHBOARD_USER_ID).eq('trackingnummer', trackingnummer)
+    .maybeSingle();
+  if (error) throw new Error(`Sendung suchen: ${error.message}`);
+  return data;
+}
+
+async function aktualisiereSendung(bestehend, k, statusKategorie) {
+  const aktualisierung = { letzte_aktualisierung: new Date().toISOString() };
+  const neuePrio = STATUS_PRIORITAET[statusKategorie];
+  const aktuellePrio = STATUS_PRIORITAET[bestehend.status] ?? STATUS_PRIORITAET.unbekannt;
+  if (statusKategorie !== 'unbekannt' && neuePrio >= aktuellePrio) {
+    aktualisierung.status = statusKategorie;
+  }
+  if (k.beschreibung) aktualisierung.beschreibung = k.beschreibung;
+  if (k.abholcode) aktualisierung.abholcode = k.abholcode;
+  if (k.abholadresse) aktualisierung.abholadresse = k.abholadresse;
+  if (k.abholzeiten) aktualisierung.abholzeiten = k.abholzeiten;
+  const { error } = await supabase.from('sendungen').update(aktualisierung).eq('id', bestehend.id);
+  if (error) throw new Error(`Sendung aktualisieren: ${error.message}`);
+}
+
+async function legeEreignisAn(sendungId, k, statusKategorie) {
+  const { error } = await supabase.from('sendungen_ereignisse').insert({
+    user_id: DASHBOARD_USER_ID, sendung_id: sendungId,
+    beschreibung: k.statusText || k.beschreibung || 'Status-Update',
+    status_kategorie: statusKategorie, ort: k.ort || null,
+  });
+  if (error) throw new Error(`Sendungs-Ereignis anlegen: ${error.message}`);
+}
+
+async function schreibeSendung(k) {
+  const statusKategorie = kategorisiereStatus(k.statusText);
+  const haendler = k.typ === 'amazon' ? 'Amazon' : k.haendler;
+  if (k.trackingnummer) {
+    const bestehend = await findeBestehendeSendung(k.trackingnummer);
+    if (bestehend) {
+      await aktualisiereSendung(bestehend, k, statusKategorie);
+      await legeEreignisAn(bestehend.id, k, statusKategorie);
+      return;
+    }
+  }
+  const { data, error } = await supabase.from('sendungen').insert({
+    user_id: DASHBOARD_USER_ID, haendler,
+    trackingnummer: k.trackingnummer || null,
+    beschreibung: k.beschreibung || null,
+    abholcode: k.abholcode || null,
+    abholadresse: k.abholadresse || null,
+    abholzeiten: k.abholzeiten || null,
+    status: statusKategorie !== 'unbekannt' ? statusKategorie : 'unterwegs',
+    quelle: 'email',
+  }).select().single();
+  if (error) throw new Error(`Sendung speichern: ${error.message}`);
+  await legeEreignisAn(data.id, k, statusKategorie);
+}
+
 async function schreibeErgebnis(k) {
   if (k.typ === 'beleg') {
     const { error } = await supabase.from('expenses').insert({
@@ -94,14 +152,7 @@ async function schreibeErgebnis(k) {
     return;
   }
   if (k.typ === 'sendung' || k.typ === 'amazon') {
-    const { error } = await supabase.from('sendungen').insert({
-      user_id: DASHBOARD_USER_ID,
-      haendler: k.typ === 'amazon' ? 'Amazon' : k.haendler,
-      trackingnummer: k.trackingnummer || null,
-      beschreibung: k.beschreibung || null,
-      quelle: 'email',
-    });
-    if (error) throw new Error(`Sendung speichern: ${error.message}`);
+    await schreibeSendung(k);
     return;
   }
   if (k.typ === 'termin') {
