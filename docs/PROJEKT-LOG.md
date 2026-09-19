@@ -4,6 +4,116 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-18 – Etappe 8 (v2): Navigations-Redesign + Optik-Addendum aus Marks Prototyp
+
+**Was:** Die App folgt jetzt Marks eigenem Prototyp
+(`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`) statt
+einem generischen Fintech-Mockup – sowohl in der Navigationsstruktur als auch
+(nachträglich erweitert, siehe "Auslöser" unten) in der kompletten Optik.
+
+Navigation: Die Bottom-Nav zeigt nicht mehr ein Icon pro registriertem Modul,
+sondern eine feste Liste **Home / Finanzen / Ausbildung / Suche / Profil**
+(`NAV_MODULE` in `js/app.js`). Dafür:
+- Das Lager-Modul (`js/module/lager/`) ist komplett entfernt. Seine beiden
+  Tabs "Teile" und "Bestellen" sind jetzt echte Tabs im Finanzen-Modul, seine
+  Daten-/Berechnungsfunktionen (`speicherTeil`, `entferneTeil`, `setzeStatus`,
+  `warenwert`, `sortiereTeile`, `merkliste`, `naechsterStatus`) sind 1:1 in
+  `js/module/finanzen/daten.js`/`berechnung.js` gewandert. Neue Kennzahl
+  `unechterKontostand` = echter Kontostand + Warenwert der Teile, sichtbar im
+  Kontostand-Tab.
+- Drei neue Module: **Home** (`js/module/home/` – Kontostand-Karte +
+  Vorschauen auf Termine/Sendungen/offene To-dos mit "Alle anzeigen"-Links,
+  Default-Startseite ohne Hash), **Suche** (`js/module/suche/` – echte
+  Volltextsuche über Ausgaben-Notizen, To-do-Texte, Sendungs-Händler und
+  Termin-Titel, reine Logik `sucheAlles()` getestet), **Profil**
+  (`js/module/profil/` – zeigt E-Mail-Adresse + Avatar-Kreis mit erstem
+  Buchstaben, Abmelden-Button).
+- Ernährung ist **nur** aus der Bottom-Nav entfernt (Mark: "will ich erstmal
+  nicht drinnen haben") – Modul, Code und Daten bleiben vollständig
+  bestehen, weiterhin erreichbar über `#/ernaehrung`. Gleiches gilt für
+  To-dos (`#/todos`) und Sendungen (`#/sendungen`) – die hatten schon vorher
+  keinen eigenen Nav-Punkt, sind jetzt aber auch nicht mehr implizit über
+  "ein Icon pro Modul" sichtbar, sondern nur noch über Home-Links oder Hash.
+- Berichtsheft heißt jetzt überall **"Ausbildung"** (Anzeigename + neues
+  Doktorhut-Icon), die interne Modul-ID bleibt `berichtsheft` (keine
+  Datenbank-/Routen-Änderung).
+- Der globale Header-Logout-Button (`#logout` in `index.html`) ist entfernt.
+  Abmelden geht ab jetzt nur noch über den Profil-Screen.
+
+**Auslöser für die Erweiterung während der Umsetzung:** Nach Freigabe der
+ursprünglichen Spec (nur Navigationsstruktur) hat Mark entschieden, dass
+zusätzlich die komplette Optik (Farben, Karten-Layout, Formen) 1:1 aus
+seinem Prototyp übernommen werden soll, nicht nur die Anordnung. Das war in
+der Ursprungs-Spec bewusst ausgeschlossen ("nicht erzwungen dunkel wie im
+Prototyp") – diese Einschränkung wurde für die Farb-/Formensprache
+aufgehoben (erzwungenes Dunkel-Theme als *Standard* bleibt weiterhin
+ausgeschlossen, Theme folgt nach wie vor `prefers-color-scheme`). Dafür
+wurde eine eigene Addendum-Spec geschrieben
+(`docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-optik-addendum-design.md`)
+und zwei zusätzliche Tasks in den bestehenden Plan aufgenommen (statt eines
+neuen Plans).
+
+**Optik-Addendum – umgesetzt:** Alle Farb-/Form-Tokens in `app.css` (`:root`,
+hell + dunkel) stammen jetzt 1:1 aus Marks Prototyp: near-black
+`--bg:#000000`/`--karte:#0A0A0B` (dunkel) bzw. `#F7F8FA`/`#FFFFFF` (hell),
+iOS-Blau `--akzent:#0A84FF`, `--radius:16px`, neue Tokens
+`--karte-getoent`, `--schatten`, `--nav-bg` (halbtransparent + Blur für die
+Bottom-Nav), getönte Hintergründe `--hm-rot-bg`/`--hm-gruen-bg`/
+`--akzent-bg`. Weil alle Module dieselben CSS-Variablen/Klassen
+(`.stat-karte`, `.icon-badge`, `.punkt-zeile`, `.status-badge`,
+`.tab-leiste`) nutzen, gilt die neue Optik automatisch für **alle** Module
+(auch Ernährung/To-dos/Sendungen/Ausbildung), ohne dass deren JS geändert
+werden musste – Ausnahmen waren nur das neue Home-Stat-Raster (3er-Grid
+Kontostand/unechter Kontostand/Ausgaben diesen Monat, `.stat-grid`/`.stat`)
+und der Profil-Avatar (`.avatar`).
+
+**Entscheidungen:**
+- **Keine erfundenen Einnahmen im Home-Stat-Raster.** Mark wollte
+  ursprünglich Einnahmen als Stat-Kachel sehen (wie im Prototyp), aber das
+  Datenmodell trackt nirgends Einnahmen (verifiziert:
+  `js/module/finanzen/ausgaben.js` erzwingt `betrag > 0`, es gibt nur
+  Ausgaben + einen Kontostand-Startwert). Das dritte Stat ist deshalb
+  "Ausgaben diesen Monat" statt Einnahmen – Einnahmen-Tracking ist eine
+  eigene, spätere Etappe (siehe unten).
+- **Kein Fortschrittsbalken für das Ausbildungsjahr.** Gleicher Grundsatz
+  (keine erfundenen Prozentwerte ohne echte Datenbasis) – war in der
+  Ursprungs-Spec schon nur optional vorgesehen und wurde bewusst nicht
+  gebaut.
+- **Keine neuen interaktiven Prototyp-Funktionen ohne reale Datenbasis**
+  (Filter-Chips, Benachrichtigungs-Glocke, Avatar-Upload) – nur die
+  optische Sprache wurde übernommen, keine neue Funktionalität.
+- Lager-Absorption in Finanzen statt eigenständigem Modul, weil Mark
+  explizit "Teile/Bestellen werden echte Tabs in Finanzen" wollte.
+
+**Stand danach:** `npm test` → **65/65 grün** (13 Commits von
+`09f9f81` bis `a7b9915`, siehe `git log --oneline 1ed20df..HEAD`). Alle
+Reviews sauber; ein Fix-Round nötig (Berichtsheft zeigte intern an manchen
+Stellen noch "Berichtsheft" statt "Ausbildung" – behoben in `40c15c9`).
+Direkt auf `main` umgesetzt, kein Feature-Branch (explizite
+Nutzer-Entscheidung).
+
+**Offene Punkte / Nächste Schritte (jeweils eigene, spätere Etappen –
+bewusst nicht in dieses Redesign gequetscht):**
+- **Kalender-Feature.** Marks Idee, noch nicht bewertet/geplant – war von
+  Anfang an als eigenständiges, späteres Thema markiert, unabhängig von der
+  Navigations-/Optik-Frage dieser Etappe.
+- **Sendungen-Mehrfachzeilen-Bug in der E-Mail-Automatisierung.** Mark hat
+  beobachtet, dass ~5 Mails zu einer Sendung aktuell ~5 Zeilen in
+  `sendungen` erzeugen statt eine Zeile zu aktualisieren – echter Bug in
+  `automatisierung/postfach-scan.mjs`/dem `sendungen`-Datenmodell (fehlender
+  Dedup-Key über Trackingnummer), braucht eigene Analyse und Fix, hat mit
+  Navigation/Optik nichts zu tun.
+- **Einnahmen-Tracking.** Mark wollte ursprünglich Einnahmen in den
+  Home-Stat-Kacheln sehen, aber das Datenmodell erfasst aktuell nur Ausgaben
+  + einen Kontostand-Startwert, keine Einnahmen-Buchungen. Eine neue
+  Tabelle + neue Berechnungslogik + Änderungen an `kontostand()` (auf dem
+  mehrere bereits fertige Tasks aufbauen) wären nötig – zu groß für ein
+  Addendum zu diesem Redesign, deshalb als eigene spätere Etappe geplant.
+- Weiterhin unverändert offen aus früheren Etappen: manueller Klick-Test auf
+  echtem Gerät, echte PNG-Icons (192/512 + `apple-touch-icon`).
+
+---
+
 ## 2026-09-17 – Etappe 6 (E-Mail-Automatisierung) gebaut
 
 **Was:** Ein täglicher lokaler Scan von Marks GMX-Postfach erkennt jetzt

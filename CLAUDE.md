@@ -9,6 +9,9 @@ Private Web-App für Mark, aufrufbar auf jedem Gerät im Browser (iPhone: "Zum
 Home-Bildschirm"). Bündelt Lebensbereiche als Module: Ernährung (zuerst), dann
 To-dos, Finanzen, Lager/Ersatzteile. Daten in Supabase. Mark trägt selbst ein
 oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
+**Navigation seit Etappe 8 v2:** feste Bottom-Nav Home/Finanzen/Ausbildung/
+Suche/Profil statt einem Icon pro Modul – siehe Abschnitt "Aufbau" und "Nav"
+unten für Details.
 
 ## Wo weiterlesen
 
@@ -16,24 +19,40 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
-## Aufbau (Stand Etappe 6 – alle 5 Module der Roadmap + Sendungen-Modul + E-Mail-Automatisierung)
+## Aufbau (Stand Etappe 8 v2 – Navigations-Redesign + Optik-Addendum nach Marks Prototyp)
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit fester
-  Tab-Leiste unten (ein Icon je Modul, app-klassisch).
-- `app.css` – gemeinsames Design, Werte 1:1 aus Marks Referenz-Screenshot
-  gemessen (Python/PIL-Pixelanalyse, nicht geschätzt). Hell:
-  `--bg:#E8EAED`, `--karte:#F2F4F7`, `--text:#000`. Dunkel: `--bg:#090F14`,
-  `--karte:#1B2025`, `--text:#fff`. Default folgt Systemeinstellung,
-  überschreibbar über `js/theme.js` (`data-theme`-Attribut auf `<html>`,
-  Wahl landet in `localStorage`). Icon-Karten-Designsprache (alle 5
-  Module): `.icon-badge` (rund, **immer neutral**, `--icon-bg`/
-  `--icon-farbe` – keine Farb-Varianten mehr, nur Text/Zahlen werden
-  farbig über `.betrag-minus`/`.betrag-plus`/`.badge-ueberfaellig`),
-  `.stat-karte.gross` für große Übersichtskarten, `.tab-leiste` als
-  Pillen-Segmented-Control (aktiv = dunkle Pille `--pille-bg`).
+  Tab-Leiste unten. **Kein globaler Logout-Button mehr** (`#logout` entfernt
+  seit Etappe 8 v2) – Abmelden läuft nur noch über den Profil-Screen.
+- `app.css` – gemeinsames Design-Token-System (`:root`-CSS-Variablen, hell +
+  dunkel), Quelle seit Etappe 8 v2: **Marks eigener Prototyp**
+  (`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`), 1:1
+  übernommen (nicht mehr das ältere Pixelanalyse-Redesign). Dunkel:
+  `--bg:#000000`, `--karte:#0A0A0B`, `--karte-getoent:#0D0D0F`,
+  `--text:#fff`, `--akzent:#0A84FF` (iOS-Blau). Hell: `--bg:#F7F8FA`,
+  `--karte:#fff`, `--text:#14161A`. Gemeinsam für beide Themes:
+  `--radius:16px`, `--schatten` (Box-Shadow-Token), `--nav-bg`
+  (halbtransparent + `backdrop-filter: blur(10px)` für die Bottom-Nav),
+  getönte Hintergründe `--hm-rot-bg`/`--hm-gruen-bg`/`--akzent-bg`. Default
+  folgt Systemeinstellung (`prefers-color-scheme`), überschreibbar über
+  `js/theme.js` (`data-theme`-Attribut auf `<html>`, Wahl landet in
+  `localStorage`) – **kein** erzwungenes Dunkel-Theme, obwohl der Prototyp
+  selbst dunkel als Standard hat. Icon-Karten-Designsprache (gilt für alle
+  Module automatisch, da alle dieselben Klassen nutzen): `.icon-badge`
+  (rund, neutral, `--icon-bg`/`--icon-farbe`), `.stat-karte`/`.stat-karte.gross`
+  (große Übersichtskarten, `.gross` nutzt `--karte-getoent`),
+  `.stat-grid`/`.stat` (3er-Raster für Mini-Kennzahlen, Home), `.tab-leiste`
+  als Pillen-Segmented-Control (aktiv = dunkle Pille `--pille-bg`),
+  `.avatar` (Kreis mit Anfangsbuchstabe, Profil).
 - `js/app.js` – Einstieg: verdrahtet Auth, Routing, Registry, Tab-Leiste unten
-  und Detail-Routing (`#/modul/unterseite`) mit dem DOM. Ohne Hash öffnet das
-  erste registrierte Modul.
+  und Detail-Routing (`#/modul/unterseite`) mit dem DOM. **Seit Etappe 8 v2:**
+  feste Nav-Liste `NAV_MODULE = ['home', 'finanzen', 'berichtsheft', 'suche',
+  'profil']` – die Bottom-Nav wird aus dieser Liste gerendert, **nicht** mehr
+  automatisch aus allen registrierten Modulen (`alleModule()`). Ohne Hash
+  öffnet die App `holeModul('home')`. Ernährung/To-dos/Sendungen sind
+  weiterhin über `registriere()` registriert und per Hash erreichbar
+  (`#/ernaehrung`, `#/todos`, `#/sendungen`), tauchen aber nicht in
+  `NAV_MODULE` auf, haben also keinen eigenen Bottom-Nav-Punkt mehr.
 - `js/router.js` – `parseHash('#/modul/unterseite')` → `{ modul, unterseite }`.
 - `js/view.js` – `entscheideAnsicht(session)` → `'login'` | `'dashboard'`.
 - `js/auth.js` – Auth-Wrapper: `sendeMagicLink`, `holeSession`, `meldeAb`,
@@ -59,19 +78,57 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   - `planung.js` – `naechsteFaelligkeit`, `sortiereOffeneTodos`, `istUeberfaellig`.
   - `offen.js`, `erledigt.js` – die zwei Tabs.
   Details: `docs/superpowers/specs/2026-09-16-etappe-2-todos-design.md`.
-- `js/module/finanzen/` – drittes Fachmodul (Ausgaben/Kontostand):
-  - `index.js` – Registrierung, Tabs „Ausgaben"/„Kontostand"/„Monat"/„Abos", Kachel-Text.
-  - `daten.js` – Supabase-Zugriff auf `expenses` + `finance_settings`.
-  - `berechnung.js` – `kontostand`, `summeProMonat`, `summenProKategorie`, `erkenneAbos`.
-  - `ausgaben.js`, `kontostand.js`, `monat.js`, `abos.js` – die vier Tabs.
-  Details: `docs/superpowers/specs/2026-09-16-etappe-3-finanzen-design.md`.
-- `js/module/lager/` – viertes Fachmodul (Teile/Ersatzteile):
-  - `index.js` – Registrierung, Tabs „Teile"/„Bestellen", Kachel-Text.
-  - `daten.js` – Supabase-Zugriff auf `parts`.
-  - `berechnung.js` – `warenwert`, `sortiereTeile`, `merkliste`, `naechsterStatus`.
-  - `teile.js`, `bestellen.js` – die zwei Tabs.
-  Details: `docs/superpowers/specs/2026-09-16-etappe-4-lager-design.md`.
-- `js/module/berichtsheft/` – fünftes Fachmodul (Ausbildungsnachweis):
+- `js/module/finanzen/` – drittes Fachmodul (Ausgaben/Kontostand), **seit
+  Etappe 8 v2 inklusive des ehemaligen Lager-Moduls**:
+  - `index.js` – Registrierung, Tabs „Ausgaben"/„Kontostand"/„Monat"/„Abos"/
+    „Teile"/„Bestellen", Kachel-Text.
+  - `daten.js` – Supabase-Zugriff auf `expenses` + `finance_settings` +
+    `parts` (Teile-Zugriff `speicherTeil`/`entferneTeil`/`setzeStatus` 1:1
+    aus dem ehemaligen `lager/daten.js` übernommen).
+  - `berechnung.js` – `kontostand`, `summeProMonat`, `summenProKategorie`,
+    `erkenneAbos`, plus aus dem ehemaligen `lager/berechnung.js`
+    übernommen: `warenwert`, `sortiereTeile`, `merkliste`,
+    `naechsterStatus`; neu dazugekommen: `unechterKontostand(settings,
+    expenses, teile, heute)` = `kontostand(...) + warenwert(teile)`.
+  - `ausgaben.js`, `kontostand.js` (zeigt jetzt auch den unechten
+    Kontostand), `monat.js`, `abos.js`, `teile.js`, `bestellen.js` – die
+    sechs Tabs.
+  Details Ursprungs-Modul: `docs/superpowers/specs/2026-09-16-etappe-3-finanzen-design.md`
+  (Lager-Ursprung: `docs/superpowers/specs/2026-09-16-etappe-4-lager-design.md`).
+  Absorption in Etappe 8 v2:
+  `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
+  (Abschnitt 5). **`js/module/lager/` existiert nicht mehr** (Modul,
+  Tests und Registrierung in `js/app.js` entfernt; die `parts`-Tabelle in
+  Supabase ist unverändert, nur der Zugriff ist gewandert).
+- `js/module/home/` – Home-Screen (Etappe 8 v2, kein eigenes `berechnung.js`,
+  nur Zusammenstellung bestehender Logik):
+  - `daten.js` – lädt parallel `finanzen/daten.js:ladeAlles()`,
+    `todos/daten.js:ladeAlles()`, `sendungen/daten.js:ladeAlles()`.
+  - `index.js` – Registrierung (`id:'home'`, Default-Startseite ohne Hash).
+    Zeigt Kontostand-Karte (echt + unecht) sowie "Nächste Termine"/
+    "Aktuelle Sendungen"/"Offene To-dos" mit "Alle anzeigen"-Links.
+  Details: `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
+  (Abschnitt 4).
+- `js/module/suche/` – Suche-Screen (Etappe 8 v2):
+  - `berechnung.js` – `sucheAlles(zustand, suchtext)`: reine Volltextsuche
+    über `expenses.notiz`, `todos.text`, `sendungen.haendler`/`beschreibung`,
+    `termine.titel`, case-insensitiv, liefert `{ typ, titel, info, ziel }[]`
+    (getestet, kein Netz/DOM).
+  - `daten.js` – lädt dieselben drei Quellen wie Home.
+  - `index.js` – Registrierung (`id:'suche'`), Eingabefeld mit Live-Filterung.
+  Details: `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
+  (Abschnitt 7).
+- `js/module/profil/` – Profil-Screen (Etappe 8 v2):
+  - `index.js` – Registrierung (`id:'profil'`), kein eigenes `daten.js`
+    (nutzt `holeSession()` aus `js/auth.js`). Zeigt Avatar-Kreis mit erstem
+    Buchstaben der E-Mail-Adresse, E-Mail-Adresse, Abmelden-Button (ruft
+    `meldeAb()`). Der frühere globale Header-Logout-Button ist entfernt –
+    Abmelden geht nur noch hier.
+  Details: `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
+  (Abschnitt 8).
+- `js/module/berichtsheft/` – fünftes Fachmodul (Ausbildungsnachweis),
+  **Anzeigename seit Etappe 8 v2 "Ausbildung"** (interne Modul-ID bleibt
+  unverändert `berichtsheft`, keine Routen-/Datenbank-Änderung):
   - `index.js` – Registrierung, Tabs „Einträge"/„Drucken", Kachel-Text.
   - `daten.js` – Supabase-Zugriff auf `berichtsheft_eintraege` + `berichtsheft_settings`.
   - `berechnung.js` – `wochenStart`, `gruppiereNachWoche`, `ausbildungsjahr`.
@@ -103,11 +160,27 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   Läuft per Windows-Scheduled-Task täglich 7 Uhr, siehe unten.
 - `test/` – `node --test` Unit-Tests: `router`, `view`, `registry`,
   `ernaehrung-zeitplan`, `ernaehrung-berechnung`, `todos-planung`,
-  `finanzen-berechnung`, `lager-berechnung`, `berichtsheft-berechnung`,
-  `sendungen-berechnung`, `automatisierung-klassifizieren`,
-  `automatisierung-letzter-lauf` (60 grün).
+  `finanzen-berechnung` (seit Etappe 8 v2 inkl. der ehemaligen
+  Lager-Fälle: `warenwert`/`sortiereTeile`/`merkliste`/`naechsterStatus`/
+  `unechterKontostand`), `berichtsheft-berechnung`, `sendungen-berechnung`,
+  `suche-berechnung` (neu, Etappe 8 v2), `automatisierung-klassifizieren`,
+  `automatisierung-letzter-lauf` (65 grün; `lager-berechnung.test.js`
+  existiert seit Etappe 8 v2 nicht mehr).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
+
+## Nav (Bottom-Nav-Struktur, seit Etappe 8 v2)
+
+Feste Reihenfolge, **nicht** mehr automatisch aus allen registrierten
+Modulen erzeugt: **Home → Finanzen → Ausbildung → Suche → Profil**
+(`NAV_MODULE` in `js/app.js`). Ernährung, To-dos und Sendungen sind
+weiterhin vollständig registrierte Module mit Code und Daten, haben aber
+**keinen** eigenen Bottom-Nav-Punkt mehr – erreichbar nur noch per Hash
+(`#/ernaehrung`, `#/todos`, `#/sendungen`) oder über die "Alle
+anzeigen"-Links auf dem Home-Screen. Ohne Hash öffnet die App den
+Home-Screen. Details/Begründung: `docs/PROJEKT-LOG.md`, Eintrag
+2026-09-18, und `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
+(Abschnitt 2–3).
 
 ## Starten / Testen / Bauen
 
@@ -115,7 +188,7 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 60 grün.
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 65 grün.
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.
