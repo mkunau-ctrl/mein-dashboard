@@ -23,7 +23,10 @@ registriere({
     await ladeZustand();
     container.innerHTML = `
       <header class="modul-kopf"><h2>Suche</h2></header>
-      <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …" style="width:100%">
+      <div class="searchbar" style="margin:16px 0;">
+        ${SUCHE_ICON}
+        <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …">
+      </div>
       <div id="suche-treffer" class="punkt-liste"></div>`;
     const eingabe = container.querySelector('#suche-eingabe');
     const trefferListe = container.querySelector('#suche-treffer');

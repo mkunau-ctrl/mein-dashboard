@@ -98,6 +98,12 @@ button:disabled { opacity: .6; cursor: default; }
   font-size: 1.4rem; font-weight: 700; margin: 6px auto 16px; }
 .icon-badge.gruen { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
 .icon-badge.rot { background: var(--hm-rot-bg); color: var(--hm-rot); }
+.searchbar { display: flex; align-items: center; gap: 8px; background: var(--karte);
+  border: 1px solid var(--rand); border-radius: 12px; padding: 11px 14px; }
+.searchbar svg { width: 18px; height: 18px; color: var(--gedaempft); flex: none; }
+.searchbar input { border: none; background: none; outline: none; font-size: .9rem;
+  color: var(--text); flex: 1; padding: 0; }
+.searchbar input::placeholder { color: var(--gedaempft); }
 
 /* Heute-Ansicht */
 .fortschritt-ring { --prozent: 0;
@@ -119,8 +125,10 @@ button:disabled { opacity: .6; cursor: default; }
 .listen-neu { margin-bottom: 14px; }
 .knopf-neutral { width: 100%; background: transparent; color: var(--text);
   border: 1px solid var(--rand); }
-.punkt-zeile { display: flex; align-items: center; gap: 10px; padding: 10px 4px;
-  border-bottom: 1px solid var(--rand); }
+.punkt-liste { background: var(--karte); border: 1px solid var(--rand);
+  border-radius: var(--radius); box-shadow: var(--schatten); padding: 0 14px; }
+.punkt-zeile { display: flex; align-items: center; gap: 10px; padding: 10px 4px; }
+.punkt-zeile + .punkt-zeile { border-top: 1px solid var(--rand); }
 .punkt-info { flex: 1; display: flex; flex-direction: column; }
 .punkt-info strong { font-size: .94rem; font-weight: 600; }
 .punkt-info small { color: var(--gedaempft); font-size: .82rem; }
