@@ -716,7 +716,10 @@ git commit -m "feat: UI-Tab Einnahmen mit Formular und Vorlagen-Bestaetigung"
 - Konsumiert: `legeKontoAn` (Task 2, `./daten.js`); `kontostandProKonto`
   (Task 1, `./berechnung.js`).
 - Produziert: `zeigeKonten(container, zustand, aktualisieren):
-  Promise<void>` — wird von Task 6 (`index.js`) importiert.
+  Promise<void>` — wird von Task 6 (`index.js`) importiert. Zeigt pro
+  Konto zusätzlich dessen einzelne Transaktionen (Ausgaben + Einnahmen
+  dieses Kontos) — explizite Anforderung aus `CLAUDE.md` ("einzelne
+  Konten mit ihren jeweiligen Transaktionen"), nicht nur der Saldo.
 
 - [ ] **Schritt 1: Datei anlegen**
 
@@ -761,15 +764,12 @@ function baueFormular(container, aktualisieren) {
 export async function zeigeKonten(container, zustand, aktualisieren) {
   baueFormular(container, aktualisieren);
 
-  const liste = document.createElement('div');
-  liste.className = 'punkt-liste';
-  container.appendChild(liste);
-
+  const heuteStr = heute();
   for (const k of zustand.konten) {
-    const stand = kontostandProKonto(k, zustand.expenses, zustand.einnahmen, heute());
-    const zeile = document.createElement('div');
-    zeile.className = 'punkt-zeile';
-    zeile.innerHTML = `
+    const stand = kontostandProKonto(k, zustand.expenses, zustand.einnahmen, heuteStr);
+    const kopf = document.createElement('div');
+    kopf.className = 'punkt-zeile';
+    kopf.innerHTML = `
       <div class="icon-badge">${WALLET_ICON}</div>
       <div class="punkt-info">
         <strong>${esc(k.name)}</strong>
@@ -777,17 +777,35 @@ export async function zeigeKonten(container, zustand, aktualisieren) {
       </div>
       <strong>${stand.toFixed(2)} €</strong>
       <div class="punkt-aktionen"><button data-a="neusetzen">Neu setzen</button></div>`;
-    zeile.querySelector('[data-a=neusetzen]').addEventListener('click', async () => {
-      const neuerStand = prompt(`Neuen Stand für „${k.name}" (heute, ${heute()}):`, stand.toFixed(2));
+    kopf.querySelector('[data-a=neusetzen]').addEventListener('click', async () => {
+      const neuerStand = prompt(`Neuen Stand für „${k.name}" (heute, ${heuteStr}):`, stand.toFixed(2));
       if (neuerStand === null) return;
       const zahl = Number(neuerStand);
       if (Number.isNaN(zahl)) { alert('Bitte eine Zahl eingeben.'); return; }
       try {
-        await legeKontoAn({ id: k.id, name: k.name, kontostand_start: zahl, stand_datum: heute() });
+        await legeKontoAn({ id: k.id, name: k.name, kontostand_start: zahl, stand_datum: heuteStr });
         await aktualisieren();
       } catch (err) { alert(err.message); }
     });
-    liste.appendChild(zeile);
+    container.appendChild(kopf);
+
+    const transaktionen = [
+      ...zustand.expenses.filter((e) => e.konto_id === k.id)
+        .map((e) => ({ datum: e.datum, text: e.notiz || e.kategorie, betrag: e.betrag, typ: 'ausgabe' })),
+      ...zustand.einnahmen.filter((e) => e.konto_id === k.id)
+        .map((e) => ({ datum: e.datum, text: e.bezeichnung, betrag: e.betrag, typ: 'einnahme' })),
+    ].sort((a, b) => (a.datum < b.datum ? 1 : -1));
+
+    const liste = document.createElement('div');
+    liste.className = 'punkt-liste';
+    liste.innerHTML = transaktionen.length === 0
+      ? '<p class="lade">Noch keine Transaktionen auf diesem Konto.</p>'
+      : transaktionen.map((t) => `
+        <div class="punkt-zeile">
+          <div class="punkt-info"><small>${t.datum} · ${esc(t.text)}</small></div>
+          <strong class="${t.typ === 'einnahme' ? 'betrag-plus' : 'betrag-minus'}">${t.typ === 'einnahme' ? '+' : '-'}${t.betrag.toFixed(2)} €</strong>
+        </div>`).join('');
+    container.appendChild(liste);
   }
 }
 ```
@@ -815,7 +833,10 @@ git commit -m "feat: UI-Tab Konten mit Anlegen und Stand-Neusetzen"
 - Konsumiert: `legeSchuldAn`, `verbucheZahlung` (Task 2, `./daten.js`);
   `schuldenRestbetrag`, `sortiereSchulden` (Task 1, `./berechnung.js`).
 - Produziert: `zeigeSchulden(container, zustand, aktualisieren):
-  Promise<void>` — wird von Task 6 (`index.js`) importiert.
+  Promise<void>` — wird von Task 6 (`index.js`) importiert. Zeigt pro
+  Schuld zusätzlich den Zahlungs-Verlauf (einzelne Teilzahlungen aus
+  `zustand.zahlungen`) — explizite Nutzer-Anforderung "mit
+  Teilzahlungen/Verlauf", nicht nur der berechnete Restbetrag.
 
 - [ ] **Schritt 1: Datei anlegen**
 
@@ -869,10 +890,6 @@ export async function zeigeSchulden(container, zustand, aktualisieren) {
     container.appendChild(p);
   }
 
-  const liste = document.createElement('div');
-  liste.className = 'punkt-liste';
-  container.appendChild(liste);
-
   for (const s of sortiert) {
     const rest = schuldenRestbetrag(s, zustand.zahlungen);
     const richtungText = s.richtung === 'mir_wird_geschuldet' ? 'schuldet mir' : 'ich schulde';
@@ -882,7 +899,7 @@ export async function zeigeSchulden(container, zustand, aktualisieren) {
       <div class="icon-badge">${SCHULD_ICON}</div>
       <div class="punkt-info">
         <strong>${esc(s.person)}</strong>
-        <small>${richtungText}${s.notiz ? ` · ${esc(s.notiz)}` : ''}</small>
+        <small>${richtungText}, Gesamt ${s.gesamtbetrag.toFixed(2)} €${s.notiz ? ` · ${esc(s.notiz)}` : ''}</small>
       </div>
       <strong>${rest > 0 ? rest.toFixed(2) + ' €' : 'beglichen'}</strong>
       ${rest > 0 ? '<div class="punkt-aktionen"><button data-a="zahlung">+ Zahlung</button></div>' : ''}`;
@@ -897,7 +914,20 @@ export async function zeigeSchulden(container, zustand, aktualisieren) {
         catch (err) { alert(err.message); }
       });
     }
-    liste.appendChild(zeile);
+    container.appendChild(zeile);
+
+    const eigeneZahlungen = zustand.zahlungen.filter((z) => z.schuld_id === s.id)
+      .sort((a, b) => (a.datum < b.datum ? 1 : -1));
+    if (eigeneZahlungen.length > 0) {
+      const verlauf = document.createElement('div');
+      verlauf.className = 'punkt-liste';
+      verlauf.innerHTML = eigeneZahlungen.map((z) => `
+        <div class="punkt-zeile">
+          <div class="punkt-info"><small>${z.datum}${z.notiz ? ` · ${esc(z.notiz)}` : ''}</small></div>
+          <strong class="betrag-plus">${z.betrag.toFixed(2)} €</strong>
+        </div>`).join('');
+      container.appendChild(verlauf);
+    }
   }
 }
 ```

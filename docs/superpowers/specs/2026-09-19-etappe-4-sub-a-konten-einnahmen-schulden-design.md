@@ -152,8 +152,8 @@ Einnahmen übertragen:
 | `daten.js` | `ladeAlles` lädt zusätzlich `konten`, `einnahmen`, `einnahmen_vorlagen` (aktiv), `schulden`, `schulden_zahlungen`. Neue Funktionen: `legeEinnahmeAn`, `bestaetigeEinnahmenVorlage`, `entferneEinnahme`, `legeKontoAn`, `legeSchuldAn`, `verbucheZahlung`. | – |
 | `berechnung.js` | siehe Abschnitt 4. | ✅ |
 | `einnahmen.js` (neu) | Liste + "+ Neue Einnahme"-Formular, analog `ausgaben.js`. Zeigt fällige Vorlagen oben mit "Eingegangen"-Knopf. | manuell |
-| `konten.js` (neu) | Liste der Konten mit jeweiligem Kontostand, Formular zum Anlegen/Neusetzen. | manuell |
-| `schulden.js` (neu) | Liste offener/beglichener Schulden, Formular zum Anlegen + Zahlung verbuchen. | manuell |
+| `konten.js` (neu) | Liste der Konten mit jeweiligem Kontostand, Formular zum Anlegen/Neusetzen, **je Konto darunter dessen einzelne Transaktionen** (Ausgaben + Einnahmen dieses Kontos, chronologisch). | manuell |
+| `schulden.js` (neu) | Liste offener/beglichener Schulden, Formular zum Anlegen + Zahlung verbuchen, **je Schuld darunter der Zahlungs-Verlauf** (einzelne Teilzahlungen). | manuell |
 | `index.js` | `TABS` erweitert um `einnahmen`, `konten`, `schulden` (einfache Reihenfolge hinten anhängen, Sub-Etappe B sortiert die Tab-Leiste dann komplett neu nach Prototyp). | – |
 
 `js/module/home/index.js`: Aufruf von `unechterKontostand` →
