@@ -19,6 +19,51 @@ unten für Details.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
+## Aktueller Stand (2026-09-19) / Nächste Schritte
+
+Mitten in **Etappe 4** (fünf Teile, vom Nutzer bereits in dieser
+Reihenfolge bestätigt):
+
+- **A) Icon-Audit** — ✅ fertig, gemerged, gepusht (Commit `57b623f`,
+  Log-Eintrag 2026-09-19 "Icon-Audit").
+- **B) Finanzen-Ausbau + Kontostand-Detail-Screen** — 🔄 gerade beim
+  Brainstorming (`superpowers:brainstorming`, architektonischer Pfad),
+  noch **kein Spec-File geschrieben**. Bereits vom Nutzer bestätigte
+  Entscheidungen, beim Fortsetzen direkt übernehmen (nicht erneut fragen):
+  - Finanzen bekommt die 3 Prototyp-Tabs (Übersicht/Transaktionen/
+    Analyse, aus `docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`)
+    als erste 3 Tabs; die bestehenden Abos/Teile/Bestellen-Tabs (kein
+    Prototyp-Vorbild) bleiben als zusätzliche Tabs dahinter.
+  - Zusätzlich ein **separater Kontostand-Detail-Screen** (von Home aus
+    per Klick auf die Kontostand-Karte erreichbar): sieht aus wie die
+    Prototyp-Balance-Karte (Augen-Icon zum Ausblenden, Sparkline) **plus
+    einer zusätzlichen Warenwert-Zeile**.
+  - Die Zeitraum-Filter (7T/30T/3M/6M/1J) sollen **echt funktionieren**
+    (im Prototyp nur Deko) — Ausgaben/Kontostand-Verlauf wirklich nach
+    Zeitraum filtern, nur mit vorhandenen `expenses`-Daten, keine neue
+    Tabelle.
+  - Grundsatz "keine neuen Funktionen" bedeutet laut Nutzer: keine neuen
+    *Datenerfassungs*-Funktionen — neue *Darstellung* vorhandener Daten
+    (Filter, Balken, Sparkline) ist ausdrücklich erlaubt.
+  - **Nächster Schritt beim Fortsetzen:** Brainstorming zu Ende führen
+    (weitere offene Detailfragen z. B. zu Transaktionen-Tab/Analyse-Tab
+    falls nötig, dann Design präsentieren, Spec schreiben, Nutzer-Review,
+    `writing-plans`, dann `subagent-driven-development` — wie bei den
+    vorherigen Etappen dieser Session).
+- **C) Suche-Ausbau** (Schnelleinstiege + Letzte Suchen + Icon-Badge für
+  Suche-Treffer, der bei A) bewusst zurückgestellt wurde) — noch nicht
+  begonnen.
+- **D) Sendungen-Detail** (Status-Historie/QR-Barcode/Abholdaten aus
+  Etappe 3 anzeigen, Klick auf eine Sendung) — noch nicht begonnen.
+
+**Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
+falls nicht anders gesagt): `superpowers:brainstorming` →
+`superpowers:writing-plans` → `superpowers:subagent-driven-development`,
+direkt auf `main` (kein Feature-Branch, Nutzer-Entscheidung), nach jeder
+Task/jedem Meilenstein `git push origin main` (Controller pusht selbst,
+nicht der Nutzer). Nach jeder fertigen Etappe: `docs/PROJEKT-LOG.md` +
+`CLAUDE.md` aktualisieren.
+
 ## Aufbau (Stand Etappe 8 v2 – Navigations-Redesign + Optik-Addendum nach Marks Prototyp)
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit fester
