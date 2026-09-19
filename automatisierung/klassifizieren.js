@@ -3,8 +3,8 @@
 const ERLAUBTE_TYPEN = ['beleg', 'sendung', 'amazon', 'termin', 'sonstiges'];
 
 const STATUS_SCHLUESSELWOERTER = [
+  { kategorie: 'abholbereit', muster: /abholbereit|zur abholung|packstation.*bereit|packstation.*abgegeben|paketshop.*hinterlegt|paketshop.*abgegeben|abholung möglich/i },
   { kategorie: 'zugestellt', muster: /zugestellt|geliefert|ausgeliefert|abgegeben/i },
-  { kategorie: 'abholbereit', muster: /abholbereit|zur abholung|packstation.*bereit|paketshop.*hinterlegt|abholung möglich/i },
   { kategorie: 'unterwegs', muster: /unterwegs|zustellfahrzeug|sortierzentrum|im zielland|versandt|übergeben/i },
 ];
 

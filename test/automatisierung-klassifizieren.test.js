@@ -46,6 +46,14 @@ test('kategorisiereStatus: erkennt unterwegs', () => {
   assert.equal(kategorisiereStatus('befindet sich im Sortierzentrum'), 'unterwegs');
 });
 
+test('kategorisiereStatus: Paketshop-Abgabe ist abholbereit, nicht zugestellt', () => {
+  assert.equal(kategorisiereStatus('Ihr Paket wurde im Paketshop abgegeben.'), 'abholbereit');
+});
+
+test('kategorisiereStatus: "liegt zur Abholung bereit" ist abholbereit, auch wenn "zugestellt" im Satz vorkommt', () => {
+  assert.equal(kategorisiereStatus('Konnte nicht zugestellt werden, liegt zur Abholung bereit.'), 'abholbereit');
+});
+
 test('kategorisiereStatus: kein Treffer oder leer -> unbekannt', () => {
   assert.equal(kategorisiereStatus('Vielen Dank für Ihre Bestellung.'), 'unbekannt');
   assert.equal(kategorisiereStatus(null), 'unbekannt');

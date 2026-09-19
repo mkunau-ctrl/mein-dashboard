@@ -1,6 +1,15 @@
 // Reine Berechnungen fuers Sendungen-Modul. Kein Netz, keine DOM.
 
 export const STATUS_PRIORITAET = { unterwegs: 0, abholbereit: 1, unbekannt: 2, zugestellt: 3 };
+
+export const STATUS_FORTSCHRITT = { unterwegs: 0, abholbereit: 1, zugestellt: 2 };
+
+export function istStatusFortschritt(bestehenderStatus, neueKategorie) {
+  if (!(neueKategorie in STATUS_FORTSCHRITT)) return false;
+  const aktuellePrio = STATUS_FORTSCHRITT[bestehenderStatus] ?? -1;
+  return STATUS_FORTSCHRITT[neueKategorie] >= aktuellePrio;
+}
+
 const STATUS_ZYKLUS = { unterwegs: 'abholbereit', abholbereit: 'zugestellt', zugestellt: 'unterwegs', unbekannt: 'unterwegs' };
 
 export function sortiereSendungen(sendungen) {

@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { leseLetztenLauf, schreibeLetztenLauf } from './letzter-lauf.js';
 import { baustePrompt, parseKlassifikation, kategorisiereStatus } from './klassifizieren.js';
-import { STATUS_PRIORITAET } from '../js/module/sendungen/berechnung.js';
+import { istStatusFortschritt } from '../js/module/sendungen/berechnung.js';
 
 const HIER = dirname(fileURLToPath(import.meta.url));
 const ZUSTAND_PFAD = join(HIER, 'letzter-lauf.json');
@@ -95,11 +95,7 @@ async function findeBestehendeSendung(trackingnummer) {
 
 async function aktualisiereSendung(bestehend, k, statusKategorie) {
   const aktualisierung = { letzte_aktualisierung: new Date().toISOString() };
-  const neuePrio = STATUS_PRIORITAET[statusKategorie];
-  const aktuellePrio = (bestehend.status == null || bestehend.status === 'unbekannt')
-    ? -1
-    : STATUS_PRIORITAET[bestehend.status];
-  if (statusKategorie !== 'unbekannt' && neuePrio >= aktuellePrio) {
+  if (istStatusFortschritt(bestehend.status, statusKategorie)) {
     aktualisierung.status = statusKategorie;
   }
   if (k.beschreibung) aktualisierung.beschreibung = k.beschreibung;
@@ -121,7 +117,6 @@ async function legeEreignisAn(sendungId, k, statusKategorie) {
 
 async function schreibeSendung(k) {
   const statusKategorie = kategorisiereStatus(k.statusText);
-  const haendler = k.typ === 'amazon' ? 'Amazon' : k.haendler;
   if (k.trackingnummer) {
     const bestehend = await findeBestehendeSendung(k.trackingnummer);
     if (bestehend) {
@@ -130,6 +125,7 @@ async function schreibeSendung(k) {
       return;
     }
   }
+  const haendler = k.typ === 'amazon' ? 'Amazon' : k.haendler;
   const { data, error } = await supabase.from('sendungen').insert({
     user_id: DASHBOARD_USER_ID, haendler,
     trackingnummer: k.trackingnummer || null,

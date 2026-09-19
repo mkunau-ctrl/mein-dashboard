@@ -86,6 +86,11 @@ Task 2 für die neue Status-Kategorie). Gepusht auf `main`.
   (z. B. manche Vinted-Abholungen) können weiterhin vereinzelt doppelt
   angelegt werden — bislang kein beobachtetes Problem seit der Aufräumung,
   aber kein automatischer Schutz dagegen.
+- Die eigentliche Live-Verifikation des Dedup-Fixes steht noch aus: erst
+  der nächste automatische Postfach-Scan (täglich 7 Uhr, Windows-Scheduled-
+  Task „MeinDashboard-PostfachScan") zeigt, ob eine bekannte Sendung per
+  Trackingnummer aktualisiert statt dupliziert wird, und ob
+  `sendungen_ereignisse` dabei korrekt befüllt wird.
 
 ---
 

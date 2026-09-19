@@ -261,14 +261,17 @@ auf Deutsch. Datenschutz beachten.
   kann Mark auch Aufgaben (`todos`) oder Lagerbestände (`parts`) einfach im
   Chat erzählen; Claude fragt fehlende Pflichtfelder nach und trägt direkt
   per Supabase-MCP ein, statt dass Mark es selbst in der App eingeben muss.
-- **E-Mail-Automatisierung – kein Dedup-Key:** IMAP-`SINCE` liefert nur
-  Tagesgenauigkeit; `postfach-scan.mjs` filtert deshalb zusätzlich selbst
-  nach `internalDate` gegen den letzten Lauf-Zeitpunkt (`letzter-lauf.json`),
-  damit nicht täglich derselbe Tag doppelt verarbeitet wird. Es gibt trotzdem
-  **keinen Dedup-Key** in `expenses`/`sendungen`/`termine` – wird
-  `letzter-lauf.json` gelöscht/zurückgesetzt (z. B. für einen manuellen
-  Test), verarbeitet der nächste Lauf denselben Zeitraum erneut. Nach einem
-  solchen Test ggf. Duplikate manuell in Supabase löschen.
+- **E-Mail-Automatisierung – Dedup-Key nur in `sendungen`:** IMAP-`SINCE`
+  liefert nur Tagesgenauigkeit; `postfach-scan.mjs` filtert deshalb
+  zusätzlich selbst nach `internalDate` gegen den letzten Lauf-Zeitpunkt
+  (`letzter-lauf.json`), damit nicht täglich derselbe Tag doppelt
+  verarbeitet wird. Dedup-Key nur in `sendungen` (Trackingnummer, seit
+  Etappe 3); `expenses`/`termine`/`sendungen_ereignisse` haben weiterhin
+  keinen Dedup-Key. Wird `letzter-lauf.json` gelöscht/zurückgesetzt (z. B.
+  für einen manuellen Test), verarbeitet der nächste Lauf denselben
+  Zeitraum erneut – bei `expenses`/`termine` (und bei `sendungen` ohne
+  bekannte Trackingnummer) ggf. Duplikate danach manuell in Supabase
+  löschen.
 
 ### Supabase-Projekt
 

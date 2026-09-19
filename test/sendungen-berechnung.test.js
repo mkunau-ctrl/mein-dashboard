@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sortiereSendungen, offeneSendungen, sortiereTermine, naechsterSendungStatus, STATUS_PRIORITAET }
+import { sortiereSendungen, offeneSendungen, sortiereTermine, naechsterSendungStatus, STATUS_PRIORITAET, istStatusFortschritt }
   from '../js/module/sendungen/berechnung.js';
 
 const sendungen = [
@@ -39,4 +39,25 @@ test('STATUS_PRIORITAET: unterwegs < abholbereit < unbekannt < zugestellt', () =
   assert.ok(STATUS_PRIORITAET.unterwegs < STATUS_PRIORITAET.abholbereit);
   assert.ok(STATUS_PRIORITAET.abholbereit < STATUS_PRIORITAET.unbekannt);
   assert.ok(STATUS_PRIORITAET.unbekannt < STATUS_PRIORITAET.zugestellt);
+});
+
+test('istStatusFortschritt: unbekannte neue Kategorie ist nie ein Fortschritt', () => {
+  assert.equal(istStatusFortschritt('unterwegs', 'unbekannt'), false);
+});
+
+test('istStatusFortschritt: von unbekanntem/fehlendem Bestand ist jede erkannte Kategorie ein Fortschritt', () => {
+  assert.equal(istStatusFortschritt('unbekannt', 'unterwegs'), true);
+  assert.equal(istStatusFortschritt(null, 'abholbereit'), true);
+  assert.equal(istStatusFortschritt(undefined, 'zugestellt'), true);
+});
+
+test('istStatusFortschritt: bewegt sich nur vorwaerts', () => {
+  assert.equal(istStatusFortschritt('abholbereit', 'unterwegs'), false);
+  assert.equal(istStatusFortschritt('zugestellt', 'unterwegs'), false);
+  assert.equal(istStatusFortschritt('unterwegs', 'abholbereit'), true);
+  assert.equal(istStatusFortschritt('unterwegs', 'unterwegs'), true);
+});
+
+test('istStatusFortschritt: unbekannter Fremdwert im Bestand blockiert nicht dauerhaft', () => {
+  assert.equal(istStatusFortschritt('irgendwas_fremdes', 'unterwegs'), true);
 });
