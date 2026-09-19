@@ -21,48 +21,179 @@ unten für Details.
 
 ## Aktueller Stand (2026-09-19) / Nächste Schritte
 
-Mitten in **Etappe 4** (fünf Teile, vom Nutzer bereits in dieser
-Reihenfolge bestätigt):
+**Etappe 4 Teil A (Icon-Audit) ist fertig** (Commit `57b623f`). Teil B
+("Finanzen-Ausbau") ist beim Brainstorming zu einem **deutlich größeren,
+mehrteiligen Vorhaben angewachsen** (Nutzerwunsch: echte
+Einnahmen-Erfassung, Detail-Klicks überall, neues Rechnungen-Modul,
+Design-Angleichung weiterer Screens, mehr Einstellungen). Zu groß für
+einen Spec — deshalb in **Sub-Etappen A–G** zerlegt (Reihenfolge vom
+Nutzer am 2026-09-19 bestätigt, **noch keine einzige davon spezifiziert
+oder gebaut**):
 
-- **A) Icon-Audit** — ✅ fertig, gemerged, gepusht (Commit `57b623f`,
-  Log-Eintrag 2026-09-19 "Icon-Audit").
-- **B) Finanzen-Ausbau + Kontostand-Detail-Screen** — 🔄 gerade beim
-  Brainstorming (`superpowers:brainstorming`, architektonischer Pfad),
-  noch **kein Spec-File geschrieben**. Bereits vom Nutzer bestätigte
-  Entscheidungen, beim Fortsetzen direkt übernehmen (nicht erneut fragen):
-  - Finanzen bekommt die 3 Prototyp-Tabs (Übersicht/Transaktionen/
-    Analyse, aus `docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`)
-    als erste 3 Tabs; die bestehenden Abos/Teile/Bestellen-Tabs (kein
-    Prototyp-Vorbild) bleiben als zusätzliche Tabs dahinter.
-  - Zusätzlich ein **separater Kontostand-Detail-Screen** (von Home aus
-    per Klick auf die Kontostand-Karte erreichbar): sieht aus wie die
-    Prototyp-Balance-Karte (Augen-Icon zum Ausblenden, Sparkline) **plus
-    einer zusätzlichen Warenwert-Zeile**.
-  - Die Zeitraum-Filter (7T/30T/3M/6M/1J) sollen **echt funktionieren**
-    (im Prototyp nur Deko) — Ausgaben/Kontostand-Verlauf wirklich nach
-    Zeitraum filtern, nur mit vorhandenen `expenses`-Daten, keine neue
-    Tabelle.
-  - Grundsatz "keine neuen Funktionen" bedeutet laut Nutzer: keine neuen
-    *Datenerfassungs*-Funktionen — neue *Darstellung* vorhandener Daten
-    (Filter, Balken, Sparkline) ist ausdrücklich erlaubt.
-  - **Nächster Schritt beim Fortsetzen:** Brainstorming zu Ende führen
-    (weitere offene Detailfragen z. B. zu Transaktionen-Tab/Analyse-Tab
-    falls nötig, dann Design präsentieren, Spec schreiben, Nutzer-Review,
-    `writing-plans`, dann `subagent-driven-development` — wie bei den
-    vorherigen Etappen dieser Session).
-- **C) Suche-Ausbau** (Schnelleinstiege + Letzte Suchen + Icon-Badge für
-  Suche-Treffer, der bei A) bewusst zurückgestellt wurde) — noch nicht
-  begonnen.
-- **D) Sendungen-Detail** (Status-Historie/QR-Barcode/Abholdaten aus
-  Etappe 3 anzeigen, Klick auf eine Sendung) — noch nicht begonnen.
+- **A) Konten-, Einnahmen- & Schulden-Grundlage** (Fundament, als
+  Nächstes dran — Umfang am 2026-09-19 gegenüber der ursprünglichen
+  Idee "nur Einnahmen" nochmal deutlich gewachsen):
+  - **Einnahmen:** neue Tabelle `einnahmen` + `einnahmen_vorlagen`
+    (wiederkehrende Beträge, Nutzer nannte 380 €/750 € als Beispiele,
+    z. B. Ausbildungsvergütung), Erfassung per App-Formular **und** per
+    Chat-Diktat (wie bei Ausgaben/Berichtsheft). Datenmodell-Ansatz vom
+    Nutzer bestätigt: **eigene Tabelle** (nicht die bestehende
+    `expenses`-Tabelle um ein `art`-Feld erweitern), um den bestehenden
+    Ausgaben-Code nicht anzufassen.
+  - **Mehrkonten (neu, 2026-09-19):** statt einem einzelnen
+    `kontostand_start`/`stand_datum` in `finance_settings` gibt es eine
+    neue Tabelle `konten` (z. B. "Hauptkonto"/Girokonto, "Trade
+    Republic", "Volksbank", je eigener `kontostand_start` +
+    `stand_datum`). `expenses` und `einnahmen` bekommen ein optionales
+    `konto_id`-Feld (Default = Hauptkonto) — die meisten Buchungen
+    laufen laut Nutzer sowieso nur über das eine Hauptkonto, Nebenkonten
+    (z. B. Trade Republic) können entweder auch Buchungen zugeordnet
+    bekommen oder einfach nur gelegentlich manuell auf einen neuen Stand
+    gesetzt werden (wie bisher `setzeKontostandStart`, nur pro Konto).
+    Drei Kontostand-Sichten gewünscht: **Gesamt-Kontostand** (Summe
+    aller Konten), **"echter"/unechter Kontostand inkl. Gerätewert**
+    (bestehendes `unechterKontostand`-Konzept, jetzt auf die
+    Konten-Summe angewendet), **einzelne Konten** mit ihren jeweiligen
+    Transaktionen (neuer "Konten"-Tab/Screen in Finanzen). Die
+    Übersicht in Finanzen zeigt weiterhin nur den einen
+    Gesamt-Kontostand, Detail-Aufschlüsselung nach Konto gibt es dann
+    im neuen Konten-Bereich.
+  - **Schulden (neu, 2026-09-19):** neue Tabelle `schulden` (Person,
+    Gesamtbetrag, Richtung: ich-schulde/mir-wird-geschuldet, Notiz,
+    Status) **plus Teilzahlungen/Verlauf** (eigene Tabelle
+    `schulden_zahlungen`: schuld_id, Betrag, Datum) — Restbetrag =
+    Gesamtbetrag minus Summe der Zahlungen, nicht nur offen/beglichen.
+  - `kontostand()`-Formeln werden entsprechend erweitert (bisher nur
+    `start − Ausgaben` für ein Konto).
+- **B) Finanzen-Redesign** — Tabs Übersicht/Transaktionen/Analyse nach
+  Prototyp (`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`),
+  jetzt mit **echten Einnahmen UND Ausgaben** (nicht nur Ausgaben wie
+  ursprünglich angenommen). Zeitraum-Filter (7T/30T/3M/6M/1J) wirken
+  **gemeinsam** auf Übersicht- und Transaktionen-Tab (echte Filterung,
+  keine neue Tabelle). Analyse-Tab: Balkendiagramm Einnahmen/Ausgaben
+  über mehrere Monate + Kategorien-Aufschlüsselung (inkl.
+  Einnahmequellen wie "Handyreparaturen") + Jahresübersicht/Sparquote
+  (neuer Vorschlag, vom Nutzer angenommen). Bestehender Kontostand-Tab
+  **bleibt zusätzlich** in der Tab-Leiste (nicht ersetzt). Separater
+  **Kontostand-Detail-Screen** von Home aus (Klick auf Kontostand-Karte):
+  Prototyp-Balance-Karte (Augen-Icon zum Ausblenden, Sparkline) **plus**
+  Warenwert-Zeile. "Abos"-Tab wird zu **"Regelmäßige Ausgaben"**: echte
+  `ausgaben_vorlagen`-Tabelle (analog zu `einnahmen_vorlagen`) zusätzlich
+  zur bisherigen automatischen Muster-Erkennung (`erkenneAbos` bleibt
+  als Vorschlag). Dazu: CSV-Export für Einnahmen/Ausgaben.
+- **C) Detail-Klicks überall** — Sendungen (inkl. `abholcode`/
+  `abholadresse`/`abholzeiten`, die die E-Mail-Automatisierung seit
+  Etappe 3 schon erfasst, aber bisher nirgends anzeigt), Termine,
+  To-dos, Transaktionen (Einnahmen/Ausgaben) werden anklickbar und
+  zeigen eine Detailansicht. Nutzer-Motivation: **Zeitersparnis**, z. B.
+  Abholcode sehen ohne die E-Mail selbst suchen zu müssen. Deckt auch
+  das alte "Teil D" (Sendungen-Detail) mit ab.
+- **D) Neues Rechnungen-Modul** — komplett neu (kein bisheriges
+  Datenmodell): offen/bezahlt/überfällig mit Filter-Chips (Vorbild:
+  Prototyp-Screen "Rechnungen"), plus Fälligkeits-Erinnerungen auf dem
+  Home-Screen.
+- **E) Design-Angleichung an Prototyp** — Profil-, Suche- (inkl.
+  Schnelleinstiege + Letzte Suchen) und Ausbildung-Screen sollen 1:1 wie
+  im Prototyp aussehen/funktionieren (deckt auch das alte "Teil C"
+  Suche-Ausbau ab).
+- **F) Einstellungen ausbauen** — bisher gibt es nur Theme-Umschalter +
+  Profil-Menü, kein echter Einstellungen-Screen. Neu: Schriftgröße
+  (CSS-Skalierungsfaktor), "Alle Daten exportieren"-Button (JSON-Backup
+  aller Module) — Annahme, mit Nutzer beim Start dieser Sub-Etappe kurz
+  gegenchecken, da nicht 100 % explizit bestätigt.
+- **G) Google Drive** — erst ein **Spike** (Machbarkeits-Check: Supabase
+  unterstützt Google als Auth-Provider, aber Datei-Zugriff auf Drive ist
+  ein eigenes Google-API-Thema mit eigenen Zugangsdaten), bevor fest
+  eingeplant wird.
+- **H) KI-Fortschritts-Anzeige + Wächter-System** (ganz ans Ende gestellt,
+  2026-09-19) — technisch anders als der Rest (braucht eine Brücke
+  zwischen Claude-Code-Sessions auf dem Rechner und der Browser-App,
+  z. B. per Hook, der Status nach Supabase schreibt): Live-Fortschritt
+  in 5%-Schritten + Zeitschätzung für laufende Claude-Aufgaben, Erkennung
+  "arbeitet KI gerade", Projekt-Übersicht im Dashboard. **Wächter**: (1)
+  während größerer Bauvorhaben laufend nach Bugs/Fehlern suchen und
+  schnell beheben, (2) erkennen, wenn eine **Cloud-Claude-Session**
+  (claude.ai/code) hängt/abbricht, kurzen Status-Text schreiben und die
+  Session fortsetzen. Erst eigener Spike nötig, bevor Design.
+- **I) Wetter-Widget** — öffentliche Wetter-API (kein Konto nötig),
+  einfach, auf Home.
+- **J) eBay-Nachrichten sehen + beantworten** — braucht eBay-
+  Entwicklerkonto + OAuth + Messaging-API, eigener Spike wie bei G.
+- **K) Geräte-übergreifender Datei-Austausch via Supabase Storage** —
+  Hochladen auf einem Gerät, Abrufen auf dem anderen. **Wichtig:**
+  Bluetooth/Offline-Übertragung ist mit einer Web-App technisch nicht
+  möglich (Web Bluetooth fehlt in iOS Safari komplett) — für echtes
+  Offline-Teilen bleibt AirDrop/Nearby Share (bereits vorhanden, nichts
+  zu bauen), Supabase Storage deckt den Fall "beide Geräte haben
+  irgendeine Internetverbindung" ab.
+- **L) Geräte-Verwaltung/-Freigabe** — eigene Sicherheits-Logik (Supabase
+  liefert das nicht von Haus aus): angemeldete Geräte sehen, neue Geräte
+  erst nach Bestätigung auf einem bereits eingeloggten Gerät freischalten.
+- **M) Eigener Kalender & Notizen** (ersetzt "Ausbildung" als Bottom-Nav-
+  Punkt; Ausbildung bleibt als Modul normal bestehen, nur nicht mehr in
+  der festen Nav-Leiste — analog dazu, wie Ernährung/To-dos/Sendungen
+  seit Etappe 8 v2 schon nur per Hash erreichbar sind): eigener
+  Kalender-Bereich mit Erinnerungen im Home-Bereich. Datenquellen:
+  E-Mails (Termine-Erkennung existiert in der Automatisierung schon
+  teilweise seit Etappe 6, hier ausbauen), **Apple-Kalender** und
+  **Apple-Erinnerungen** aus iCloud — technisch machbar über **CalDAV**
+  (Apple unterstützt das mit App-spezifischem Passwort, ähnliches Muster
+  wie der bestehende GMX-IMAP-Zugriff in `automatisierung/`; Erinnerungen
+  laufen über dieselbe CalDAV-Verbindung als VTODO-Objekte) — realistisch
+  machbar, aber eigene Spec/Spike wert, da neue Technologie fürs Projekt.
+  Dazu **Notizen**: eigenes Notiz-Feature, auffindbar auch über Suche
+  ("auf Notizen klicken → Erinnerungen/Notizen einspeichern").
+- **N) Handyreparatur-Aufträge** — Kunde/Gerät/Problem/Preis/Status
+  (offen/fertig/abgeholt), erzeugt bei "abgeholt" automatisch eine
+  Einnahme (Tabelle `einnahmen`, Item A). Ideen-Ergänzung 2026-09-19:
+  Abholdatum eines Auftrags könnte automatisch einen Kalender-Termin/
+  Erinnerung erzeugen (Verknüpfung mit Item M).
+- **O) Teile-Bestellen ↔ Sendungen verknüpfen** — Sendung "zugestellt" →
+  Vorschlag, zugehöriges Teil im Lager auf Status "da" zu setzen.
+- **P) Kalender-Export (ICS)** für Termine/Ausbildung, damit sie auch im
+  iPhone-/Google-Kalender auftauchen — Gegenrichtung zu Item M (M holt
+  externe Termine rein, P schickt interne Termine raus).
+- **Q) Projekte-Übersicht** (neu, 2026-09-19) — eigener Bereich im
+  Dashboard, der alle Projekte unter `C:\Users\PC\Projekte\<name>`
+  auflistet und pro Projekt den Inhalt von dessen `CLAUDE.md` anzeigt
+  (damit sowohl Mark als auch Claude jederzeit den Stand jedes Projekts
+  sehen können). Technisch nötig: GitHub Pages kann nicht lokal auf die
+  Festplatte zugreifen — braucht einen lokalen Sync-Schritt (Skript,
+  ähnliches Muster wie `automatisierung/postfach-scan.mjs`), der die
+  `CLAUDE.md`-Inhalte aller Projekte periodisch nach Supabase schreibt,
+  von dort zeigt die App sie an. War schon mal als "Projekte"-Kachel in
+  einem früheren Plan einer anderen Session angedacht (siehe
+  `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`),
+  aber nie gebaut — jetzt explizit erneut bestätigt.
+
+**Wichtige Arbeitsweise-Regel ab 2026-09-19 (Prototyp-Phase):** Diese
+gesamte Backlog-Abarbeitung (A–Q) wird bewusst als **Prototyp**
+behandelt, kein sauberer Endzustand. Jeden Coding-Schritt beim Umsetzen
+dokumentieren — **auch Fehler im Code und Ansätze, die nicht
+funktioniert haben**, nicht nur das Endergebnis. Grund: Mark erwartet,
+danach vieles zu ändern/Fehler zu finden, und will die Doku (inkl.
+Fehler-Historie) später nutzen, um mit einem einzigen guten Plan einen
+sauberen Neuaufbau zu machen.
+
+**Weiterhin unverändert offen** (nicht Teil dieser Sub-Etappen-Liste):
+echte PNG-Icons (192/512, `apple-touch-icon`, seit Etappe 0), kompletter
+manueller Testlauf am echten Gerät (seit Etappe 2–5).
+
+**Nächster Schritt beim Fortsetzen:** Sub-Etappe A ist fertig
+durchgeplant, Spec geschrieben:
+`docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`.
+**Steht noch aus:** Nutzer-Review dieses Spec-Files, danach
+`writing-plans` nur für Sub-Etappe A, dann Umsetzung. Jede weitere
+Sub-Etappe (B–Q) bekommt danach ihren eigenen
+Brainstorming→Spec→Plan→Umsetzung-Zyklus, nicht alles auf einmal.
 
 **Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
 falls nicht anders gesagt): `superpowers:brainstorming` →
 `superpowers:writing-plans` → `superpowers:subagent-driven-development`,
 direkt auf `main` (kein Feature-Branch, Nutzer-Entscheidung), nach jeder
 Task/jedem Meilenstein `git push origin main` (Controller pusht selbst,
-nicht der Nutzer). Nach jeder fertigen Etappe: `docs/PROJEKT-LOG.md` +
-`CLAUDE.md` aktualisieren.
+nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
++ `CLAUDE.md` aktualisieren.
 
 ## Aufbau (Stand Etappe 8 v2 – Navigations-Redesign + Optik-Addendum nach Marks Prototyp)
 
