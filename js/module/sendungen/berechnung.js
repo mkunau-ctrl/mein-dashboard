@@ -1,7 +1,7 @@
 // Reine Berechnungen fuers Sendungen-Modul. Kein Netz, keine DOM.
 
-const STATUS_PRIORITAET = { unterwegs: 0, unbekannt: 1, zugestellt: 2 };
-const STATUS_ZYKLUS = { unterwegs: 'zugestellt', zugestellt: 'unterwegs', unbekannt: 'unterwegs' };
+export const STATUS_PRIORITAET = { unterwegs: 0, abholbereit: 1, unbekannt: 2, zugestellt: 3 };
+const STATUS_ZYKLUS = { unterwegs: 'abholbereit', abholbereit: 'zugestellt', zugestellt: 'unterwegs', unbekannt: 'unterwegs' };
 
 export function sortiereSendungen(sendungen) {
   return [...sendungen].sort((a, b) => {
