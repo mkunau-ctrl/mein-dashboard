@@ -4,6 +4,34 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-19 – Etappe 4 (Teil A): Icon-Audit gegen den Prototyp
+
+**Was:** Systematischer Abgleich aller Icons gegen Marks Prototyp
+(`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`).
+Home/Suche/Profil/Wallet/Box stimmten schon exakt. Gefunden und behoben:
+Beleg-Icon (`AUSGABE_ICON`) hatte ein anderes Zickzack-Muster als der
+Prototyp; Kategorie-Icons in Finanzen → Monat/Analyse zeigten überall
+dasselbe generische Tag-Symbol statt kategoriespezifischer Icons; drei
+Listen (Sendungen, Termine, Abos) hatten gar keine Icon-Badges, obwohl
+der Prototyp dort welche zeigt.
+
+**Entscheidungen:** Neue reine Funktion `kategorisiereIconTyp(kategorie)`
+in `js/module/finanzen/berechnung.js` (Stichwort-Mapping, getestet) ordnet
+frei eingegebene Ausgaben-Kategorien einem von vier Prototyp-Icons zu
+(Auto/Essen/Freizeit/Sonstiges) — analog zu `kategorisiereStatus()` aus
+Etappe 3. Die Suche-Liste hat ebenfalls kein Icon, wird aber bewusst erst
+in Etappe 4 (Teil C, Suche-Ausbau) mitgefixt, da der Screen dort ohnehin
+neu gebaut wird.
+
+**Stand danach:** `npm test` 78/78 grün (1 neuer Test für
+`kategorisiereIconTyp`), gepusht.
+
+**Nächster Schritt:** Etappe 4 Teil B (Finanzen-Ausbau: Tabs Übersicht/
+Transaktionen/Analyse, Zeitraum-Filter, Kategorie-Balken, plus separater
+Kontostand-Detail-Screen mit Warenwert) — Brainstorming läuft.
+
+---
+
 ## 2026-09-19 – Etappe 3: Sendungen-Dedup-Fix + Status-Historie + Abholdaten
 
 **Was:** Der seit der E-Mail-Automatisierung (Etappe 6) bekannte, bis jetzt
