@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseKlassifikation } from '../automatisierung/klassifizieren.js';
+import { parseKlassifikation, kategorisiereStatus, baustePrompt } from '../automatisierung/klassifizieren.js';
 
 test('parseKlassifikation: gueltiger Beleg', () => {
   const ergebnis = parseKlassifikation(
@@ -29,4 +29,32 @@ test('parseKlassifikation: unbekannter Typ wirft Fehler', () => {
 
 test('parseKlassifikation: kein JSON wirft Fehler', () => {
   assert.throws(() => parseKlassifikation('Das ist keine Werbung.'), /kein gültiges JSON/);
+});
+
+test('kategorisiereStatus: erkennt zugestellt', () => {
+  assert.equal(kategorisiereStatus('Ihre Sendung wurde zugestellt.'), 'zugestellt');
+  assert.equal(kategorisiereStatus('Paket erfolgreich ausgeliefert'), 'zugestellt');
+});
+
+test('kategorisiereStatus: erkennt abholbereit', () => {
+  assert.equal(kategorisiereStatus('Ihr Paket liegt zur Abholung bereit.'), 'abholbereit');
+  assert.equal(kategorisiereStatus('in der Packstation hinterlegt und abholbereit'), 'abholbereit');
+});
+
+test('kategorisiereStatus: erkennt unterwegs', () => {
+  assert.equal(kategorisiereStatus('Die Sendung ist unterwegs zu Ihnen.'), 'unterwegs');
+  assert.equal(kategorisiereStatus('befindet sich im Sortierzentrum'), 'unterwegs');
+});
+
+test('kategorisiereStatus: kein Treffer oder leer -> unbekannt', () => {
+  assert.equal(kategorisiereStatus('Vielen Dank für Ihre Bestellung.'), 'unbekannt');
+  assert.equal(kategorisiereStatus(null), 'unbekannt');
+  assert.equal(kategorisiereStatus(undefined), 'unbekannt');
+});
+
+test('baustePrompt: enthaelt die neuen optionalen Sendungsfelder', () => {
+  const prompt = baustePrompt();
+  for (const feld of ['statusText', 'ort', 'abholcode', 'abholadresse', 'abholzeiten']) {
+    assert.ok(prompt.includes(feld), `Prompt sollte "${feld}" erwaehnen`);
+  }
 });

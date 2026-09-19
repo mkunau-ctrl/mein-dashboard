@@ -2,6 +2,20 @@
 
 const ERLAUBTE_TYPEN = ['beleg', 'sendung', 'amazon', 'termin', 'sonstiges'];
 
+const STATUS_SCHLUESSELWOERTER = [
+  { kategorie: 'zugestellt', muster: /zugestellt|geliefert|ausgeliefert|abgegeben/i },
+  { kategorie: 'abholbereit', muster: /abholbereit|zur abholung|packstation.*bereit|paketshop.*hinterlegt|abholung möglich/i },
+  { kategorie: 'unterwegs', muster: /unterwegs|zustellfahrzeug|sortierzentrum|im zielland|versandt|übergeben/i },
+];
+
+export function kategorisiereStatus(statusText) {
+  if (!statusText) return 'unbekannt';
+  for (const { kategorie, muster } of STATUS_SCHLUESSELWOERTER) {
+    if (muster.test(statusText)) return kategorie;
+  }
+  return 'unbekannt';
+}
+
 export function baustePrompt() {
   return `Du bekommst den Text einer E-Mail über stdin. Klassifiziere sie in genau einen Typ:
 - "beleg": Kassenbon/Rechnung für einen Kauf
@@ -12,12 +26,13 @@ export function baustePrompt() {
 
 Antworte NUR mit einem einzelnen JSON-Objekt, ohne Markdown-Codeblock, ohne Erklärtext:
 - beleg: {"typ":"beleg","haendler":string,"betrag":number,"datum":"YYYY-MM-DD","kategorie":string}
-- sendung: {"typ":"sendung","haendler":string,"trackingnummer":string|null,"beschreibung":string|null}
-- amazon: {"typ":"amazon","beschreibung":string|null,"trackingnummer":string|null}
+- sendung: {"typ":"sendung","haendler":string,"trackingnummer":string|null,"beschreibung":string|null,"statusText":string|null,"ort":string|null,"abholcode":string|null,"abholadresse":string|null,"abholzeiten":string|null}
+- amazon: {"typ":"amazon","beschreibung":string|null,"trackingnummer":string|null,"statusText":string|null,"ort":string|null,"abholcode":string|null,"abholadresse":string|null,"abholzeiten":string|null}
 - termin: {"typ":"termin","titel":string,"faelligAm":"YYYY-MM-DD"}
 - sonstiges: {"typ":"sonstiges"}
 
-Wenn ein Pflichtfeld nicht sicher aus der Mail hervorgeht, antworte mit {"typ":"sonstiges"}.`;
+Wenn ein Pflichtfeld nicht sicher aus der Mail hervorgeht, antworte mit {"typ":"sonstiges"}.
+Fülle "statusText"/"ort"/"abholcode"/"abholadresse"/"abholzeiten" NUR, wenn der Wert wörtlich oder eindeutig aus der E-Mail hervorgeht. Erfinde keine Werte - bei Unsicherheit null.`;
 }
 
 function entferneCodeblock(text) {
