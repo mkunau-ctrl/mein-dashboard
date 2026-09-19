@@ -4,6 +4,36 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-19 – Eingabe-UI entfernt (Etappe 2): nur noch Anzeigen/Status/Löschen
+
+**Was:** Alle "+ Neu"-Formulare app-weit entfernt — betrifft `finanzen/ausgaben.js`
+(Neue Ausgabe), `finanzen/kontostand.js` (Kontostand setzen), `finanzen/teile.js`
+(Neues Teil + Bearbeiten-Dialog), `sendungen/pakete.js` (Neue Sendung),
+`sendungen/termine.js` (Neuer Termin), `todos/offen.js` (Neues Todo),
+`ernaehrung/liste.js` (Neuer Punkt + Bearbeiten-Dialog), `ernaehrung/gewicht.js`
+(Gewicht/Körpergröße-Eingabefelder, BMI wird jetzt statisch aus den letzten
+gespeicherten Werten berechnet statt live beim Tippen), `berichtsheft/eintraege.js`
+(Neuer Eintrag + Bearbeiten-Dialog), `berichtsheft/drucken.js`
+(Kopfdaten-eintragen-Dialog). Alle zugehörigen `<dialog class="punkt-dialog">`-CSS-
+Regeln, `.wt-feld` und `.gewicht-eingabe` sind jetzt tot und wurden aus `app.css`
+mitentfernt (keine toten Regeln zurückgelassen). Die `daten.js`-Funktionen zum
+Anlegen (`legeAusgabeAn`, `setzeKontostandStart`, `speicherTeil`, `legeSendungAn`,
+`legeTerminAn`, `legeTodoAn`, `speichereItem`, `speichereEintrag`,
+`speichereSettings`, `setzeGewicht`, `setzeSetting`) bleiben unverändert bestehen
+— nur die manuellen UI-Trigger dafür sind weg, damit sie weiterhin per
+Sprache/Automatisierung nutzbar bleiben.
+
+**Bewusst unverändert gelassen** (Status ändern, kein Neuanlegen): To-do
+abhaken, Sendungs-/Teile-Status weiterklicken, Ernährung-Heute-Checkliste
+(Häkchen), Ernährung-Liste hoch/runter-Sortierung, alle Löschen-Buttons.
+
+**Warum:** Mark will künftig nichts mehr selbst im Dashboard eintragen,
+sondern nur per Sprache mit der KI sprechen, die dann direkt in Supabase
+schreibt. `npm test` weiterhin 65/65 grün (reine UI-Entfernung, keine
+Logikänderung).
+
+---
+
 ## 2026-09-19 – CSS-Nachbesserung (Karten-Rahmen + Searchbar), echte Finanzdaten eingetragen, Folge-Etappen geplant
 
 **Was:** Drei Dinge.
@@ -74,8 +104,9 @@ E-Mail-Triage-Themen sowie das neue "Wächter"-Tool (Nutzungslimit-Wächter,
 Gegenstück zu `auto-weiter`, eigenes Projekt außerhalb dieses Repos — siehe
 dortige Doku) bewusst nicht angefasst, nur dokumentiert.
 
-**Nächster Schritt:** Etappe 2 der oben genannten Reihenfolge (Eingabe-UI
-überall entfernen) — Brainstorming/Spec dafür noch offen.
+**Nächster Schritt:** Etappe 2 (Eingabe-UI überall entfernen) ist erledigt,
+siehe eigener Eintrag oben. Als Nächstes: Etappe 3 (E-Mail-Automatisierung
+umbauen: Dedup-Fix + Status-Historie + QR-Code/Barcode/Abholadresse).
 
 ---
 
