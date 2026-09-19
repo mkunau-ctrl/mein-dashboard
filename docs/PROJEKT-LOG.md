@@ -4,6 +4,47 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-19 – Echte Finanzdaten eingetragen, neue Ideen geparkt
+
+**Was:** Sechs echte Ausgaben-Einträge angelegt (Zehnter/Spende 113€, Wispr
+Flow 15€, Friseur 18€, Claude 22€, Wochenbudget Essen 55€, Persönliches
+Budget 55€ — Summe 278€). Supplements (0€, noch nicht gekauft) bewusst
+NICHT eingetragen, da noch keine echte Ausgabe stattgefunden hat.
+
+**Offene Punkte, die noch keine passende Datenstruktur haben (eigene
+Etappe, noch nicht gebaut):**
+- **Einnahmen + Budget/Planung.** Mark hat reale Zahlen genannt
+  (Ausbildungsvergütung 750€, Essensgeld 220€, Taschengeld 100€,
+  Bekleidungsgeld 56€, variables Einkommen Handy-Flipping 100-300€) sowie
+  geplante/unsichere zukünftige Ausgaben (Claude höheres Tier 180€/Monat,
+  ChatGPT 22€/Monat, Hetzner-Server 15€/Monat, "Wächter"-Tracking-Idee noch
+  ohne Kosten) und ein Führerschein-Budget (A1 2.300€, Auto/BF17 2.500€,
+  Motorrad 2.500€). Das erweitert die bereits geparkte
+  Einnahmen-Tracking-Etappe (siehe Eintrag 2026-09-18) um ein
+  Status-Flag/Sektion "geplant vs. laufend" bei Ausgaben und ein
+  Budget-/Sparziel-Konzept für große, einmalige Anschaffungen — noch nicht
+  gebaut, braucht eigenes Brainstorming.
+- **E-Mail-Triage-Automatisierung (neue Idee, ausdrücklich NICHT jetzt
+  bauen, nur vormerken).** Mark möchte, dass ein Postfach-Check relevante
+  von irrelevanten E-Mails unterscheidet: DHL-Sendungsmails und Rechnungen
+  automatisch als gelesen markieren und in einen Ordner einsortieren (die
+  Infos stehen ja im Dashboard), wichtige E-Mails (z. B. von seiner Firma
+  "Redika") weiterleiten und ihn benachrichtigen, und bei laufenden
+  Nachrichten-Verläufen (eigene, noch unbeantwortete Nachrichten) einen
+  Antwortentwurf generieren, den er im Dashboard kopieren kann. **Wichtig:
+  Die Automatisierung darf niemals selbst antworten oder E-Mails
+  verschicken** — nur lesen, markieren, einsortieren, weiterleiten,
+  Entwürfe anzeigen. Hängt an der bestehenden E-Mail-Automatisierung
+  (`automatisierung/postfach-scan.mjs`), braucht aber eigenes
+  Brainstorming (Gmail/GMX-Ordner-Verschiebung, Weiterleitungslogik,
+  Entwurf-Generierung, Sicherheitsgrenzen).
+
+**Stand danach:** Beide Themen bewusst nicht angefasst, nur dokumentiert.
+Aktuelle Baustelle bleibt die CSS-Nachbesserung (Karten-Rahmen für Listen +
+Searchbar-Stil), siehe Eintrag 2026-09-18.
+
+---
+
 ## 2026-09-18 – Etappe 8 (v2): Navigations-Redesign + Optik-Addendum aus Marks Prototyp
 
 **Was:** Die App folgt jetzt Marks eigenem Prototyp
