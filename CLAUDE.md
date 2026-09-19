@@ -143,14 +143,19 @@ unten für Details.
   - `index.js` – Registrierung, Tabs „Pakete"/„Termine", Kachel-Text.
   - `daten.js` – Supabase-Zugriff auf `sendungen` + `termine`.
   - `berechnung.js` – `sortiereSendungen`, `offeneSendungen`, `sortiereTermine`,
-    `naechsterSendungStatus`. Vier Status-Kategorien (`STATUS_PRIORITAET`,
-    **exportiert** für die Automatisierung, Reihenfolge `unterwegs:0 <
-    abholbereit:1 < unbekannt:2 < zugestellt:3`): **`unterwegs`** →
+    `naechsterSendungStatus`. Vier Status-Kategorien: **`unterwegs`** →
     **`abholbereit`** (seit Etappe 3, 2026-09-19) → **`zugestellt`**, dazu
-    der Sonderfall **`unbekannt`** (niedrigste Priorität, außerhalb des
-    Zyklus). `STATUS_ZYKLUS` (unexportiert, nur fürs UI) definiert den
-    Klick-Zyklus `unterwegs → abholbereit → zugestellt → unterwegs`
-    (`unbekannt` klickt zu `unterwegs`).
+    der Sonderfall **`unbekannt`**. Zwei getrennte, exportierte Konstanten/
+    Funktionen dafür (bewusst getrennt seit der Whole-Branch-Review von
+    Etappe 3, da eine gemeinsame Zahl beide Zwecke nicht sauber abdeckte):
+    `STATUS_PRIORITAET` (Sortierreihenfolge fürs UI, `unterwegs:0 <
+    abholbereit:1 < unbekannt:2 < zugestellt:3`) und `STATUS_FORTSCHRITT` +
+    `istStatusFortschritt(bestehenderStatus, neueKategorie)` (reine
+    Vorwärts-Vergleichsfunktion für die Automatisierung, `unbekannt` im
+    Bestand zählt dort als niedrigste Priorität `-1`). `STATUS_ZYKLUS`
+    (unexportiert, nur fürs UI) definiert den Klick-Zyklus `unterwegs →
+    abholbereit → zugestellt → unterwegs` (`unbekannt` klickt zu
+    `unterwegs`).
   - `pakete.js`, `termine.js` – die zwei Tabs; Status-Pille für
     `abholbereit` gelb/orange getönt (`--hm-gelb-bg`).
   Details: `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`
@@ -167,8 +172,8 @@ unten für Details.
     (`findeBestehendeSendung`) und aktualisiert sie statt eine neue Zeile
     anzulegen (behebt den seit Etappe 6 bekannten Duplikat-Bug — jede
     Status-Mail einer Sendung erzeugte vorher eine eigene Zeile). Status
-    bewegt sich dabei nur vorwärts (`STATUS_PRIORITAET`-Vergleich,
-    `unbekannt` im Bestand zählt als niedrigste Priorität). Legt bei jedem
+    bewegt sich dabei nur vorwärts (`istStatusFortschritt()` aus
+    `js/module/sendungen/berechnung.js`). Legt bei jedem
     verarbeiteten Sendungs-Ereignis einen Eintrag in `sendungen_ereignisse`
     an (Status-Historie). Ohne bekannte Trackingnummer wird weiterhin neu
     angelegt (seltene Restlücke für Duplikate, siehe PROJEKT-LOG).
