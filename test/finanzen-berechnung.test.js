@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { kontostand, summeProMonat, summenProKategorie, erkenneAbos,
-  warenwert, sortiereTeile, merkliste, naechsterStatus, unechterKontostand }
+  warenwert, sortiereTeile, merkliste, naechsterStatus, unechterKontostand,
+  kategorisiereIconTyp }
   from '../js/module/finanzen/berechnung.js';
 
 const expenses = [
@@ -93,4 +94,15 @@ test('unechterKontostand: echter Kontostand plus Warenwert', () => {
   const expenses = [{ betrag: 20, kategorie: 'tanken', datum: '2026-09-05' }];
   // echter Kontostand: 500 - 20 = 480; Warenwert der 4 Testteile: 2*60+0*25+1*15+5*0 = 135
   assert.equal(unechterKontostand(settings, expenses, teile, '2026-09-16'), 480 + 135);
+});
+
+test('kategorisiereIconTyp: erkennt Auto/Essen/Freizeit anhand Stichwoertern, sonst sonstiges', () => {
+  assert.equal(kategorisiereIconTyp('Tanken'), 'auto');
+  assert.equal(kategorisiereIconTyp('KFZ-Werkstatt'), 'auto');
+  assert.equal(kategorisiereIconTyp('Lebensmittel'), 'essen');
+  assert.equal(kategorisiereIconTyp('Supermarkt'), 'essen');
+  assert.equal(kategorisiereIconTyp('Kino'), 'freizeit');
+  assert.equal(kategorisiereIconTyp('Miete'), 'sonstiges');
+  assert.equal(kategorisiereIconTyp(''), 'sonstiges');
+  assert.equal(kategorisiereIconTyp(undefined), 'sonstiges');
 });

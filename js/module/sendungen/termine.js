@@ -1,6 +1,8 @@
 import { hakeTerminAb, entferneTermin } from './daten.js';
 import { sortiereTermine } from './berechnung.js';
 
+const KALENDER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
+
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -15,6 +17,7 @@ export async function zeigeTermine(container, zustand, aktualisieren) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
     zeile.innerHTML = `
+      <div class="icon-badge">${KALENDER_ICON}</div>
       <div class="punkt-info">
         <strong>${esc(t.titel)}</strong>
         <small>fällig am ${t.faellig_am}</small>

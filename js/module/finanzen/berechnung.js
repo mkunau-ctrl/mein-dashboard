@@ -88,3 +88,17 @@ export function naechsterStatus(status) {
 export function unechterKontostand(settings, expenses, teile, heute) {
   return kontostand(settings, expenses, heute) + warenwert(teile);
 }
+
+const ICON_TYP_SCHLUESSELWOERTER = [
+  { typ: 'auto', muster: /tanken|auto|kfz|sprit|werkstatt/i },
+  { typ: 'essen', muster: /essen|lebensmittel|supermarkt|restaurant|einkauf/i },
+  { typ: 'freizeit', muster: /kino|freizeit|hobby|sport|fun/i },
+];
+
+export function kategorisiereIconTyp(kategorie) {
+  if (!kategorie) return 'sonstiges';
+  for (const { typ, muster } of ICON_TYP_SCHLUESSELWOERTER) {
+    if (muster.test(kategorie)) return typ;
+  }
+  return 'sonstiges';
+}

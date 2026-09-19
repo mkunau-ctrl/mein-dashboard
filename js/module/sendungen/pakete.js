@@ -2,6 +2,7 @@ import { setzeSendungStatus, entferneSendung } from './daten.js';
 import { sortiereSendungen, naechsterSendungStatus } from './berechnung.js';
 
 const STATUS_TEXT = { unterwegs: 'unterwegs', abholbereit: 'abholbereit', zugestellt: 'zugestellt', unbekannt: 'unbekannt' };
+const BOX_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>';
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>
@@ -17,6 +18,7 @@ export async function zeigePakete(container, zustand, aktualisieren) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
     zeile.innerHTML = `
+      <div class="icon-badge">${BOX_ICON}</div>
       <div class="punkt-info">
         <strong>${esc(s.haendler)}</strong>
         <small>${s.beschreibung ? esc(s.beschreibung) : ''}${s.trackingnummer ? ` · ${esc(s.trackingnummer)}` : ''}</small>
