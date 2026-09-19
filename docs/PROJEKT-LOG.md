@@ -4,12 +4,41 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
-## 2026-09-19 – Echte Finanzdaten eingetragen, neue Ideen geparkt
+## 2026-09-19 – CSS-Nachbesserung (Karten-Rahmen + Searchbar), echte Finanzdaten eingetragen, Folge-Etappen geplant
 
-**Was:** Sechs echte Ausgaben-Einträge angelegt (Zehnter/Spende 113€, Wispr
-Flow 15€, Friseur 18€, Claude 22€, Wochenbudget Essen 55€, Persönliches
-Budget 55€ — Summe 278€). Supplements (0€, noch nicht gekauft) bewusst
-NICHT eingetragen, da noch keine echte Ausgabe stattgefunden hat.
+**Was:** Drei Dinge.
+
+1. **CSS-Nachbesserung umgesetzt** (bounded, kurzes Design im Chat statt
+   Spec): `.punkt-liste` (bisher unstyled) bekommt jetzt Karten-Optik
+   (`background`/`border`/`border-radius: var(--radius)`/`box-shadow: var(--schatten)`)
+   — betrifft automatisch alle 11 Module, die Listen darstellen
+   (Ausgaben/Abos/Teile/Bestellen/Sendungen/Termine/To-dos/
+   Berichtsheft-Einträge/Ernährung/Home/Suche), keine Änderung an deren
+   JS nötig. `.punkt-zeile` trennt Zeilen jetzt per `border-top` zwischen
+   Einträgen statt `border-bottom` an jeder Zeile (kein Rand mehr direkt
+   am Kartenrand). Neue `.searchbar`-Klasse (Icon + Eingabefeld in
+   umrandeter Box), `js/module/suche/index.js` nutzt sie jetzt statt
+   eines nackten `<input>`. Grund: Mark hatte den Prototyp nochmal
+   verglichen und festgestellt, dass zwar die Farben/Formen übernommen
+   wurden, aber nicht die Karten-Struktur (Listen lagen bisher lose ohne
+   umschließende Box) — echte Lücke, kein Missverständnis.
+2. **Sechs echte Ausgaben-Einträge angelegt** (Zehnter/Spende 113€, Wispr
+   Flow 15€, Friseur 18€, Claude 22€, Wochenbudget Essen 55€, Persönliches
+   Budget 55€ — Summe 278€). Supplements (0€, noch nicht gekauft) bewusst
+   NICHT eingetragen, da noch keine echte Ausgabe stattgefunden hat.
+3. **Größeres Folge-Paket besprochen und in Etappen zerlegt.** Mark will
+   künftig nichts mehr manuell im Dashboard eintragen (nur noch per
+   Sprache mit der KI), Detail-Ansichten für Kontostand/Ausgaben/Sendungen
+   (Sendungen inkl. Status-Historie/QR-Code/Barcode/Abholadresse+
+   Öffnungszeiten, abhängig vom Sendungen-Dedup-Fix), und das
+   Kalender-Feature doch jetzt bauen statt es unbegrenzt zu parken.
+   Vereinbarte Reihenfolge der nächsten Etappen: (1) CSS-Nachbesserung
+   [diese Etappe, erledigt], (2) Eingabe-UI überall entfernen (nur noch
+   Anzeigen + Status ändern/Abhaken, keine "+ Neu"-Formulare mehr), (3)
+   E-Mail-Automatisierung umbauen (Dedup-Fix + Status-Historie +
+   QR-Code/Barcode/Abholadresse extrahieren), (4) Detail-Ansichten bauen,
+   (5) Kalender-Feature. Jede dieser Etappen braucht noch ihr eigenes
+   Brainstorming/Spec, bevor sie gebaut wird.
 
 **Offene Punkte, die noch keine passende Datenstruktur haben (eigene
 Etappe, noch nicht gebaut):**
@@ -39,9 +68,14 @@ Etappe, noch nicht gebaut):**
   Brainstorming (Gmail/GMX-Ordner-Verschiebung, Weiterleitungslogik,
   Entwurf-Generierung, Sicherheitsgrenzen).
 
-**Stand danach:** Beide Themen bewusst nicht angefasst, nur dokumentiert.
-Aktuelle Baustelle bleibt die CSS-Nachbesserung (Karten-Rahmen für Listen +
-Searchbar-Stil), siehe Eintrag 2026-09-18.
+**Stand danach:** CSS-Nachbesserung fertig, getestet (65/65 grün), gepusht.
+Finanzdaten live im Dashboard sichtbar. Die Einnahmen/Budget- und
+E-Mail-Triage-Themen sowie das neue "Wächter"-Tool (Nutzungslimit-Wächter,
+Gegenstück zu `auto-weiter`, eigenes Projekt außerhalb dieses Repos — siehe
+dortige Doku) bewusst nicht angefasst, nur dokumentiert.
+
+**Nächster Schritt:** Etappe 2 der oben genannten Reihenfolge (Eingabe-UI
+überall entfernen) — Brainstorming/Spec dafür noch offen.
 
 ---
 
