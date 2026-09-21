@@ -4,6 +4,104 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-21 – Etappe 4 Sub-A: Konten, Einnahmen & Schulden
+
+**Was:** Die erste von sieben Sub-Etappen (A–Q, siehe `CLAUDE.md`) des
+großen Finanzen-Ausbaus ist fertig. Vor Task 1 hat der Koordinator per
+Supabase-Migration fünf neue Tabellen angelegt: `konten` (Name,
+`kontostand_start`, `stand_datum`), `einnahmen_vorlagen` (wiederkehrende
+Beträge mit Fälligkeitslogik), `einnahmen` (Betrag, Bezeichnung, Notiz,
+Datum, Quelle, Konto-/Vorlagen-Referenz), `schulden` (Person, Gesamtbetrag,
+Richtung `ich_schulde`/`mir_wird_geschuldet`, Notiz) und
+`schulden_zahlungen` (Teilzahlungen je Schuld) — alle mit RLS nach dem
+bestehenden Muster (`user_id = auth.uid()`, analog zur `parts`-Tabelle).
+`expenses` hat eine neue Pflichtspalte `konto_id` bekommen, rückwirkend auf
+alle 6 bestehenden Zeilen befüllt.
+
+Bei der Migration zeigte sich, dass `finance_settings` entgegen der Annahme
+im Spec **komplett leer war** (0 Zeilen) — Mark hatte nie per Chat einen
+Kontostand gesetzt. Die im Plan vorgesehene Rückfalllösung (0 €, heutiges
+Datum) wurde angewendet: ein "Hauptkonto" mit `kontostand_start 0` und
+`stand_datum 2026-09-21` wurde angelegt, alles Weitere baut darauf auf.
+
+Auf dieser Grundlage entstanden in sieben TDD-Tasks: die
+Mehrkonten-Berechnungen (`kontostandProKonto`, `gesamtKontostand`,
+`schuldenRestbetrag`, `nettoVermoegen` u. a. in `berechnung.js`), die
+Datenzugriffsfunktionen in `daten.js` (u. a. `legeEinnahmeAn` mit
+optionaler Wiederkehr, `bestaetigeEinnahmenVorlage`, `legeKontoAn`,
+`legeSchuldAn`, `verbucheZahlung`), und drei neue Finanzen-Tabs:
+**Einnahmen** (fällige Vorlagen bestätigen, Liste, Formular für neue
+Einnahmen), **Konten** (Kontostände + je Konto die eigene
+Transaktionsliste) und **Schulden** (offene/beglichene Schulden je
+Richtung, Teilzahlung erfassen, je Schuld der eigene Zahlungsverlauf).
+Der bestehende Kontostand-Tab und der Home-Screen wurden zum Schluss auf
+die neuen Mehrkonten-Funktionen umgestellt (zeigen jetzt vier Kennzahlen:
+Gesamt-Kontostand, Ausgaben diesen Monat, unechter Kontostand inkl.
+Warenwert, Netto-Vermögen inkl. Warenwert und offener Schulden).
+
+**Bemerkenswert – erster echter Formular-Meilenstein:** Der
+Einnahmen-Tab ist das erste Formular der gesamten App, mit dem Mark selbst
+Daten einträgt. Bisher lief jede Dateneingabe (Ausgaben, Berichtsheft,
+To-dos, Teile …) ausschließlich per Chat-Diktat über Claude/Supabase-MCP,
+seit der bewussten Formular-Entfernung in Etappe 2. Mark hat für Einnahmen
+explizit beides gewünscht — App-Formular **und** weiterhin Chat-Diktat —,
+das Projekt bricht das Muster hier also bewusst zum ersten Mal.
+
+**Entscheidungen/Korrekturen während der Umsetzung (Doku-Rigor-Regel):**
+- Der Plan für den Einnahmen-Tab ging davon aus, dass sowohl
+  `.betrag-plus` als auch `.punkt-formular` in `app.css` fehlen. Beim
+  Umsetzen (Task 3) stellte sich heraus, dass `.betrag-plus` bereits aus
+  der früheren Etappe 3 existierte — nur `.punkt-formular` war wirklich
+  neu. Der Plan hatte hier eine falsche Annahme; dank der "erst
+  prüfen"-Anweisung im Plan selbst wurde nur das tatsächlich Fehlende
+  ergänzt, kein Bug, aber abweichend vom Wortlaut des Plans.
+- Zwei Lücken im ursprünglichen Plan wurden vor dem jeweiligen Bauen
+  erkannt und im Plan nachgezogen: der Konten-Tab sollte laut erstem
+  Entwurf nur Kontostände zeigen, die Einzeltransaktionen je Konto fehlten;
+  der Schulden-Tab sollte nur den berechneten Restbetrag zeigen, der
+  Zahlungsverlauf je Schuld fehlte. Beides wurde vor der jeweiligen
+  Implementierung ergänzt (siehe Commit `5757f1e`), nicht erst danach
+  nachgereicht.
+- Zwischen Task 1 (alte `kontostand()`/`unechterKontostand()` entfernt) und
+  Task 7 (Kontostand-Tab + Home auf die neuen Funktionen umgestellt) waren
+  `kontostand.js` und `home/index.js` im Arbeitsstand zwangsläufig
+  gebrochen — normale Folge sequenzieller TDD-Tasks innerhalb einer
+  Session, kein an Mark ausgelieferter Zustand.
+- Ein automatischer Hintergrund-Sicherheits-Scan meldete die unescaped
+  Interpolation von `stand_datum`/`datum` in `konten.js` als möglichen
+  XSS-Befund. Bewertung: nicht ausnutzbar, da beide Spalten in Postgres
+  als `date`-Typ angelegt sind — die Datenbank lehnt jeden
+  Nicht-Datums-String beim Insert ab, unabhängig vom Eingabeweg (Formular
+  oder Chat-Diktat per Supabase-MCP). Kein Code geändert.
+
+**Kleinere, bewusst zurückgestellte Befunde** (nicht blockierend, nur zur
+Kenntnis): `sortiereSchulden`s Datums-Tiebreak bei mehreren beglichenen
+Schulden ist durch keinen Test abgedeckt; `bestaetigeEinnahmenVorlage`
+prüft `vorlage.aktiv` nicht defensiv nochmal selbst (geringes Risiko, da
+`ladeAlles()` ohnehin nur aktive Vorlagen lädt); die DB-generierte
+Konto-`id` landet unescaped in einem `<option value>` im
+Einnahmen-Formular (gleiches Niedrig-Risiko-Muster wie bei den
+Datumsfeldern); `bezeichnung` wird im Einnahmen-Formular vor dem
+Fallback auf `'sonstiges'` nicht getrimmt; die Datums-Sortierungen in
+`konten.js`/`schulden.js` geben bei Gleichstand nie `0` zurück (kosmetisch,
+JS-Sort ist stabil); `Number('')` ergibt in `konten.js`s "Neu
+setzen"-Dialog `0` statt `NaN`, ein leeres Feld setzt den Kontostand also
+stillschweigend auf 0 € statt eine Fehlermeldung zu zeigen; das
+Schulden-Formular validiert `gesamtbetrag > 0` nicht clientseitig.
+
+**Stand danach:** `npm test` 83/83 grün, keine Regression bei
+Ausgaben/Teile/Abos/Bestellen. Alle 8 Tasks abgeschlossen und reviewt,
+keine offenen Critical-/Important-Befunde.
+
+**Nächster Schritt:** Sub-Etappe B (Finanzen-Redesign: Tabs
+Übersicht/Transaktionen/Analyse nach Prototyp, echter Zeitraum-Filter,
+"Regelmäßige Ausgaben" über `ausgaben_vorlagen`, CSV-Export,
+Jahresübersicht/Sparquote) — braucht noch einen eigenen
+Brainstorming→Spec→Plan-Zyklus, noch nicht begonnen. Der restliche Backlog
+(Sub-Etappen C–Q) bleibt in `CLAUDE.md` dokumentiert.
+
+---
+
 ## 2026-09-19 – Etappe 4 (Teil A): Icon-Audit gegen den Prototyp
 
 **Was:** Systematischer Abgleich aller Icons gegen Marks Prototyp

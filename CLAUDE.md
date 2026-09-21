@@ -19,7 +19,7 @@ unten für Details.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
-## Aktueller Stand (2026-09-19) / Nächste Schritte
+## Aktueller Stand (2026-09-21) / Nächste Schritte
 
 **Etappe 4 Teil A (Icon-Audit) ist fertig** (Commit `57b623f`). Teil B
 ("Finanzen-Ausbau") ist beim Brainstorming zu einem **deutlich größeren,
@@ -30,9 +30,9 @@ einen Spec — deshalb in **Sub-Etappen A–G** zerlegt (Reihenfolge vom
 Nutzer am 2026-09-19 bestätigt, **noch keine einzige davon spezifiziert
 oder gebaut**):
 
-- **A) Konten-, Einnahmen- & Schulden-Grundlage** (Fundament, als
-  Nächstes dran — Umfang am 2026-09-19 gegenüber der ursprünglichen
-  Idee "nur Einnahmen" nochmal deutlich gewachsen):
+- **A) Konten-, Einnahmen- & Schulden-Grundlage** — **fertig
+  (2026-09-21)**, siehe `docs/PROJEKT-LOG.md` (Umfang war gegenüber der
+  ursprünglichen Idee "nur Einnahmen" nochmal deutlich gewachsen):
   - **Einnahmen:** neue Tabelle `einnahmen` + `einnahmen_vorlagen`
     (wiederkehrende Beträge, Nutzer nannte 380 €/750 € als Beispiele,
     z. B. Ausbildungsvergütung), Erfassung per App-Formular **und** per
@@ -179,13 +179,14 @@ sauberen Neuaufbau zu machen.
 echte PNG-Icons (192/512, `apple-touch-icon`, seit Etappe 0), kompletter
 manueller Testlauf am echten Gerät (seit Etappe 2–5).
 
-**Nächster Schritt beim Fortsetzen:** Sub-Etappe A ist fertig
-durchgeplant, Spec geschrieben:
-`docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`.
-**Steht noch aus:** Nutzer-Review dieses Spec-Files, danach
-`writing-plans` nur für Sub-Etappe A, dann Umsetzung. Jede weitere
-Sub-Etappe (B–Q) bekommt danach ihren eigenen
-Brainstorming→Spec→Plan→Umsetzung-Zyklus, nicht alles auf einmal.
+**Nächster Schritt beim Fortsetzen:** Sub-Etappe A ist komplett umgesetzt
+und dokumentiert (Spec:
+`docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`,
+Plan + Tasks: `.superpowers/sdd/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden/`).
+Als Nächstes: **Sub-Etappe B** (Finanzen-Redesign, s. o.) braucht ihren
+eigenen Brainstorming→Spec→Plan→Umsetzung-Zyklus, noch nicht begonnen.
+Jede weitere Sub-Etappe (C–Q) danach ebenso einzeln, nicht alles auf
+einmal.
 
 **Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
 falls nicht anders gesagt): `superpowers:brainstorming` →
@@ -254,28 +255,49 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   - `planung.js` – `naechsteFaelligkeit`, `sortiereOffeneTodos`, `istUeberfaellig`.
   - `offen.js`, `erledigt.js` – die zwei Tabs.
   Details: `docs/superpowers/specs/2026-09-16-etappe-2-todos-design.md`.
-- `js/module/finanzen/` – drittes Fachmodul (Ausgaben/Kontostand), **seit
-  Etappe 8 v2 inklusive des ehemaligen Lager-Moduls**:
-  - `index.js` – Registrierung, Tabs „Ausgaben"/„Kontostand"/„Monat"/„Abos"/
-    „Teile"/„Bestellen", Kachel-Text.
+- `js/module/finanzen/` – drittes Fachmodul (Ausgaben/Einnahmen/Kontostand/
+  Konten/Schulden), **seit Etappe 8 v2 inklusive des ehemaligen
+  Lager-Moduls**, **seit Sub-Etappe A (2026-09-21) inklusive Mehrkonten,
+  Einnahmen und Schulden**:
+  - `index.js` – Registrierung, Tabs „Ausgaben"/„Einnahmen"/„Kontostand"/
+    „Konten"/„Schulden"/„Monat"/„Abos"/„Teile"/„Bestellen", Kachel-Text.
   - `daten.js` – Supabase-Zugriff auf `expenses` + `finance_settings` +
     `parts` (Teile-Zugriff `speicherTeil`/`entferneTeil`/`setzeStatus` 1:1
-    aus dem ehemaligen `lager/daten.js` übernommen).
-  - `berechnung.js` – `kontostand`, `summeProMonat`, `summenProKategorie`,
+    aus dem ehemaligen `lager/daten.js` übernommen) + seit Sub-Etappe A
+    zusätzlich `konten`/`einnahmen`/`einnahmen_vorlagen`/`schulden`/
+    `schulden_zahlungen` (`legeEinnahmeAn` inkl. optionaler Wiederkehr,
+    `bestaetigeEinnahmenVorlage`, `entferneEinnahme`, `legeKontoAn`,
+    `legeSchuldAn`, `verbucheZahlung`).
+  - `berechnung.js` – `summeProMonat`, `summenProKategorie`,
     `erkenneAbos`, plus aus dem ehemaligen `lager/berechnung.js`
     übernommen: `warenwert`, `sortiereTeile`, `merkliste`,
-    `naechsterStatus`; neu dazugekommen: `unechterKontostand(settings,
-    expenses, teile, heute)` = `kontostand(...) + warenwert(teile)`.
-  - `ausgaben.js`, `kontostand.js` (zeigt jetzt auch den unechten
-    Kontostand), `monat.js`, `abos.js`, `teile.js`, `bestellen.js` – die
-    sechs Tabs.
+    `naechsterStatus`; seit Sub-Etappe A (ersetzen die alten
+    Einzelkonto-Funktionen `kontostand`/`unechterKontostand`):
+    `kontostandProKonto`, `gesamtKontostand`, `unechterGesamtKontostand`,
+    `schuldenRestbetrag`, `offeneSchulden`, `sortiereSchulden`,
+    `nettoVermoegen`.
+  - `ausgaben.js`, `kontostand.js` (zeigt seit Sub-Etappe A vier
+    Kennzahlen: Gesamt-Kontostand, Ausgaben diesen Monat, unechter
+    Kontostand inkl. Warenwert, Netto-Vermögen inkl. Warenwert und
+    offener Schulden), `monat.js`, `abos.js`, `teile.js`, `bestellen.js`
+    – acht der neun Tabs. Seit Sub-Etappe A neu dazu: `einnahmen.js`
+    (fällige wiederkehrende Einnahmen bestätigen, Liste, Formular für
+    neue Einnahmen — **das erste echte Eingabeformular der ganzen App**,
+    bisher lief jede Dateneingabe seit Etappe 2 nur per Chat-Diktat;
+    Einnahmen unterstützen jetzt beides), `konten.js` (Kontostände +
+    Anlegen-Formular + „Neu setzen" + je Konto die eigene
+    Transaktionsliste), `schulden.js` (Schulden je Richtung
+    `ich_schulde`/`mir_wird_geschuldet` + Anlegen-Formular + Teilzahlung
+    erfassen + je Schuld der eigene Zahlungsverlauf).
   Details Ursprungs-Modul: `docs/superpowers/specs/2026-09-16-etappe-3-finanzen-design.md`
   (Lager-Ursprung: `docs/superpowers/specs/2026-09-16-etappe-4-lager-design.md`).
   Absorption in Etappe 8 v2:
   `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
   (Abschnitt 5). **`js/module/lager/` existiert nicht mehr** (Modul,
   Tests und Registrierung in `js/app.js` entfernt; die `parts`-Tabelle in
-  Supabase ist unverändert, nur der Zugriff ist gewandert).
+  Supabase ist unverändert, nur der Zugriff ist gewandert). Details
+  Sub-Etappe A: `docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`
+  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-21).
 - `js/module/home/` – Home-Screen (Etappe 8 v2, kein eigenes `berechnung.js`,
   nur Zusammenstellung bestehender Logik):
   - `daten.js` – lädt parallel `finanzen/daten.js:ladeAlles()`,
@@ -366,12 +388,16 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
 - `test/` – `node --test` Unit-Tests: `router`, `view`, `registry`,
   `ernaehrung-zeitplan`, `ernaehrung-berechnung`, `todos-planung`,
   `finanzen-berechnung` (seit Etappe 8 v2 inkl. der ehemaligen
-  Lager-Fälle: `warenwert`/`sortiereTeile`/`merkliste`/`naechsterStatus`/
-  `unechterKontostand`), `berichtsheft-berechnung`, `sendungen-berechnung`
+  Lager-Fälle: `warenwert`/`sortiereTeile`/`merkliste`/`naechsterStatus`;
+  seit Sub-Etappe A, 2026-09-21, inkl. `kontostandProKonto`/
+  `gesamtKontostand`/`unechterGesamtKontostand`/`schuldenRestbetrag`/
+  `offeneSchulden`/`sortiereSchulden`/`nettoVermoegen` — die alten
+  Einzelkonto-Funktionen `kontostand`/`unechterKontostand` gibt es nicht
+  mehr), `berichtsheft-berechnung`, `sendungen-berechnung`
   (seit Etappe 3, 2026-09-19, inkl. `abholbereit`-Sortierung/-Priorität/
   -Zyklus), `suche-berechnung` (Etappe 8 v2), `automatisierung-klassifizieren`
   (seit Etappe 3 inkl. `kategorisiereStatus`), `automatisierung-letzter-lauf`
-  (71 grün; `lager-berechnung.test.js` existiert seit Etappe 8 v2 nicht mehr).
+  (83 grün; `lager-berechnung.test.js` existiert seit Etappe 8 v2 nicht mehr).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
 
@@ -394,7 +420,7 @@ Home-Screen. Details/Begründung: `docs/PROJEKT-LOG.md`, Eintrag
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 71 grün.
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 83 grün.
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.
@@ -473,10 +499,20 @@ auf Deutsch. Datenschutz beachten.
   - Relying Party Origins: `https://mkunau-ctrl.github.io`
   Danach in der App einloggen (Magic-Link) und oben „Passkey einrichten"
   tippen – erst dann geht „Mit Passkey anmelden" auf dem Login-Screen.
-- Tabellen (Stand Etappe 3, 2026-09-19): `checklist_items`, `daily_log`,
-  `weight_log`, `settings` (Ernährung), `todos`, `todo_vorlagen`, `expenses`,
+- Tabellen (Stand Sub-Etappe A, 2026-09-21): `checklist_items`, `daily_log`,
+  `weight_log`, `settings` (Ernährung), `todos`, `todo_vorlagen`, `expenses`
+  (seit Sub-Etappe A zusätzlich Pflichtspalte `konto_id`),
   `finance_settings`, `parts`, `berichtsheft_eintraege`,
   `berichtsheft_settings`, `sendungen` (seit Etappe 3 zusätzlich
   `abholcode`/`abholadresse`/`abholzeiten`), `termine`,
-  **`sendungen_ereignisse`** (neu, Etappe 3: Status-Historie pro Sendung —
-  `sendung_id`, `beschreibung`, `status_kategorie`, `ort`).
+  `sendungen_ereignisse` (Etappe 3: Status-Historie pro Sendung —
+  `sendung_id`, `beschreibung`, `status_kategorie`, `ort`), sowie neu seit
+  Sub-Etappe A: **`konten`** (Name, `kontostand_start`, `stand_datum`),
+  **`einnahmen`** (Betrag, Bezeichnung, Notiz, Datum, Quelle,
+  `konto_id`/`vorlage_id`), **`einnahmen_vorlagen`** (wiederkehrende
+  Einnahmen: Bezeichnung, Betrag, Plan-Tag im Monat,
+  `naechste_faelligkeit`, `konto_id`, `aktiv`), **`schulden`** (Person,
+  Gesamtbetrag, Richtung `ich_schulde`/`mir_wird_geschuldet`, Notiz),
+  **`schulden_zahlungen`** (Teilzahlungen je Schuld: `schuld_id`, Betrag,
+  Datum, Notiz). Alle fünf neuen Tabellen mit RLS nach dem bestehenden
+  Muster (`user_id = auth.uid()`, `for all to authenticated`).
