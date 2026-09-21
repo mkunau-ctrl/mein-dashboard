@@ -1,11 +1,18 @@
 // Reine Berechnungen fuers Finanzen-Modul. Kein Netz, keine DOM.
 // Datumsangaben als 'YYYY-MM-DD'.
 
-export function kontostand(settings, expenses, heute) {
-  const summe = expenses
-    .filter((e) => e.datum >= settings.stand_datum && e.datum <= heute)
+export function kontostandProKonto(konto, expenses, einnahmen, heute) {
+  const ausgabenSumme = expenses
+    .filter((e) => e.konto_id === konto.id && e.datum >= konto.stand_datum && e.datum <= heute)
     .reduce((s, e) => s + e.betrag, 0);
-  return settings.kontostand_start - summe;
+  const einnahmenSumme = einnahmen
+    .filter((e) => e.konto_id === konto.id && e.datum >= konto.stand_datum && e.datum <= heute)
+    .reduce((s, e) => s + e.betrag, 0);
+  return konto.kontostand_start + einnahmenSumme - ausgabenSumme;
+}
+
+export function gesamtKontostand(konten, expenses, einnahmen, heute) {
+  return konten.reduce((s, k) => s + kontostandProKonto(k, expenses, einnahmen, heute), 0);
 }
 
 function imMonat(e, jahr, monat) {
@@ -85,8 +92,8 @@ export function naechsterStatus(status) {
   return STATUS_ZYKLUS[status];
 }
 
-export function unechterKontostand(settings, expenses, teile, heute) {
-  return kontostand(settings, expenses, heute) + warenwert(teile);
+export function unechterGesamtKontostand(konten, expenses, einnahmen, teile, heute) {
+  return gesamtKontostand(konten, expenses, einnahmen, heute) + warenwert(teile);
 }
 
 const ICON_TYP_SCHLUESSELWOERTER = [
@@ -101,4 +108,35 @@ export function kategorisiereIconTyp(kategorie) {
     if (muster.test(kategorie)) return typ;
   }
   return 'sonstiges';
+}
+
+export function schuldenRestbetrag(schuld, zahlungen) {
+  const bezahlt = zahlungen
+    .filter((z) => z.schuld_id === schuld.id)
+    .reduce((s, z) => s + z.betrag, 0);
+  return Math.round((schuld.gesamtbetrag - bezahlt) * 100) / 100;
+}
+
+export function offeneSchulden(schulden, zahlungen) {
+  return schulden.filter((s) => schuldenRestbetrag(s, zahlungen) > 0);
+}
+
+export function sortiereSchulden(schulden, zahlungen) {
+  return [...schulden].sort((a, b) => {
+    const restA = schuldenRestbetrag(a, zahlungen);
+    const restB = schuldenRestbetrag(b, zahlungen);
+    const offenA = restA > 0;
+    const offenB = restB > 0;
+    if (offenA !== offenB) return offenA ? -1 : 1;
+    if (offenA) return restB - restA;
+    return a.erstellt_am < b.erstellt_am ? 1 : -1;
+  });
+}
+
+export function nettoVermoegen(konten, expenses, einnahmen, teile, schulden, zahlungen, heute) {
+  const forderungen = schulden.filter((s) => s.richtung === 'mir_wird_geschuldet')
+    .reduce((sum, s) => sum + Math.max(0, schuldenRestbetrag(s, zahlungen)), 0);
+  const verbindlichkeiten = schulden.filter((s) => s.richtung === 'ich_schulde')
+    .reduce((sum, s) => sum + Math.max(0, schuldenRestbetrag(s, zahlungen)), 0);
+  return unechterGesamtKontostand(konten, expenses, einnahmen, teile, heute) + forderungen - verbindlichkeiten;
 }
