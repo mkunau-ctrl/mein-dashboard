@@ -55,6 +55,8 @@ export async function zeigeOffen(container, zustand, aktualisieren, _zeitraum, _
       </label>
       <div class="punkt-aktionen"><button data-a="weg">✕</button></div>`;
 
+    zeile.querySelector('label').addEventListener('click', (e) => e.stopPropagation());
+
     const box = zeile.querySelector('input');
     box.addEventListener('click', (e) => e.stopPropagation());
     box.addEventListener('change', async () => {
