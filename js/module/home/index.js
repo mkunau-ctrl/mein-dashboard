@@ -1,6 +1,6 @@
 import { registriere } from '../../registry.js';
 import { ladeAlles } from './daten.js';
-import { kontostand, unechterKontostand, summeProMonat } from '../finanzen/berechnung.js';
+import { gesamtKontostand, unechterGesamtKontostand, summeProMonat } from '../finanzen/berechnung.js';
 import { sortiereOffeneTodos } from '../todos/planung.js';
 import { sortiereSendungen, sortiereTermine } from '../sendungen/berechnung.js';
 
@@ -37,9 +37,9 @@ registriere({
   async init(container) {
     await ladeZustand();
     const { finanzen, todos, sendungen } = zustand;
-    const gesetzt = finanzen.settings.kontostand_start !== undefined;
-    const stand = gesetzt ? kontostand(finanzen.settings, finanzen.expenses, heute()) : null;
-    const unecht = gesetzt ? unechterKontostand(finanzen.settings, finanzen.expenses, finanzen.teile, heute()) : null;
+    const gesetzt = finanzen.konten.length > 0;
+    const stand = gesetzt ? gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heute()) : null;
+    const unecht = gesetzt ? unechterGesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, finanzen.teile, heute()) : null;
     const heuteDatum = new Date();
     const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
 
