@@ -6,7 +6,7 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ## 2026-09-21 – Etappe 4 Sub-A: Konten, Einnahmen & Schulden
 
-**Was:** Die erste von sieben Sub-Etappen (A–Q, siehe `CLAUDE.md`) des
+**Was:** Die erste von 17 Sub-Etappen (A–Q, siehe `CLAUDE.md`) des
 großen Finanzen-Ausbaus ist fertig. Vor Task 1 hat der Koordinator per
 Supabase-Migration fünf neue Tabellen angelegt: `konten` (Name,
 `kontostand_start`, `stand_datum`), `einnahmen_vorlagen` (wiederkehrende
@@ -16,7 +16,10 @@ Richtung `ich_schulde`/`mir_wird_geschuldet`, Notiz) und
 `schulden_zahlungen` (Teilzahlungen je Schuld) — alle mit RLS nach dem
 bestehenden Muster (`user_id = auth.uid()`, analog zur `parts`-Tabelle).
 `expenses` hat eine neue Pflichtspalte `konto_id` bekommen, rückwirkend auf
-alle 6 bestehenden Zeilen befüllt.
+alle 6 bestehenden Zeilen befüllt. Angewendete Migrationen (sechs, für
+Nachvollziehbarkeit): `sub_a_konten_tabelle`, `sub_a_expenses_konto_id`,
+`sub_a_expenses_konto_id_not_null`, `sub_a_einnahmen_vorlagen_tabelle`,
+`sub_a_einnahmen_tabelle`, `sub_a_schulden_tabellen`.
 
 Bei der Migration zeigte sich, dass `finance_settings` entgegen der Annahme
 im Spec **komplett leer war** (0 Zeilen) — Mark hatte nie per Chat einen
@@ -89,9 +92,50 @@ setzen"-Dialog `0` statt `NaN`, ein leeres Feld setzt den Kontostand also
 stillschweigend auf 0 € statt eine Fehlermeldung zu zeigen; das
 Schulden-Formular validiert `gesamtbetrag > 0` nicht clientseitig.
 
-**Stand danach:** `npm test` 83/83 grün, keine Regression bei
-Ausgaben/Teile/Abos/Bestellen. Alle 8 Tasks abgeschlossen und reviewt,
-keine offenen Critical-/Important-Befunde.
+**Stand danach:** `npm test` 83/83 grün. Alle 8 Tasks einzeln abgeschlossen
+und reviewt, keine offenen Critical-/Important-Befunde *innerhalb ihres
+jeweiligen engen Aufgaben-Scopes*.
+
+**Nachtrag (2026-09-21) – finale Whole-Branch-Review + Fix-Wave:** Die
+abschließende Review über den gesamten Branch (die erst nach allen 8
+Einzel-Tasks stattfand und quer über Dateigrenzen hinweg prüft) fand drei
+Cross-Cutting-Bugs, die keine einzelne Task-Review sehen konnte, weil jede
+für sich isoliert korrekt aussah:
+1. **`automatisierung/postfach-scan.mjs`** schrieb Belege weiterhin ohne
+   das neue Pflichtfeld `expenses.konto_id` — jeder Insert scheiterte an
+   der `not null`-Constraint, der Fehler wurde pro Mail nur geloggt
+   (`console.error`) und der Lauf lief trotzdem weiter, sodass der Beleg
+   endgültig verloren ging statt erneut versucht zu werden. Damit war die
+   tägliche E-Mail-Automatisierung faktisch komplett kaputt, seit
+   `konto_id` zur Pflichtspalte wurde.
+2. **`legeAusgabeAn` in `daten.js`** (bisher ungenutzt, aber vorgesehen
+   für künftige Ausgaben-Erfassung) übergab beim Insert ebenfalls kein
+   `konto_id` — hätte am selben `not null`-Constraint geworfen, sobald ein
+   Aufrufer hinzukommt.
+3. **`bestaetigeEinnahmenVorlage` in `daten.js`** rief
+   `naechsteFaelligkeit(vorlage, …)` mit der rohen `einnahmen_vorlagen`-
+   Zeile auf, die aber kein `plan_typ`-Feld hat (nur
+   `plan_tag_im_monat`) — die Switch-Anweisung in `naechsteFaelligkeit`
+   fiel bei `undefined` durch alle Fälle und lieferte `null` zurück, was
+   den anschließenden Update-Query gegen eine `date not null`-Spalte
+   immer zum Werfen brachte. Das Bestätigen einer fälligen wiederkehrenden
+   Einnahme im Einnahmen-Tab war damit **immer** kaputt, nicht nur in
+   Randfällen.
+
+Alle drei wurden in einer einzigen Fix-Wave direkt im Anschluss an die
+Review behoben (kein zweiter Durchlauf vorgesehen), zusammen mit zwei
+kleineren, in derselben Review gefundenen Important-Befunden in
+`konten.js` ("Neu setzen": `stand_datum` wurde fälschlich auf heute statt
+morgen gesetzt, was Buchungen vom selben Tag doppelt zählte; ein leeres
+Eingabefeld setzte den Kontostand wegen `Number('') === 0` unbemerkt auf
+0 € statt eine Fehlermeldung zu zeigen). Verifiziert über `node --check`
+(alle drei geänderten Dateien) und `npm test` (weiterhin 83/83 grün,
+reiner Regressions-Check, keine neuen Tests — Projekt-Konvention:
+`daten.js`/UI-Tab-Dateien haben keine dedizierten automatisierten Tests).
+Diese Fix-Wave-Historie wird hier bewusst dokumentiert statt die
+ursprüngliche „keine Regression"-Aussage oben stillschweigend zu
+korrigieren — Doku-Rigor-Regel dieses Projekts: auch Fehler werden
+geloggt, nicht nur das Endergebnis.
 
 **Nächster Schritt:** Sub-Etappe B (Finanzen-Redesign: Tabs
 Übersicht/Transaktionen/Analyse nach Prototyp, echter Zeitraum-Filter,

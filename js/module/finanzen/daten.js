@@ -32,11 +32,11 @@ export async function ladeAlles() {
   };
 }
 
-export async function legeAusgabeAn({ betrag, kategorie, notiz, datum, quelle }) {
+export async function legeAusgabeAn({ betrag, kategorie, notiz, datum, quelle, konto_id }) {
   const { error } = await supabase.from('expenses').insert({
     betrag, kategorie: kategorie || 'sonstiges', notiz: notiz || null,
     datum: datum || new Date().toISOString().slice(0, 10),
-    quelle: quelle || 'manuell',
+    quelle: quelle || 'manuell', konto_id,
   });
   if (error) throw fehler('Ausgabe anlegen', error);
 }
@@ -74,7 +74,10 @@ export async function legeEinnahmeAn({ betrag, bezeichnung, notiz, datum, quelle
 }
 
 export async function bestaetigeEinnahmenVorlage(vorlage) {
-  const naechste = naechsteFaelligkeit(vorlage, vorlage.naechste_faelligkeit);
+  const naechste = naechsteFaelligkeit(
+    { plan_typ: 'monatlich', plan_tag_im_monat: vorlage.plan_tag_im_monat },
+    vorlage.naechste_faelligkeit,
+  );
   const { error: upErr } = await supabase.from('einnahmen_vorlagen')
     .update({ naechste_faelligkeit: naechste }).eq('id', vorlage.id);
   if (upErr) throw fehler('Vorlage fortschreiben', upErr);

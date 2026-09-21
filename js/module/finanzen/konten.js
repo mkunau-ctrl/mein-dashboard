@@ -12,6 +12,10 @@ function heute() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function morgen() {
+  return new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+}
+
 function baueFormular(container, aktualisieren) {
   const form = document.createElement('form');
   form.className = 'punkt-formular';
@@ -53,11 +57,11 @@ export async function zeigeKonten(container, zustand, aktualisieren) {
       <div class="punkt-aktionen"><button data-a="neusetzen">Neu setzen</button></div>`;
     kopf.querySelector('[data-a=neusetzen]').addEventListener('click', async () => {
       const neuerStand = prompt(`Neuen Stand für „${k.name}" (heute, ${heuteStr}):`, stand.toFixed(2));
-      if (neuerStand === null) return;
+      if (neuerStand === null || neuerStand.trim() === '') return;
       const zahl = Number(neuerStand);
       if (Number.isNaN(zahl)) { alert('Bitte eine Zahl eingeben.'); return; }
       try {
-        await legeKontoAn({ id: k.id, name: k.name, kontostand_start: zahl, stand_datum: heuteStr });
+        await legeKontoAn({ id: k.id, name: k.name, kontostand_start: zahl, stand_datum: morgen() });
         await aktualisieren();
       } catch (err) { alert(err.message); }
     });

@@ -284,7 +284,7 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     Kennzahlen: Gesamt-Kontostand, Ausgaben diesen Monat, unechter
     Kontostand inkl. Warenwert, Netto-Vermögen inkl. Warenwert und
     offener Schulden), `monat.js`, `abos.js`, `teile.js`, `bestellen.js`
-    – acht der neun Tabs. Seit Sub-Etappe A neu dazu: `einnahmen.js`
+    – sechs der neun Tabs. Seit Sub-Etappe A neu dazu: `einnahmen.js`
     (fällige wiederkehrende Einnahmen bestätigen, Liste, Formular für
     neue Einnahmen — **das erste echte Eingabeformular der ganzen App**,
     bisher lief jede Dateneingabe seit Etappe 2 nur per Chat-Diktat;
@@ -292,7 +292,14 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     Anlegen-Formular + „Neu setzen" + je Konto die eigene
     Transaktionsliste), `schulden.js` (Schulden je Richtung
     `ich_schulde`/`mir_wird_geschuldet` + Anlegen-Formular + Teilzahlung
-    erfassen + je Schuld der eigene Zahlungsverlauf).
+    erfassen + je Schuld der eigene Zahlungsverlauf) – zusammen alle
+    neun Tabs. **Neue wiederkehrende Einnahmen-Vorlagen anlegen ist
+    bewusst nur per Chat-Diktat möglich** (`legeEinnahmeAn`s optionaler
+    `wiederkehr`-Parameter existiert genau dafür): `einnahmen.js`s
+    Formular bestätigt nur fällige, bereits bestehende Vorlagen und
+    zeigt kein Feld zum Anlegen einer neuen Wiederkehr – so von der
+    Definition-of-Done dieser Sub-Etappe vorgesehen, kein fehlendes
+    Feature (Fix wave 2026-09-21 hat das geprüft, keine Änderung nötig).
   Details Ursprungs-Modul: `docs/superpowers/specs/2026-09-16-etappe-3-finanzen-design.md`
   (Lager-Ursprung: `docs/superpowers/specs/2026-09-16-etappe-4-lager-design.md`).
   Absorption in Etappe 8 v2:
@@ -461,7 +468,11 @@ auf Deutsch. Datenschutz beachten.
   Kassenbons, trägt Claude die Ausgabe direkt in `expenses` ein
   (`quelle:'foto'`). Kommt eine Ausgabe später automatisiert aus E-Mails,
   `quelle:'email'` setzen. Manuell in der App eingetragene Ausgaben haben
-  `quelle:'manuell'` (Default). Siehe auch offener Punkt „automatisches
+  `quelle:'manuell'` (Default). **Seit Sub-Etappe A (2026-09-21) ist
+  `konto_id` Pflicht** (`expenses.konto_id` ist `not null`, kein
+  DB-Default) — Claude muss beim Insert per Supabase-MCP immer ein Konto
+  mitgeben (in der Regel das "Hauptkonto", `konten`-Tabelle), sonst
+  schlägt der Insert fehl. Siehe auch offener Punkt „automatisches
   Beleg-Tracking" im Log.
 - **Berichtsheft – Diktat per Chat:** Erzählt Mark Arbeitstage, fehlende
   Pflichtfelder (Datum, Stunden, Tätigkeiten) aktiv erfragen, dann in

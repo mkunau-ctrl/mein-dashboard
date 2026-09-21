@@ -25,6 +25,14 @@ const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KE
   auth: { persistSession: false },
 });
 
+async function holeHauptkontoId() {
+  const { data, error } = await supabase.from('konten')
+    .select('id').eq('user_id', DASHBOARD_USER_ID).order('erstellt_am').limit(1).maybeSingle();
+  if (error) throw new Error(`Hauptkonto laden: ${error.message}`);
+  if (!data) throw new Error('Kein Konto angelegt — Postfach-Scan kann keine Belege speichern.');
+  return data.id;
+}
+
 // Ersetzt die normale Claude-Code-Assistenten-Persona (inkl. CLAUDE.md-Kontext
 // dieses Projekts) durch eine enge Klassifikator-Rolle. Ohne das antwortet
 // `claude -p` konversationell (Rueckfragen, Ablehnung bei Spam-Verdacht) statt
@@ -140,11 +148,11 @@ async function schreibeSendung(k) {
   await legeEreignisAn(data.id, k, statusKategorie);
 }
 
-async function schreibeErgebnis(k) {
+async function schreibeErgebnis(k, kontoId) {
   if (k.typ === 'beleg') {
     const { error } = await supabase.from('expenses').insert({
       user_id: DASHBOARD_USER_ID, betrag: k.betrag, kategorie: k.kategorie || 'sonstiges',
-      datum: k.datum, notiz: k.haendler, quelle: 'email',
+      datum: k.datum, notiz: k.haendler, quelle: 'email', konto_id: kontoId,
     });
     if (error) throw new Error(`Beleg speichern: ${error.message}`);
     return;
@@ -163,6 +171,7 @@ async function schreibeErgebnis(k) {
 
 async function main() {
   const seit = leseLetztenLauf(ZUSTAND_PFAD) ?? new Date(Date.now() - 24 * 3_600_000).toISOString();
+  const kontoId = await holeHauptkontoId();
   const client = new ImapFlow({
     host: 'imap.gmx.net', port: 993, secure: true,
     auth: { user: process.env.GMX_IMAP_USER, pass: process.env.GMX_IMAP_APP_PASSWORT },
@@ -186,7 +195,7 @@ async function main() {
         if (!text.trim()) continue;
         const klassifikation = klassifiziereMail(text);
         if (klassifikation.typ !== 'sonstiges') {
-          await schreibeErgebnis(klassifikation);
+          await schreibeErgebnis(klassifikation, kontoId);
           verarbeitet += 1;
         }
       } catch (fehler) {
