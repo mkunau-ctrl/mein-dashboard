@@ -2,7 +2,8 @@ import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
 
-const TABS = [['ausgaben', 'Ausgaben'], ['kontostand', 'Kontostand'], ['monat', 'Monat'],
+const TABS = [['ausgaben', 'Ausgaben'], ['einnahmen', 'Einnahmen'], ['kontostand', 'Kontostand'],
+  ['konten', 'Konten'], ['schulden', 'Schulden'], ['monat', 'Monat'],
   ['abos', 'Abos'], ['teile', 'Teile'], ['bestellen', 'Bestellen']];
 
 let zustand = null;
@@ -43,7 +44,10 @@ function baueRahmen(container) {
 
 const LADER = {
   ausgaben: () => import('./ausgaben.js').then((m) => m.zeigeAusgaben),
+  einnahmen: () => import('./einnahmen.js').then((m) => m.zeigeEinnahmen),
   kontostand: () => import('./kontostand.js').then((m) => m.zeigeKontostand),
+  konten: () => import('./konten.js').then((m) => m.zeigeKonten),
+  schulden: () => import('./schulden.js').then((m) => m.zeigeSchulden),
   monat: () => import('./monat.js').then((m) => m.zeigeMonat),
   abos: () => import('./abos.js').then((m) => m.zeigeAbos),
   teile: () => import('./teile.js').then((m) => m.zeigeTeile),
