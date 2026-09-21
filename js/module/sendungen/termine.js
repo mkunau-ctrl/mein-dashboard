@@ -8,7 +8,16 @@ function esc(s) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 }
 
-export async function zeigeTermine(container, zustand, aktualisieren) {
+export async function zeigeTermine(container, zustand, aktualisieren, _zeitraum, _setZeitraum, detail) {
+  if (detail) {
+    const termin = zustand.termine.find((t) => t.id === detail);
+    if (termin) {
+      const { zeigeTerminDetail } = await import('./termin-detail.js');
+      zeigeTerminDetail(container, termin, () => { location.hash = '#/sendungen/termine'; });
+      return;
+    }
+  }
+
   const liste = document.createElement('div');
   liste.className = 'punkt-liste';
   container.appendChild(liste);
@@ -16,6 +25,7 @@ export async function zeigeTermine(container, zustand, aktualisieren) {
   for (const t of sortiereTermine(zustand.termine)) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
+    zeile.style.cursor = 'pointer';
     zeile.innerHTML = `
       <div class="icon-badge">${KALENDER_ICON}</div>
       <div class="punkt-info">
@@ -26,11 +36,14 @@ export async function zeigeTermine(container, zustand, aktualisieren) {
         <button data-a="ab">✓</button>
         <button data-a="weg">✕</button>
       </div>`;
-    zeile.querySelector('[data-a=ab]').addEventListener('click', async () => {
+    zeile.addEventListener('click', () => { location.hash = `#/sendungen/termine/${t.id}`; });
+    zeile.querySelector('[data-a=ab]').addEventListener('click', async (e) => {
+      e.stopPropagation();
       try { await hakeTerminAb(t.id); await aktualisieren(); }
       catch (err) { alert(err.message); }
     });
-    zeile.querySelector('[data-a=weg]').addEventListener('click', async () => {
+    zeile.querySelector('[data-a=weg]').addEventListener('click', async (e) => {
+      e.stopPropagation();
       if (!confirm(`Termin „${t.titel}" entfernen?`)) return;
       try { await entferneTermin(t.id); await aktualisieren(); }
       catch (err) { alert(err.message); }
