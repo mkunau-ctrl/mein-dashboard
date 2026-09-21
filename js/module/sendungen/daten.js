@@ -5,13 +5,15 @@ function fehler(kontext, error) {
 }
 
 export async function ladeAlles() {
-  const [sendungen, termine] = await Promise.all([
+  const [sendungen, termine, ereignisse] = await Promise.all([
     supabase.from('sendungen').select('*'),
     supabase.from('termine').select('*'),
+    supabase.from('sendungen_ereignisse').select('*').order('erstellt_am'),
   ]);
   if (sendungen.error) throw fehler('Sendungen laden', sendungen.error);
   if (termine.error) throw fehler('Termine laden', termine.error);
-  return { sendungen: sendungen.data, termine: termine.data };
+  if (ereignisse.error) throw fehler('Sendungs-Ereignisse laden', ereignisse.error);
+  return { sendungen: sendungen.data, termine: termine.data, ereignisse: ereignisse.data };
 }
 
 export async function legeSendungAn({ haendler, trackingnummer, beschreibung }) {

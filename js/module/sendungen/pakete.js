@@ -9,7 +9,16 @@ function esc(s) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 }
 
-export async function zeigePakete(container, zustand, aktualisieren) {
+export async function zeigePakete(container, zustand, aktualisieren, _zeitraum, _setZeitraum, detail) {
+  if (detail) {
+    const sendung = zustand.sendungen.find((s) => s.id === detail);
+    if (sendung) {
+      const { zeigeSendungDetail } = await import('./sendung-detail.js');
+      zeigeSendungDetail(container, sendung, zustand.ereignisse, () => { location.hash = '#/sendungen/pakete'; });
+      return;
+    }
+  }
+
   const liste = document.createElement('div');
   liste.className = 'punkt-liste';
   container.appendChild(liste);
@@ -17,6 +26,7 @@ export async function zeigePakete(container, zustand, aktualisieren) {
   for (const s of sortiereSendungen(zustand.sendungen)) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
+    zeile.style.cursor = 'pointer';
     zeile.innerHTML = `
       <div class="icon-badge">${BOX_ICON}</div>
       <div class="punkt-info">
@@ -27,12 +37,15 @@ export async function zeigePakete(container, zustand, aktualisieren) {
       <div class="punkt-aktionen">
         <button data-a="weg">✕</button>
       </div>`;
+    zeile.addEventListener('click', () => { location.hash = `#/sendungen/pakete/${s.id}`; });
     zeile.querySelector('[data-a=status]').addEventListener('click', async (e) => {
+      e.stopPropagation();
       e.target.disabled = true;
       try { await setzeSendungStatus(s.id, naechsterSendungStatus(s.status)); await aktualisieren(); }
       catch (err) { alert(err.message); e.target.disabled = false; }
     });
-    zeile.querySelector('[data-a=weg]').addEventListener('click', async () => {
+    zeile.querySelector('[data-a=weg]').addEventListener('click', async (e) => {
+      e.stopPropagation();
       if (!confirm(`Sendung von „${s.haendler}" entfernen?`)) return;
       try { await entferneSendung(s.id); await aktualisieren(); }
       catch (err) { alert(err.message); }
