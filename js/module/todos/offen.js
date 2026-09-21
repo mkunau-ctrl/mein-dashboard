@@ -14,7 +14,16 @@ function heute() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export async function zeigeOffen(container, zustand, aktualisieren) {
+export async function zeigeOffen(container, zustand, aktualisieren, _zeitraum, _setZeitraum, detail) {
+  if (detail) {
+    const todo = zustand.offen.find((t) => t.id === detail);
+    if (todo) {
+      const { zeigeTodoDetail } = await import('./todo-detail.js');
+      zeigeTodoDetail(container, todo, () => { location.hash = '#/todos/offen'; });
+      return;
+    }
+  }
+
   const heuteStr = heute();
   const todos = sortiereOffeneTodos(zustand.offen, heuteStr);
 
@@ -47,12 +56,14 @@ export async function zeigeOffen(container, zustand, aktualisieren) {
       <div class="punkt-aktionen"><button data-a="weg">✕</button></div>`;
 
     const box = zeile.querySelector('input');
+    box.addEventListener('click', (e) => e.stopPropagation());
     box.addEventListener('change', async () => {
       box.disabled = true;
       try { await hakeAb(t); await aktualisieren(); }
       catch (e) { box.checked = false; box.disabled = false; alert(e.message); }
     });
-    zeile.querySelector('[data-a=weg]').addEventListener('click', async () => {
+    zeile.querySelector('[data-a=weg]').addEventListener('click', async (e) => {
+      e.stopPropagation();
       const hinweis = t.vorlage_id
         ? `„${t.text}" entfernen? Die Wiederkehr wird beendet.`
         : `„${t.text}" entfernen?`;
@@ -60,6 +71,7 @@ export async function zeigeOffen(container, zustand, aktualisieren) {
       try { await entferneTodo(t); await aktualisieren(); }
       catch (e) { alert(e.message); }
     });
+    zeile.addEventListener('click', () => { location.hash = `#/todos/offen/${t.id}`; });
     liste.appendChild(zeile);
   }
 }

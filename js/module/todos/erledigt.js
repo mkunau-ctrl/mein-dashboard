@@ -5,7 +5,16 @@ function esc(s) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 }
 
-export async function zeigeErledigt(container, zustand) {
+export async function zeigeErledigt(container, zustand, _aktualisieren, _zeitraum, _setZeitraum, detail) {
+  if (detail) {
+    const todo = zustand.erledigt.find((t) => t.id === detail);
+    if (todo) {
+      const { zeigeTodoDetail } = await import('./todo-detail.js');
+      zeigeTodoDetail(container, todo, () => { location.hash = '#/todos/erledigt'; });
+      return;
+    }
+  }
+
   if (zustand.erledigt.length === 0) {
     const p = document.createElement('p');
     p.className = 'lade';
@@ -21,12 +30,14 @@ export async function zeigeErledigt(container, zustand) {
   for (const t of zustand.erledigt) {
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
+    zeile.style.cursor = 'pointer';
     zeile.innerHTML = `
       <div class="icon-badge">${ERLEDIGT_ICON}</div>
       <div class="punkt-info">
         <span>${esc(t.text)}</span>
         <small>erledigt am ${t.erledigt_am.slice(0, 10)}</small>
       </div>`;
+    zeile.addEventListener('click', () => { location.hash = `#/todos/erledigt/${t.id}`; });
     liste.appendChild(zeile);
   }
 }
