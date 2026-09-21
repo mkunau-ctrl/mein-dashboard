@@ -142,6 +142,9 @@ button:disabled { opacity: .6; cursor: default; }
 .punkt-aktionen { display: flex; gap: 4px; }
 .punkt-aktionen button { background: transparent; color: var(--gedaempft);
   border: 1px solid var(--rand); padding: 6px 9px; }
+.punkt-formular { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.punkt-formular input, .punkt-formular select { flex: 1; min-width: 100px; }
+.punkt-formular button { flex: none; }
 
 /* Gewicht */
 .g-chart-box { position: relative; height: 240px; max-width: 100%; }
