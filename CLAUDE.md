@@ -44,9 +44,11 @@ oder gebaut**):
     `kontostand_start`/`stand_datum` in `finance_settings` gibt es eine
     neue Tabelle `konten` (z. B. "Hauptkonto"/Girokonto, "Trade
     Republic", "Volksbank", je eigener `kontostand_start` +
-    `stand_datum`). `expenses` und `einnahmen` bekommen ein optionales
-    `konto_id`-Feld (Default = Hauptkonto) — die meisten Buchungen
-    laufen laut Nutzer sowieso nur über das eine Hauptkonto, Nebenkonten
+    `stand_datum`). `expenses` und `einnahmen` haben ein
+    **pflicht-`konto_id`-Feld** (`not null`, **kein** DB-Default —
+    Formular und Chat-Diktat-Inserts per Supabase-MCP müssen es immer
+    explizit mitgeben). Die meisten Buchungen laufen laut Nutzer sowieso
+    nur über das eine Hauptkonto, Nebenkonten
     (z. B. Trade Republic) können entweder auch Buchungen zugeordnet
     bekommen oder einfach nur gelegentlich manuell auf einen neuen Stand
     gesetzt werden (wie bisher `setzeKontostandStart`, nur pro Konto).
@@ -63,8 +65,10 @@ oder gebaut**):
     Status) **plus Teilzahlungen/Verlauf** (eigene Tabelle
     `schulden_zahlungen`: schuld_id, Betrag, Datum) — Restbetrag =
     Gesamtbetrag minus Summe der Zahlungen, nicht nur offen/beglichen.
-  - `kontostand()`-Formeln werden entsprechend erweitert (bisher nur
-    `start − Ausgaben` für ein Konto).
+  - Die Kontostand-Berechnungen sind entsprechend erweitert (ersetzen die
+    alte Einzelkonto-Formel `start − Ausgaben`): `kontostandProKonto`,
+    `gesamtKontostand`, `unechterGesamtKontostand`, `nettoVermoegen` —
+    siehe Abschnitt "Aufbau" weiter unten (`js/module/finanzen/`).
 - **B) Finanzen-Redesign** — Tabs Übersicht/Transaktionen/Analyse nach
   Prototyp (`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`),
   jetzt mit **echten Einnahmen UND Ausgaben** (nicht nur Ausgaben wie
