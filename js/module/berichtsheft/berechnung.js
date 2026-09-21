@@ -44,3 +44,11 @@ export function ausbildungsjahr(ausbildungsbeginn, datum) {
   if (vorJahrestag) jahre -= 1;
   return jahre + 1;
 }
+
+export function ausbildungsFortschritt(beginn, dauerJahre, heute) {
+  const jahr = ausbildungsjahr(beginn, heute);
+  const gesamtTage = dauerJahre * 365.25;
+  const vergangeneTage = (tagMs(heute) - tagMs(beginn)) / TAG_MS;
+  const prozent = Math.round(Math.min(100, Math.max(0, (vergangeneTage / gesamtTage) * 100)));
+  return { jahr, prozent };
+}
