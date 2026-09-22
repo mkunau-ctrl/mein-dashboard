@@ -4,6 +4,69 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-22 – Etappe 4 Sub-B: Finanzen-Redesign
+
+**Was:** Die dritte von 17 Sub-Etappen (A–Q, siehe `CLAUDE.md`) ist
+fertig. Finanzen hat jetzt drei neue Tabs ganz vorne in der Tab-Leiste:
+**Übersicht** (echter Zeitraum-gefilterter Kontostand + Einnahmen/
+Ausgaben/Differenz, Zeitraum-Filter 7T/30T/3M/6M/1J), **Transaktionen**
+(Einnahmen+Ausgaben gemeinsam, Volltextsuche, Kategorie-Chips,
+CSV-Export) und **Analyse** (Kategorien-Aufschlüsselung für Ausgaben
+UND Einnahmequellen, 6-Monats-Balkendiagramm, Jahresübersicht mit
+Sparquote). Der Zeitraum-Filter ist ein **geteilter Zustand**
+(`zeitraum`/`setZeitraum` in `finanzen/index.js`) — ein Wechsel auf
+Übersicht wirkt sofort auch auf Transaktionen, nicht nur lokal pro Tab.
+Der alte „Monat"-Tab ist komplett durch „Analyse" ersetzt (nicht mehr
+vorhanden), der alte „Abos"-Tab ist zu **„Regelmäßige Ausgaben"**
+geworden: neue Tabelle `ausgaben_vorlagen` (analog zu
+`einnahmen_vorlagen`) plus neue Pflicht-Spalte `expenses.vorlage_id`
+(nullable, RLS wie gehabt), bestehende automatische Muster-Erkennung
+(`erkenneAbos`) bleibt als „Vorschlag: als Vorlage übernehmen"
+zusätzlich bestehen. Neu dazu: ein **Kontostand-Detail-Screen** von
+Home aus (Klick auf die Kontostand-Karte → `#/home/kontostand`), mit
+echter Sparkline (`kontostandVerlauf`, letzte 30 Tage), Augen-Icon zum
+Ausblenden des Betrags und der Warenwert-Zeile.
+
+**Entscheidungen/Korrekturen während der Umsetzung (Doku-Rigor-Regel):**
+- **Dokumentierte Spec-Abweichung** (bereits in den Plan-Global-
+  Constraints festgehalten, hier zur Nachvollziehbarkeit wiederholt):
+  `legeAusgabenVorlageAn` legt beim Anlegen einer neuen Vorlage **keine**
+  begleitende `expenses`-Zeile an (anders als ursprünglich in der Spec
+  skizziert) — eine Vorlage entsteht ohne sofortige erste Buchung, echte
+  Ausgaben-Zeilen entstehen erst beim späteren „Bezahlt"-Bestätigen
+  (`bestaetigeAusgabenVorlage`), analog zum bereits etablierten
+  Einnahmen-Vorlagen-Muster.
+- **Nutzungslimit-Unterbrechungen (zweimal):** Der Build lief als
+  Hintergrund-Fork ohne Erlaubnis, weitere Subagenten zu starten (harte
+  Harness-Regel) — alle neun Tasks wurden inline umgesetzt statt über
+  eine separate Reviewer-Instanz, mit sorgfältigem Gegenlesen gegen
+  Plan+Spec. Mark hat den Build zweimal per „Stopp" unterbrochen: einmal
+  nach Task 7 (Tabs verdrahtet), einmal nach Task 8
+  (Kontostand-Detail-Screen) — beide Male war das Repo sauber committed
+  und gepusht, kein Datenverlust, die jeweils nächste Fortsetzung lief
+  als neuer Fork ab dem verifizierten Stand.
+- **Sicherheitsfund zwischen Task 7 und der Fortsetzung:** Der
+  automatisierte Security-Review meldete nach Task 4 (Transaktionen-Tab
+  mit CSV-Export) zwei Funde. Der XSS-Fund in `transaktionen.js`
+  (`t.bezeichnung`) war ein False Positive — das Feld wird bereits mit
+  `esc()` escaped. Der **CSV-Formel-Injection-Fund** in `berechnung.js`s
+  `zuCsvZeilen` war echt: eine Bezeichnung, die mit `=`, `+`, `-` oder
+  `@` beginnt, würde von Excel/Sheets beim Öffnen als Formel
+  interpretiert. Behoben mit neuem Helper `csvFeldSicher` (stellt ein
+  Apostroph voran, erzwingt Text-Interpretation), Commit `3c25a01`, mit
+  eigenem Test. Dieses Muster (`csvFeldSicher`) sollte für jeden
+  künftigen CSV-Export mit Freitext-Feldern wiederverwendet werden.
+
+**Stand danach:** `npm test` 100/100 grün. Sub-Etappe B ist fertig.
+**Offene Punkte:** Sub-Etappe C ("Detail-Klicks überall") war bisher nur
+teilweise fertig (Sendungen/Termine/To-dos aus E+F) — der „Rest von C"
+(Transaktionen anklickbar machen) wartete auf B und wird direkt im
+Anschluss an diesen Eintrag umgesetzt (siehe nachfolgenden Log-Eintrag
+falls vorhanden, sonst `CLAUDE.md` „Aktueller Stand" für den
+tatsächlichen Stand). Ganzer Backlog A–Q weiterhin in `CLAUDE.md`.
+
+---
+
 ## 2026-09-22 – Etappe 4 Sub-E+F: Design-Angleichung, Einstellungen, Detail-Klicks
 
 **Was:** Die zweite von 17 Sub-Etappen (A–Q, siehe `CLAUDE.md`) ist

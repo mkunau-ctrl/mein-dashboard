@@ -69,22 +69,28 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
     alte Einzelkonto-Formel `start − Ausgaben`): `kontostandProKonto`,
     `gesamtKontostand`, `unechterGesamtKontostand`, `nettoVermoegen` —
     siehe Abschnitt "Aufbau" weiter unten (`js/module/finanzen/`).
-- **B) Finanzen-Redesign** — Tabs Übersicht/Transaktionen/Analyse nach
-  Prototyp (`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`),
-  jetzt mit **echten Einnahmen UND Ausgaben** (nicht nur Ausgaben wie
-  ursprünglich angenommen). Zeitraum-Filter (7T/30T/3M/6M/1J) wirken
-  **gemeinsam** auf Übersicht- und Transaktionen-Tab (echte Filterung,
-  keine neue Tabelle). Analyse-Tab: Balkendiagramm Einnahmen/Ausgaben
-  über mehrere Monate + Kategorien-Aufschlüsselung (inkl.
-  Einnahmequellen wie "Handyreparaturen") + Jahresübersicht/Sparquote
-  (neuer Vorschlag, vom Nutzer angenommen). Bestehender Kontostand-Tab
-  **bleibt zusätzlich** in der Tab-Leiste (nicht ersetzt). Separater
-  **Kontostand-Detail-Screen** von Home aus (Klick auf Kontostand-Karte):
-  Prototyp-Balance-Karte (Augen-Icon zum Ausblenden, Sparkline) **plus**
-  Warenwert-Zeile. "Abos"-Tab wird zu **"Regelmäßige Ausgaben"**: echte
-  `ausgaben_vorlagen`-Tabelle (analog zu `einnahmen_vorlagen`) zusätzlich
-  zur bisherigen automatischen Muster-Erkennung (`erkenneAbos` bleibt
-  als Vorschlag). Dazu: CSV-Export für Einnahmen/Ausgaben.
+- **B) Finanzen-Redesign** — **fertig (2026-09-22)**. Tabs Übersicht/
+  Transaktionen/Analyse nach Prototyp
+  (`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`)
+  jetzt ganz vorne in der Finanzen-Tab-Leiste, mit **echten Einnahmen
+  UND Ausgaben**. Zeitraum-Filter (7T/30T/3M/6M/1J) wirken **gemeinsam**
+  auf Übersicht- und Transaktionen-Tab (geteilter Zustand in
+  `finanzen/index.js`, echte Filterung, keine neue Tabelle). Analyse-Tab
+  (ersetzt den alten "Monat"-Tab vollständig): Balkendiagramm Einnahmen/
+  Ausgaben über 6 Monate + Kategorien-Aufschlüsselung (inkl.
+  Einnahmequellen) + Jahresübersicht/Sparquote. Bestehender
+  Kontostand-Tab **bleibt zusätzlich** in der Tab-Leiste (nicht
+  ersetzt). Separater **Kontostand-Detail-Screen** von Home aus (Klick
+  auf Kontostand-Karte → `#/home/kontostand`): Prototyp-Balance-Karte
+  (Augen-Icon zum Ausblenden, echte Sparkline über `kontostandVerlauf`)
+  **plus** Warenwert-Zeile. "Abos"-Tab ist zu **"Regelmäßige Ausgaben"**
+  geworden: echte `ausgaben_vorlagen`-Tabelle (analog zu
+  `einnahmen_vorlagen`) zusätzlich zur bisherigen automatischen
+  Muster-Erkennung (`erkenneAbos` bleibt als Vorschlag). Dazu:
+  CSV-Export für Transaktionen (`zuCsvZeilen`, mit
+  `csvFeldSicher`-Schutz gegen CSV-Formel-Injection in Freitextfeldern).
+  Details: `docs/superpowers/specs/2026-09-21-etappe-4-sub-b-finanzen-redesign-design.md`
+  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-22).
 - **C) Detail-Klicks überall** — **teilweise fertig** (Sendungen/
   Termine/To-dos, s. u. bei E+F). Sendungen (inkl. `abholcode`/
   `abholadresse`/`abholzeiten`, die die E-Mail-Automatisierung seit
@@ -296,29 +302,49 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
 - `js/module/finanzen/` – drittes Fachmodul (Ausgaben/Einnahmen/Kontostand/
   Konten/Schulden), **seit Etappe 8 v2 inklusive des ehemaligen
   Lager-Moduls**, **seit Sub-Etappe A (2026-09-21) inklusive Mehrkonten,
-  Einnahmen und Schulden**:
-  - `index.js` – Registrierung, Tabs „Ausgaben"/„Einnahmen"/„Kontostand"/
-    „Konten"/„Schulden"/„Monat"/„Abos"/„Teile"/„Bestellen", Kachel-Text.
+  Einnahmen und Schulden**, **seit Sub-Etappe B (2026-09-22) mit den
+  drei Prototyp-Tabs Übersicht/Transaktionen/Analyse ganz vorne**:
+  - `index.js` – Registrierung, Tabs „Übersicht"/„Transaktionen"/
+    „Analyse"/„Ausgaben"/„Einnahmen"/„Kontostand"/„Konten"/„Schulden"/
+    „Regelmäßige Ausgaben"/„Teile"/„Bestellen", Kachel-Text. Hält seit
+    Sub-Etappe B den **geteilten Zeitraum-Zustand** (`zeitraum`/
+    `setZeitraum`), der an `zeigeFn(inhalt, zustand, aktualisieren,
+    zeitraum, setZeitraum)` durchgereicht wird — Übersicht und
+    Transaktionen teilen sich denselben Zeitraum-Filter.
   - `daten.js` – Supabase-Zugriff auf `expenses` + `finance_settings` +
     `parts` (Teile-Zugriff `speicherTeil`/`entferneTeil`/`setzeStatus` 1:1
     aus dem ehemaligen `lager/daten.js` übernommen) + seit Sub-Etappe A
     zusätzlich `konten`/`einnahmen`/`einnahmen_vorlagen`/`schulden`/
     `schulden_zahlungen` (`legeEinnahmeAn` inkl. optionaler Wiederkehr,
     `bestaetigeEinnahmenVorlage`, `entferneEinnahme`, `legeKontoAn`,
-    `legeSchuldAn`, `verbucheZahlung`).
+    `legeSchuldAn`, `verbucheZahlung`) + seit Sub-Etappe B zusätzlich
+    `ausgaben_vorlagen` (`legeAusgabenVorlageAn`,
+    `bestaetigeAusgabenVorlage` — **legt beim Anlegen bewusst KEINE
+    begleitende `expenses`-Zeile an**, dokumentierte Spec-Abweichung,
+    siehe `docs/PROJEKT-LOG.md` Eintrag 2026-09-22).
   - `berechnung.js` – `summeProMonat`, `summenProKategorie`,
     `erkenneAbos`, plus aus dem ehemaligen `lager/berechnung.js`
     übernommen: `warenwert`, `sortiereTeile`, `merkliste`,
-    `naechsterStatus`; seit Sub-Etappe A (ersetzen die alten
-    Einzelkonto-Funktionen `kontostand`/`unechterKontostand`):
-    `kontostandProKonto`, `gesamtKontostand`, `unechterGesamtKontostand`,
+    `naechsterStatus`; seit Sub-Etappe A: `kontostandProKonto`,
+    `gesamtKontostand`, `unechterGesamtKontostand`,
     `schuldenRestbetrag`, `offeneSchulden`, `sortiereSchulden`,
-    `nettoVermoegen`.
-  - `ausgaben.js`, `kontostand.js` (zeigt seit Sub-Etappe A vier
-    Kennzahlen: Gesamt-Kontostand, Ausgaben diesen Monat, unechter
-    Kontostand inkl. Warenwert, Netto-Vermögen inkl. Warenwert und
-    offener Schulden), `monat.js`, `abos.js`, `teile.js`, `bestellen.js`
-    – sechs der neun Tabs. Seit Sub-Etappe A neu dazu: `einnahmen.js`
+    `nettoVermoegen`; seit Sub-Etappe B zusätzlich: `zeitraumVon`,
+    `summenProKategorieZeitraum`, `summenProBezeichnungZeitraum`,
+    `letzteMonate`, `jahresUebersicht`, `kontostandVerlauf`,
+    `zuCsvZeilen` (nutzt intern `csvFeldSicher` — stellt Freitextfeldern,
+    die mit `=`/`+`/`-`/`@` beginnen, ein Apostroph voran, Schutz gegen
+    CSV-Formel-Injection beim Öffnen in Excel/Sheets).
+  - `uebersicht.js`, `transaktionen.js`, `analyse.js` (neu seit
+    Sub-Etappe B, die drei vorderen Tabs), `ausgaben.js`, `kontostand.js`
+    (zeigt seit Sub-Etappe A vier Kennzahlen: Gesamt-Kontostand, Ausgaben
+    diesen Monat, unechter Kontostand inkl. Warenwert, Netto-Vermögen
+    inkl. Warenwert und offener Schulden), `regelmaessige-ausgaben.js`
+    (seit Sub-Etappe B, **ersetzt** `abos.js` — echte
+    `ausgaben_vorlagen` + „Bezahlt"-Bestätigung + weiterhin die
+    automatische Muster-Erkennung `erkenneAbos` als Vorschlag), `teile.js`,
+    `bestellen.js`. **`monat.js` und `abos.js` existieren seit
+    Sub-Etappe B nicht mehr** (vollständig durch `analyse.js` bzw.
+    `regelmaessige-ausgaben.js` ersetzt). Seit Sub-Etappe A: `einnahmen.js`
     (fällige wiederkehrende Einnahmen bestätigen, Liste, Formular für
     neue Einnahmen — **das erste echte Eingabeformular der ganzen App**,
     bisher lief jede Dateneingabe seit Etappe 2 nur per Chat-Diktat;
@@ -326,9 +352,9 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     Anlegen-Formular + „Neu setzen" + je Konto die eigene
     Transaktionsliste), `schulden.js` (Schulden je Richtung
     `ich_schulde`/`mir_wird_geschuldet` + Anlegen-Formular + Teilzahlung
-    erfassen + je Schuld der eigene Zahlungsverlauf) – zusammen alle
-    neun Tabs. **Neue wiederkehrende Einnahmen-Vorlagen anlegen ist
-    bewusst nur per Chat-Diktat möglich** (`legeEinnahmeAn`s optionaler
+    erfassen + je Schuld der eigene Zahlungsverlauf). **Neue
+    wiederkehrende Einnahmen-Vorlagen anlegen ist bewusst nur per
+    Chat-Diktat möglich** (`legeEinnahmeAn`s optionaler
     `wiederkehr`-Parameter existiert genau dafür): `einnahmen.js`s
     Formular bestätigt nur fällige, bereits bestehende Vorlagen und
     zeigt kein Feld zum Anlegen einer neuen Wiederkehr – so von der
@@ -342,16 +368,26 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   Tests und Registrierung in `js/app.js` entfernt; die `parts`-Tabelle in
   Supabase ist unverändert, nur der Zugriff ist gewandert). Details
   Sub-Etappe A: `docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`
-  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-21).
+  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-21). Details Sub-Etappe B:
+  `docs/superpowers/specs/2026-09-21-etappe-4-sub-b-finanzen-redesign-design.md`
+  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-22).
 - `js/module/home/` – Home-Screen (Etappe 8 v2, kein eigenes `berechnung.js`,
   nur Zusammenstellung bestehender Logik):
   - `daten.js` – lädt parallel `finanzen/daten.js:ladeAlles()`,
     `todos/daten.js:ladeAlles()`, `sendungen/daten.js:ladeAlles()`.
   - `index.js` – Registrierung (`id:'home'`, Default-Startseite ohne Hash).
     Zeigt Kontostand-Karte (echt + unecht) sowie "Nächste Termine"/
-    "Aktuelle Sendungen"/"Offene To-dos" mit "Alle anzeigen"-Links.
+    "Aktuelle Sendungen"/"Offene To-dos" mit "Alle anzeigen"-Links. Klick
+    auf die Kontostand-Karte springt zu `#/home/kontostand`.
+  - `kontostand.js` (neu seit Sub-Etappe B, 2026-09-22) –
+    `zeigeKontostandDetail`: eigener Detail-Screen mit Prototyp-Balance-
+    Karte (Augen-Icon zum Ausblenden des Betrags), echter Sparkline über
+    `kontostandVerlauf` (30 Tage) und Warenwert-Zeile. Routing über das
+    `unterseite`-Segment von `parseHash` (`#/home/kontostand`), nicht
+    über das dritte `detail`-Segment.
   Details: `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
-  (Abschnitt 4).
+  (Abschnitt 4), Kontostand-Detail-Screen:
+  `docs/superpowers/specs/2026-09-21-etappe-4-sub-b-finanzen-redesign-design.md`.
 - `js/module/suche/` – Suche-Screen (Etappe 8 v2), **seit Sub-Etappe E+F
   (2026-09-22) nach Prototyp umgebaut**:
   - `berechnung.js` – `sucheAlles(zustand, suchtext)`: reine Volltextsuche
@@ -610,9 +646,10 @@ auf Deutsch. Datenschutz beachten.
   - Relying Party Origins: `https://mkunau-ctrl.github.io`
   Danach in der App einloggen (Magic-Link) und oben „Passkey einrichten"
   tippen – erst dann geht „Mit Passkey anmelden" auf dem Login-Screen.
-- Tabellen (Stand Sub-Etappe A, 2026-09-21): `checklist_items`, `daily_log`,
+- Tabellen (Stand Sub-Etappe B, 2026-09-22): `checklist_items`, `daily_log`,
   `weight_log`, `settings` (Ernährung), `todos`, `todo_vorlagen`, `expenses`
-  (seit Sub-Etappe A zusätzlich Pflichtspalte `konto_id`),
+  (seit Sub-Etappe A zusätzlich Pflichtspalte `konto_id`, seit
+  Sub-Etappe B zusätzlich nullable `vorlage_id`),
   `finance_settings`, `parts`, `berichtsheft_eintraege`,
   `berichtsheft_settings`, `sendungen` (seit Etappe 3 zusätzlich
   `abholcode`/`abholadresse`/`abholzeiten`), `termine`,
@@ -625,5 +662,8 @@ auf Deutsch. Datenschutz beachten.
   `naechste_faelligkeit`, `konto_id`, `aktiv`), **`schulden`** (Person,
   Gesamtbetrag, Richtung `ich_schulde`/`mir_wird_geschuldet`, Notiz),
   **`schulden_zahlungen`** (Teilzahlungen je Schuld: `schuld_id`, Betrag,
-  Datum, Notiz). Alle fünf neuen Tabellen mit RLS nach dem bestehenden
+  Datum, Notiz), sowie neu seit Sub-Etappe B (2026-09-22):
+  **`ausgaben_vorlagen`** (analog zu `einnahmen_vorlagen`: Bezeichnung,
+  Betrag, Plan-Tag im Monat, `naechste_faelligkeit`, `konto_id`,
+  `aktiv`). Alle sechs neuen Tabellen mit RLS nach dem bestehenden
   Muster (`user_id = auth.uid()`, `for all to authenticated`).
