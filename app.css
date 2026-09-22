@@ -145,6 +145,12 @@ button:disabled { opacity: .6; cursor: default; }
 .kreisdiagramm-legende { flex: 1; display: flex; flex-direction: column; gap: 6px; font-size: .82rem; }
 .kreisdiagramm-legende-zeile { display: flex; align-items: center; gap: 8px; }
 
+.kachel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+.kachel { background: var(--karte); border: 1px solid var(--rand); border-radius: var(--radius);
+  padding: 12px; text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+.kachel small { color: var(--gedaempft); font-size: .72rem; }
+.kachel span { font-weight: 700; font-size: .92rem; }
+
 /* Kategorien-Aufschluesselung mit Fortschrittsbalken */
 .kategorie-zeile { padding: 10px 4px; }
 .kategorie-zeile + .kategorie-zeile { border-top: 1px solid var(--rand); }

@@ -1,4 +1,4 @@
-import { gesamtKontostand, zeitraumVon, summenProKategorieZeitraum, kategorisiereIconTyp, warenwert, kreisdiagrammSegmente } from './berechnung.js';
+import { gesamtKontostand, zeitraumVon, summenProKategorieZeitraum, kategorisiereIconTyp, warenwert, kreisdiagrammSegmente, offeneSchulden } from './berechnung.js';
 
 const RANGES = [['7T', '7T'], ['30T', '30T'], ['3M', '3M'], ['6M', '6M'], ['1J', '1J']];
 
@@ -27,6 +27,33 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
     zeigeKategorieDetail(container, zustand, detail.slice('kategorie-'.length), () => {
       location.hash = '#/finanzen/uebersicht';
     });
+    return;
+  }
+  if (detail === 'einnahmen-ausgaben') {
+    const { zeigeEinnahmen } = await import('./einnahmen.js');
+    container.innerHTML = '<div class="modul-kopf"><button id="ua-zurueck" type="button">‹ Übersicht</button></div>';
+    container.querySelector('#ua-zurueck').addEventListener('click', () => { location.hash = '#/finanzen/uebersicht'; });
+    const inhalt = document.createElement('div');
+    container.appendChild(inhalt);
+    await zeigeEinnahmen(inhalt, zustand, aktualisieren);
+    return;
+  }
+  if (detail === 'konten') {
+    const { zeigeKonten } = await import('./konten.js');
+    container.innerHTML = '<div class="modul-kopf"><button id="ua-zurueck" type="button">‹ Übersicht</button></div>';
+    container.querySelector('#ua-zurueck').addEventListener('click', () => { location.hash = '#/finanzen/uebersicht'; });
+    const inhalt = document.createElement('div');
+    container.appendChild(inhalt);
+    await zeigeKonten(inhalt, zustand, aktualisieren);
+    return;
+  }
+  if (detail === 'schulden') {
+    const { zeigeSchulden } = await import('./schulden.js');
+    container.innerHTML = '<div class="modul-kopf"><button id="ua-zurueck" type="button">‹ Übersicht</button></div>';
+    container.querySelector('#ua-zurueck').addEventListener('click', () => { location.hash = '#/finanzen/uebersicht'; });
+    const inhalt = document.createElement('div');
+    container.appendChild(inhalt);
+    await zeigeSchulden(inhalt, zustand, aktualisieren);
     return;
   }
   const heuteStr = heute();
@@ -58,6 +85,21 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
       </svg>
       <div class="kreisdiagramm-legende">
         ${segmente.map((s) => `<div class="kreisdiagramm-legende-zeile"><span class="dot" style="background:${s.farbe};"></span>${esc(s.kategorie)} · ${s.prozent}%</div>`).join('')}
+      </div>
+    </div>
+    <div class="kachel-grid">
+      <div class="kachel" data-ziel="einnahmen-ausgaben">
+        <small>Einnahmen &amp; Ausgaben</small>
+        <span class="betrag-plus">+${einnahmenSumme.toFixed(2)} €</span>
+        <span class="betrag-minus">-${ausgabenSumme.toFixed(2)} €</span>
+      </div>
+      <div class="kachel" data-ziel="konten">
+        <small>Konten</small>
+        <span>${zustand.konten.length} Konto${zustand.konten.length === 1 ? '' : 'en'}</span>
+      </div>
+      <div class="kachel" data-ziel="schulden">
+        <small>Schulden</small>
+        <span>${offeneSchulden(zustand.schulden, zustand.zahlungen).toFixed(2)} €</span>
       </div>
     </div>
     <div class="punkt-liste">
@@ -93,6 +135,11 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
   container.querySelectorAll('[data-kategorie]').forEach((el) => {
     el.addEventListener('click', () => {
       location.hash = `#/finanzen/uebersicht/kategorie-${el.dataset.kategorie}`;
+    });
+  });
+  container.querySelectorAll('.kachel[data-ziel]').forEach((el) => {
+    el.addEventListener('click', () => {
+      location.hash = `#/finanzen/uebersicht/${el.dataset.ziel}`;
     });
   });
 }
