@@ -4,6 +4,29 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-22 – Weiteres Design-/Daten-Feedback gesammelt (bewusst noch nicht gebaut)
+
+**Was:** Nach der Design-Nacharbeit (s. u.) hat Mark per Screenshot
+weiteres Feedback gegeben und explizit gesagt: nicht bauen, nur
+speichern, Rückfragen stellen falls unklar. Zwei Rückfragen gestellt
+und beantwortet (Home-Begrüßung = Prototyp-Stil bestätigt;
+Regelmäßige-Ausgaben-Beträge = Claude 22 €/Wispr Flow 15 €/Friseur
+10 € statt der fälschlich mit 18 € gebuchten Einzel-Ausgabe). Alle sieben
+Punkte (doppelter Modul-Titel, Home-Begrüßung, Header-Buttons
+umsortiert, "‹ Dashboard"-Zeile, Tab-Übergangs-Animation, anklickbare
+Kategorien mit Detailliste+Filter, Regelmäßige-Ausgaben-Datenkorrektur)
+sind jetzt in `CLAUDE.md` unter "Offene Design-/Daten-Korrekturen"
+dokumentiert. Eine Rückfrage ist noch offen (nutzt Mark die App über
+ein Home-Bildschirm-Icon oder direkt in Safari? – relevant für Punkt 4,
+die "‹ Dashboard"-Zeile ist Safaris eigene Browser-Chrome, nicht durch
+unseren Code beeinflussbar).
+
+**Stand danach:** Kein Code geändert, nur Doku (`CLAUDE.md`,
+dieser Eintrag). Wartet auf Freigabe, bevor irgendetwas davon gebaut
+wird.
+
+---
+
 ## 2026-09-22 – Design-Nacharbeit: Home-Icons, Kategorien-Balken, Header-Buttons
 
 **Was:** Mark hat per Screenshot-Vergleich (Prototyp vs. Live-App)

@@ -250,6 +250,62 @@ Task/jedem Meilenstein `git push origin main` (Controller pusht selbst,
 nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
 + `CLAUDE.md` aktualisieren.
 
+## Offene Design-/Daten-Korrekturen (Rückmeldung 2026-09-22, **ausdrücklich noch nicht gebaut** – Nutzerwunsch: erst sammeln, dann auf Freigabe warten)
+
+Mark hat nach der Design-Nacharbeit (siehe `docs/PROJEKT-LOG.md`,
+Eintrag 2026-09-22 "Design-Nacharbeit") per Screenshot weiteres Feedback
+gegeben und ausdrücklich gesagt: nicht bauen, nur speichern, Rückfragen
+stellen. Rückfragen sind geklärt (s. u.), aber **nichts davon ist
+umgesetzt** – wartet auf explizite Freigabe:
+
+1. **Doppelter Modul-Titel:** `js/app.js`s globaler Header
+   (`#modul-titel`) UND jedes Modul selbst (`<header class="modul-kopf">`,
+   z. B. `js/module/home/index.js:80`, `js/module/finanzen/index.js:29-31`)
+   zeichnen denselben Titel – einmal reicht. Ursache klar, kein
+   Rückfrage-Bedarf.
+2. **Home-Begrüßung statt "Home":** Home-Screen soll wie im Prototyp
+   `docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`
+   eine zeitabhängige Begrüßung ("Guten Morgen/Tag/Abend, Mark") plus
+   das heutige Datum zeigen statt der reinen Überschrift "Home"
+   (bestätigt durch Rückfrage).
+3. **Header-Buttons neu sortiert:** Passkey-Einrichtung raus aus dem
+   Modul-Header, rein ins Einstellungen-Modul (existiert schon,
+   `js/module/einstellungen/`). Tag/Nacht-Umschalter bleibt an der
+   Stelle, wo aktuell der Passkey-Button steht, aber deutlich
+   unauffälliger/kleiner als der aktuelle gefüllte Kreis-Button.
+4. **"‹ Dashboard"-Zeile:** ist Safaris eigene Browser-Chrome (Zurück-
+   Hinweis + Reload), kein Teil unseres Codes/HTML. `manifest.webmanifest`
+   hat bereits `"display": "standalone"` gesetzt – dürfte beim Öffnen
+   über ein Home-Bildschirm-Icon (statt Safari-Tab/Lesezeichen) schon
+   von selbst verschwinden. **Offen:** Rückfrage an Mark, ob er die App
+   aktuell über ein Home-Bildschirm-Icon öffnet, noch unbeantwortet –
+   vor dem nächsten Anlauf klären, sonst läuft man ins Leere (Safari-UI
+   ist von einer Web-App aus nicht steuerbar).
+5. **Smoother Tab-Übergang in Finanzen:** beim Wechsel zwischen
+   Übersicht/Transaktionen/Analyse/Regelmäßige-Ausgaben soll es eine
+   weiche Übergangs-Animation geben statt eines harten Wechsels.
+6. **Kategorien in "Ausgaben nach Kategorien" anklickbar:** Klick auf
+   eine Kategorie-Zeile (`js/module/finanzen/uebersicht.js`,
+   `js/module/finanzen/analyse.js`) soll zu einer Detailliste aller
+   Ausgaben dieser Kategorie führen – **inklusive der per Kassenbon-Foto
+   erfassten** (`expenses.quelle = 'foto'`, gleiche Tabelle, kein
+   Extra-Datenmodell nötig). Dort selbst nochmal nach (Unter-)Kategorie
+   sortiert/gruppiert plus ein Filter (Zeitraum/Text – genaue Filterart
+   beim Umsetzen mit Mark abstimmen, aktuell nicht spezifiziert).
+7. **Regelmäßige-Ausgaben-Datenkorrektur:** `ausgaben_vorlagen` ist
+   aktuell komplett leer. Mark will drei feste monatliche Vorlagen:
+   **Claude Abo 22 €**, **Wispr Flow 15 €**, **Friseur 10 €** (nicht
+   18 €, wie die einmalige `expenses`-Buchung vom 2026-09-19 fälschlich
+   zeigt – dieser einzelne Ausgaben-Eintrag ist im Betrag zu korrigieren,
+   bevor/während die Vorlage angelegt wird). Reine Chat-Diktat-Aktion
+   per Supabase-MCP (kein Code nötig), aber laut Nutzerwunsch
+   zurückgestellt, bis er grünes Licht gibt.
+
+**Nicht vergessen:** bevor an einem dieser Punkte gebaut wird, erst
+offene Frage 4 klären, dann normal brainstormen (vermutlich bounded,
+da bestehende Screens) und wie gewohnt Design kurz im Chat bestätigen
+lassen, bevor Code entsteht.
+
 ## Aufbau (Stand Etappe 8 v2 – Navigations-Redesign + Optik-Addendum nach Marks Prototyp)
 
 - `index.html` – App-Hülle: Login-Ansicht + Dashboard-Ansicht mit fester
