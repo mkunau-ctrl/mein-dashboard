@@ -140,3 +140,74 @@ export function nettoVermoegen(konten, expenses, einnahmen, teile, schulden, zah
     .reduce((sum, s) => sum + Math.max(0, schuldenRestbetrag(s, zahlungen)), 0);
   return unechterGesamtKontostand(konten, expenses, einnahmen, teile, heute) + forderungen - verbindlichkeiten;
 }
+
+export function zeitraumVon(bereich, heute) {
+  const d = new Date(heute + 'T00:00:00Z');
+  const TAGE = { '7T': 7, '30T': 30 };
+  if (TAGE[bereich]) {
+    d.setUTCDate(d.getUTCDate() - TAGE[bereich]);
+  } else {
+    const MONATE = { '3M': 3, '6M': 6, '1J': 12 };
+    d.setUTCMonth(d.getUTCMonth() - MONATE[bereich]);
+  }
+  return d.toISOString().slice(0, 10);
+}
+
+export function summenProKategorieZeitraum(expenses, von, bis) {
+  const summen = new Map();
+  for (const e of expenses.filter((e) => e.datum >= von && e.datum <= bis)) {
+    summen.set(e.kategorie, (summen.get(e.kategorie) || 0) + e.betrag);
+  }
+  return [...summen.entries()]
+    .map(([kategorie, summe]) => ({ kategorie, summe }))
+    .sort((a, b) => b.summe - a.summe);
+}
+
+export function summenProBezeichnungZeitraum(einnahmen, von, bis) {
+  const summen = new Map();
+  for (const e of einnahmen.filter((e) => e.datum >= von && e.datum <= bis)) {
+    summen.set(e.bezeichnung, (summen.get(e.bezeichnung) || 0) + e.betrag);
+  }
+  return [...summen.entries()]
+    .map(([bezeichnung, summe]) => ({ bezeichnung, summe }))
+    .sort((a, b) => b.summe - a.summe);
+}
+
+export function letzteMonate(anzahl, heute) {
+  const d = new Date(heute + 'T00:00:00Z');
+  const ergebnis = [];
+  for (let i = anzahl - 1; i >= 0; i--) {
+    const m = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - i, 1));
+    ergebnis.push({ jahr: m.getUTCFullYear(), monat: m.getUTCMonth() + 1 });
+  }
+  return ergebnis;
+}
+
+export function jahresUebersicht(expenses, einnahmen, jahr) {
+  const inJahr = (b) => Number(b.datum.slice(0, 4)) === jahr;
+  const ausgabenSumme = expenses.filter(inJahr).reduce((s, e) => s + e.betrag, 0);
+  const einnahmenSumme = einnahmen.filter(inJahr).reduce((s, e) => s + e.betrag, 0);
+  const sparquote = einnahmenSumme > 0
+    ? Math.round(((einnahmenSumme - ausgabenSumme) / einnahmenSumme) * 1000) / 10
+    : null;
+  return { einnahmenSumme, ausgabenSumme, sparquote };
+}
+
+export function kontostandVerlauf(konten, expenses, einnahmen, tage, heute) {
+  const ergebnis = [];
+  const ende = new Date(heute + 'T00:00:00Z');
+  for (let i = tage - 1; i >= 0; i--) {
+    const tag = new Date(ende);
+    tag.setUTCDate(tag.getUTCDate() - i);
+    const datum = tag.toISOString().slice(0, 10);
+    ergebnis.push({ datum, stand: gesamtKontostand(konten, expenses, einnahmen, datum) });
+  }
+  return ergebnis;
+}
+
+export function zuCsvZeilen(transaktionen) {
+  const header = 'Datum,Typ,Bezeichnung,Betrag,Quelle';
+  const zeilen = transaktionen.map((t) =>
+    [t.datum, t.typ, `"${String(t.bezeichnung).replace(/"/g, '""')}"`, t.betrag.toFixed(2), t.quelle].join(','));
+  return [header, ...zeilen];
+}

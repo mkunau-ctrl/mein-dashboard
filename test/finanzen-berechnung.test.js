@@ -4,7 +4,9 @@ import { summeProMonat, summenProKategorie, erkenneAbos,
   warenwert, sortiereTeile, merkliste, naechsterStatus,
   kategorisiereIconTyp, kontostandProKonto, gesamtKontostand,
   unechterGesamtKontostand, schuldenRestbetrag, offeneSchulden,
-  sortiereSchulden, nettoVermoegen }
+  sortiereSchulden, nettoVermoegen, zeitraumVon,
+  summenProKategorieZeitraum, summenProBezeichnungZeitraum,
+  letzteMonate, jahresUebersicht, kontostandVerlauf, zuCsvZeilen }
   from '../js/module/finanzen/berechnung.js';
 
 const konten = [
@@ -152,4 +154,77 @@ test('nettoVermoegen: Gesamt-Kontostand plus Warenwert plus Forderungen minus Ve
     nettoVermoegen(konten, expenses, einnahmen, teile, schulden, zahlungen, '2026-09-16'),
     2500 + 60 - 50,
   );
+});
+
+test('zeitraumVon: Tage-Bereiche', () => {
+  assert.equal(zeitraumVon('7T', '2026-09-21'), '2026-09-14');
+  assert.equal(zeitraumVon('30T', '2026-09-21'), '2026-08-22');
+});
+
+test('zeitraumVon: Monats-Bereiche, inkl. Jahreswechsel bei 1J', () => {
+  assert.equal(zeitraumVon('3M', '2026-09-21'), '2026-06-21');
+  assert.equal(zeitraumVon('6M', '2026-09-21'), '2026-03-21');
+  assert.equal(zeitraumVon('1J', '2026-09-21'), '2025-09-21');
+});
+
+test('summenProKategorieZeitraum: wie summenProKategorie, aber Datumsfenster statt Kalendermonat', () => {
+  assert.deepEqual(summenProKategorieZeitraum(expenses, '2026-09-01', '2026-09-16'), [
+    { kategorie: 'lebensmittel', summe: 65 },
+    { kategorie: 'tanken', summe: 20 },
+  ]);
+});
+
+test('summenProBezeichnungZeitraum: gruppiert Einnahmen nach Bezeichnung im Datumsfenster', () => {
+  assert.deepEqual(summenProBezeichnungZeitraum(einnahmen, '2026-09-01', '2026-09-16'), [
+    { bezeichnung: 'Ausbildungsverguetung', summe: 750 },
+    { bezeichnung: 'Dividende', summe: 200 },
+  ]);
+});
+
+test('letzteMonate: die letzten n Kalendermonate inkl. dem aktuellen, aelteste zuerst', () => {
+  assert.deepEqual(letzteMonate(3, '2026-09-21'), [
+    { jahr: 2026, monat: 7 }, { jahr: 2026, monat: 8 }, { jahr: 2026, monat: 9 },
+  ]);
+});
+
+test('letzteMonate: Jahreswechsel wird korrekt ueberschritten', () => {
+  assert.deepEqual(letzteMonate(6, '2026-01-15'), [
+    { jahr: 2025, monat: 8 }, { jahr: 2025, monat: 9 }, { jahr: 2025, monat: 10 },
+    { jahr: 2025, monat: 11 }, { jahr: 2025, monat: 12 }, { jahr: 2026, monat: 1 },
+  ]);
+});
+
+test('jahresUebersicht: Summen und Sparquote fuers Jahr', () => {
+  // einnahmenSumme 950 (750+200), ausgabenSumme 185 (20+50+15+100), Sparquote (950-185)/950*100 = 80.5
+  assert.deepEqual(jahresUebersicht(expenses, einnahmen, 2026), {
+    einnahmenSumme: 950, ausgabenSumme: 185, sparquote: 80.5,
+  });
+});
+
+test('jahresUebersicht: Sparquote ist null ohne Einnahmen (keine Division durch 0)', () => {
+  assert.deepEqual(jahresUebersicht([], [], 2026), {
+    einnahmenSumme: 0, ausgabenSumme: 0, sparquote: null,
+  });
+});
+
+test('kontostandVerlauf: ein Eintrag pro Tag, Buchung wirkt erst ab ihrem Datum', () => {
+  const konten2 = [{ id: 'k1', name: 'Hauptkonto', kontostand_start: 500, stand_datum: '2026-09-01' }];
+  const expenses2 = [{ betrag: 20, kategorie: 'tanken', datum: '2026-09-09', konto_id: 'k1' }];
+  assert.deepEqual(kontostandVerlauf(konten2, expenses2, [], 3, '2026-09-10'), [
+    { datum: '2026-09-08', stand: 500 },
+    { datum: '2026-09-09', stand: 480 },
+    { datum: '2026-09-10', stand: 480 },
+  ]);
+});
+
+test('zuCsvZeilen: Header plus eine Zeile pro Transaktion, Anfuehrungszeichen werden escaped', () => {
+  const zeilen = zuCsvZeilen([
+    { datum: '2026-09-01', typ: 'ausgabe', bezeichnung: 'Tanken', betrag: 20, quelle: 'manuell' },
+    { datum: '2026-09-03', typ: 'einnahme', bezeichnung: 'Kunde "Max"', betrag: 750, quelle: 'manuell' },
+  ]);
+  assert.deepEqual(zeilen, [
+    'Datum,Typ,Bezeichnung,Betrag,Quelle',
+    '2026-09-01,ausgabe,"Tanken",20.00,manuell',
+    '2026-09-03,einnahme,"Kunde ""Max""",750.00,manuell',
+  ]);
 });
