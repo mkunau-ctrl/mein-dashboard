@@ -78,8 +78,7 @@ button:disabled { opacity: .6; cursor: default; }
 .modul-kopf h2 { flex: 1; font-size: 1.2rem; margin: 0; }
 .modul-kopf button { background: none; border: none; color: var(--gedaempft);
   padding: 4px 0; font-weight: 600; cursor: pointer; }
-.tab-leiste { display: flex; gap: 6px; overflow-x: auto; margin: 14px 0;
-  background: var(--icon-bg); border: none; border-radius: 12px; padding: 4px; }
+.tab-leiste { display: flex; gap: 6px; overflow-x: auto; margin: 14px 0; }
 .tab-leiste button { flex: 1; background: transparent; color: var(--gedaempft);
   border: none; border-radius: 9px; padding: 9px 12px; white-space: nowrap;
   font-weight: 600; font-size: .82rem; }
