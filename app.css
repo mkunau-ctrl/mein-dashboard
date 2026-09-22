@@ -148,6 +148,18 @@ button:disabled { opacity: .6; cursor: default; }
 .punkt-formular input, .punkt-formular select { flex: 1; min-width: 100px; }
 .punkt-formular button { flex: none; }
 
+.range-row { display: flex; gap: 8px; margin: 14px 0 4px; }
+.range { flex: 1; text-align: center; padding: 7px 4px; border-radius: 9px;
+  font-size: .78rem; font-weight: 600; background: var(--icon-bg);
+  color: var(--gedaempft); border: none; font-family: inherit; cursor: pointer; }
+.range.aktiv { background: var(--text); color: var(--bg); }
+
+.chips { display: flex; gap: 8px; margin: 14px 0; overflow-x: auto; padding-bottom: 2px; }
+.chip { flex: none; padding: 8px 14px; border-radius: 999px; font-size: .82rem;
+  font-weight: 600; border: 1px solid var(--rand); background: var(--karte);
+  color: var(--gedaempft); cursor: pointer; font-family: inherit; }
+.chip.aktiv { background: var(--text); color: var(--bg); border-color: var(--text); }
+
 /* Gewicht */
 .g-chart-box { position: relative; height: 240px; max-width: 100%; }
 
