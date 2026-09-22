@@ -9,6 +9,28 @@ const HOME_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const WALLET_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg>';
 const BOX_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>';
 const AUSGABE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2V3z"/><path d="M8 8h8M8 12h8"/></svg>';
+const KALENDER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
+const TODO_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h10M9 12h10M9 18h10"/><path d="m4 6 1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>';
+
+function zuletztGesehen(schluessel) {
+  try {
+    return localStorage.getItem(`home-zuletzt-gesehen-${schluessel}`) || '1970-01-01T00:00:00Z';
+  } catch {
+    return '1970-01-01T00:00:00Z';
+  }
+}
+
+function merkeAlsGesehen(schluessel) {
+  try {
+    localStorage.setItem(`home-zuletzt-gesehen-${schluessel}`, new Date().toISOString());
+  } catch {
+    // localStorage nicht verfuegbar (privater Modus o. Ae.) - Punkt zeigt dann bei jedem Besuch, kein Blocker.
+  }
+}
+
+function istNeu(eintrag, schluessel) {
+  return Boolean(eintrag.erstellt_am) && eintrag.erstellt_am > zuletztGesehen(schluessel);
+}
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>
@@ -40,14 +62,18 @@ function renderHome(container) {
   const heuteDatum = new Date();
   const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
 
-  const termineHtml = sortiereTermine(sendungen.termine).slice(0, 3)
-    .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div></div>`)
+  const termineListe = sortiereTermine(sendungen.termine).slice(0, 3);
+  const sendungenListe = sortiereSendungen(sendungen.sendungen).filter((s) => s.status !== 'zugestellt').slice(0, 3);
+  const todosListe = sortiereOffeneTodos(todos.offen, heute()).slice(0, 3);
+
+  const termineHtml = termineListe
+    .map((t) => `<div class="punkt-zeile"><div class="icon-badge">${KALENDER_ICON}</div><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div>${istNeu(t, 'termine') ? '<span class="dot"></span>' : ''}</div>`)
     .join('');
-  const sendungenHtml = sortiereSendungen(sendungen.sendungen).filter((s) => s.status !== 'zugestellt').slice(0, 3)
-    .map((s) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(s.haendler)}</strong><small>${esc(s.status)}</small></div></div>`)
+  const sendungenHtml = sendungenListe
+    .map((s) => `<div class="punkt-zeile"><div class="icon-badge">${BOX_ICON}</div><div class="punkt-info"><strong>${esc(s.haendler)}</strong><small>${esc(s.status)}</small></div>${istNeu(s, 'sendungen') ? '<span class="dot"></span>' : ''}</div>`)
     .join('');
-  const todosHtml = sortiereOffeneTodos(todos.offen, heute()).slice(0, 3)
-    .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.text)}</strong></div></div>`)
+  const todosHtml = todosListe
+    .map((t) => `<div class="punkt-zeile"><div class="icon-badge">${TODO_ICON}</div><div class="punkt-info"><strong>${esc(t.text)}</strong></div>${istNeu(t, 'todos') ? '<span class="dot"></span>' : ''}</div>`)
     .join('');
 
   container.innerHTML = `
@@ -77,6 +103,10 @@ function renderHome(container) {
       location.hash = '#/home/kontostand';
     });
   }
+
+  merkeAlsGesehen('termine');
+  merkeAlsGesehen('sendungen');
+  merkeAlsGesehen('todos');
 }
 
 async function zeigeAktuelleAnsicht() {

@@ -54,10 +54,12 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
       <button type="button" class="link-muted" id="uebersicht-alle-kategorien">Alle anzeigen</button></div>
     <div class="punkt-liste">
       ${kategorien.length === 0 ? '<p class="lade">Keine Ausgaben in diesem Zeitraum.</p>' : kategorien.map((k) => `
-        <div class="punkt-zeile">
-          <div class="icon-badge">${KATEGORIE_ICON[kategorisiereIconTyp(k.kategorie)]}</div>
-          <div class="punkt-info"><strong>${esc(k.kategorie)}</strong></div>
-          <strong>${k.summe.toFixed(2)} €</strong>
+        <div class="kategorie-zeile">
+          <div class="kategorie-zeile-kopf">
+            <span class="kategorie-zeile-name"><span class="icon-badge">${KATEGORIE_ICON[kategorisiereIconTyp(k.kategorie)]}</span>${esc(k.kategorie)}</span>
+            <span class="kategorie-zeile-wert">${k.prozent}%&nbsp;&nbsp;<strong>${k.summe.toFixed(2)} €</strong></span>
+          </div>
+          <div class="kategorie-balken-bg"><div class="kategorie-balken-fuellung" style="width:${k.prozent}%;"></div></div>
         </div>`).join('')}
     </div>`;
 

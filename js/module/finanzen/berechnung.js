@@ -30,8 +30,9 @@ export function summenProKategorie(expenses, jahr, monat) {
   for (const e of expenses.filter((e) => imMonat(e, jahr, monat))) {
     summen.set(e.kategorie, (summen.get(e.kategorie) || 0) + e.betrag);
   }
+  const gesamt = [...summen.values()].reduce((a, b) => a + b, 0);
   return [...summen.entries()]
-    .map(([kategorie, summe]) => ({ kategorie, summe }))
+    .map(([kategorie, summe]) => ({ kategorie, summe, prozent: gesamt === 0 ? 0 : Math.round((summe / gesamt) * 100) }))
     .sort((a, b) => b.summe - a.summe);
 }
 
@@ -158,8 +159,9 @@ export function summenProKategorieZeitraum(expenses, von, bis) {
   for (const e of expenses.filter((e) => e.datum >= von && e.datum <= bis)) {
     summen.set(e.kategorie, (summen.get(e.kategorie) || 0) + e.betrag);
   }
+  const gesamt = [...summen.values()].reduce((a, b) => a + b, 0);
   return [...summen.entries()]
-    .map(([kategorie, summe]) => ({ kategorie, summe }))
+    .map(([kategorie, summe]) => ({ kategorie, summe, prozent: gesamt === 0 ? 0 : Math.round((summe / gesamt) * 100) }))
     .sort((a, b) => b.summe - a.summe);
 }
 

@@ -16,10 +16,12 @@ function esc(s) {
 }
 
 function kategorieZeile(k) {
-  return `<div class="punkt-zeile">
-    <div class="icon-badge">${KATEGORIE_ICON[kategorisiereIconTyp(k.kategorie)]}</div>
-    <div class="punkt-info"><strong>${esc(k.kategorie)}</strong></div>
-    <strong>${k.summe.toFixed(2)} €</strong>
+  return `<div class="kategorie-zeile">
+    <div class="kategorie-zeile-kopf">
+      <span class="kategorie-zeile-name"><span class="icon-badge">${KATEGORIE_ICON[kategorisiereIconTyp(k.kategorie)]}</span>${esc(k.kategorie)}</span>
+      <span class="kategorie-zeile-wert">${k.prozent}%&nbsp;&nbsp;<strong>${k.summe.toFixed(2)} €</strong></span>
+    </div>
+    <div class="kategorie-balken-bg"><div class="kategorie-balken-fuellung" style="width:${k.prozent}%;"></div></div>
   </div>`;
 }
 

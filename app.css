@@ -52,16 +52,16 @@ button:disabled { opacity: .6; cursor: default; }
 #login-hinweis { min-height: 1.5em; color: var(--gedaempft); }
 .login-kopf { display: flex; justify-content: flex-end; max-width: 320px; margin: 0 auto; }
 .theme-toggle { width: 40px; height: 40px; padding: 0; border-radius: 999px;
-       background: transparent; color: var(--text); border: 1px solid var(--rand);
-       display: grid; place-items: center; }
+       background: var(--karte); color: var(--text); border: 1px solid var(--rand);
+       box-shadow: var(--schatten); display: grid; place-items: center; }
 .theme-toggle svg { width: 20px; height: 20px; }
 .trenner { color: var(--gedaempft); text-align: center; margin: 4px auto; max-width: 320px; }
 #passkey-login { display: block; margin: 0 auto; max-width: 320px; width: 100%;
        background: transparent; color: var(--text); border: 1px solid var(--rand); }
 #dashboard-ansicht header { display: flex; justify-content: space-between; align-items: center; }
 #dashboard-ansicht header .kopf-aktionen { display: flex; gap: 8px; }
-#dashboard-ansicht header button { background: transparent; color: var(--gedaempft);
-       border: 1px solid var(--rand); }
+#dashboard-ansicht header button { background: var(--karte); color: var(--gedaempft);
+       border: 1px solid var(--rand); box-shadow: var(--schatten); }
 #passkey-hinweis { min-height: 1.2em; color: var(--gedaempft); font-size: .85rem; margin: 6px 0 0; }
 #passkey-hinweis:empty { display: none; }
 
@@ -137,6 +137,19 @@ button:disabled { opacity: .6; cursor: default; }
 .icon-badge { flex: none; width: 40px; height: 40px; border-radius: 50%;
   display: grid; place-items: center; background: var(--icon-bg); color: var(--icon-farbe); }
 .icon-badge svg { width: 20px; height: 20px; }
+.dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--text); }
+
+/* Kategorien-Aufschluesselung mit Fortschrittsbalken */
+.kategorie-zeile { padding: 10px 4px; }
+.kategorie-zeile + .kategorie-zeile { border-top: 1px solid var(--rand); }
+.kategorie-zeile-kopf { display: flex; justify-content: space-between; align-items: center;
+  font-size: .82rem; margin-bottom: 8px; }
+.kategorie-zeile-name { display: flex; align-items: center; gap: 8px; }
+.kategorie-zeile-name .icon-badge { width: 26px; height: 26px; }
+.kategorie-zeile-name .icon-badge svg { width: 13px; height: 13px; }
+.kategorie-zeile-wert { color: var(--gedaempft); }
+.kategorie-balken-bg { height: 6px; border-radius: 999px; background: var(--icon-bg); overflow: hidden; }
+.kategorie-balken-fuellung { height: 100%; border-radius: 999px; background: var(--text); }
 .betrag-minus { color: var(--hm-rot); }
 .betrag-plus { color: var(--hm-gruen); }
 .badge-ueberfaellig { display: inline-block; background: var(--ueberfaellig-bg);

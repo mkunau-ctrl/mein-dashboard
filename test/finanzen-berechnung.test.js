@@ -33,9 +33,13 @@ test('summeProMonat: nur der angegebene Monat', () => {
 
 test('summenProKategorie: absteigend sortiert, nur der Monat', () => {
   assert.deepEqual(summenProKategorie(expenses, 2026, 9), [
-    { kategorie: 'lebensmittel', summe: 65 },
-    { kategorie: 'tanken', summe: 20 },
+    { kategorie: 'lebensmittel', summe: 65, prozent: 76 },
+    { kategorie: 'tanken', summe: 20, prozent: 24 },
   ]);
+});
+
+test('summenProKategorie: leere Liste liefert leeres Array (keine Division durch 0)', () => {
+  assert.deepEqual(summenProKategorie([], 2026, 9), []);
 });
 
 test('erkenneAbos: erkennt monatlich wiederkehrende gleiche Notiz', () => {
@@ -169,8 +173,8 @@ test('zeitraumVon: Monats-Bereiche, inkl. Jahreswechsel bei 1J', () => {
 
 test('summenProKategorieZeitraum: wie summenProKategorie, aber Datumsfenster statt Kalendermonat', () => {
   assert.deepEqual(summenProKategorieZeitraum(expenses, '2026-09-01', '2026-09-16'), [
-    { kategorie: 'lebensmittel', summe: 65 },
-    { kategorie: 'tanken', summe: 20 },
+    { kategorie: 'lebensmittel', summe: 65, prozent: 76 },
+    { kategorie: 'tanken', summe: 20, prozent: 24 },
   ]);
 });
 
