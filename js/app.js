@@ -14,6 +14,7 @@ import './module/home/index.js';
 import './module/suche/index.js';
 import './module/profil/index.js';
 import './module/einstellungen/index.js';
+import './module/rechnungen/index.js';
 
 const NAV_MODULE = ['home', 'finanzen', 'berichtsheft', 'suche', 'profil'];
 

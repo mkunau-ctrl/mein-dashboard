@@ -15,7 +15,7 @@ const TYP_ICON = { expense: RECEIPT_ICON, todo: TODO_ICON, sendung: BOX_ICON, te
 
 const SCHNELLEINSTIEGE = [
   { label: 'Kontostand', icon: CASH_ICON, ziel: '#/finanzen' },
-  { label: 'Rechnungen', icon: RECEIPT_ICON, ziel: null },
+  { label: 'Rechnungen', icon: RECEIPT_ICON, ziel: '#/rechnungen' },
   { label: 'Sendungen', icon: BOX_ICON, ziel: '#/sendungen' },
   { label: 'Berichtsheft', icon: DOC_ICON, ziel: '#/berichtsheft' },
   { label: 'Dokumente', icon: FOLDER_ICON, ziel: null },
