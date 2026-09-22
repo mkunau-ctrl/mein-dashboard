@@ -120,6 +120,15 @@ for (const knopf of themeKnoepfe) {
 aktualisiereThemeUI(wendeThemeAn());
 wendeSchriftgroesseAn();
 
+document.getElementById('neu-laden-global').addEventListener('click', async (e) => {
+  const knopf = e.currentTarget;
+  const modul = aktivesModulId ? holeModul(aktivesModulId) : null;
+  if (!modul || typeof modul.aktualisieren !== 'function') return;
+  knopf.disabled = true;
+  try { await modul.aktualisieren(); }
+  finally { knopf.disabled = false; }
+});
+
 route();
 
 if ('serviceWorker' in navigator) {

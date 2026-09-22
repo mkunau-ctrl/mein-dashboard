@@ -27,18 +27,10 @@ export function offenFortschritt() {
 
 function baueRahmen(container) {
   container.innerHTML = `
-    <header class="modul-kopf">
-      <button class="neu-laden" type="button" title="Aktualisieren">⟳</button>
-    </header>
     <nav class="tab-leiste">
       ${TABS.map(([id, txt]) => `<button data-tab="${id}" type="button">${txt}</button>`).join('')}
     </nav>
     <div id="tab-inhalt"></div>`;
-  container.querySelector('.neu-laden')
-    .addEventListener('click', async () => {
-      await ladeZustand();
-      zeigeAktuellenTab();
-    });
   container.querySelectorAll('.tab-leiste button').forEach((b) => {
     b.addEventListener('click', () => { location.hash = `#/todos/${b.dataset.tab}`; });
   });
@@ -90,5 +82,9 @@ registriere({
     if (zustand) await zeigeAktuellenTab();
     await ladeZustand();
     if (containerRef === container && containerRef.isConnected) await zeigeAktuellenTab();
+  },
+  async aktualisieren() {
+    await ladeZustand();
+    await zeigeAktuellenTab();
   },
 });
