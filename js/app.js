@@ -4,6 +4,7 @@ import { holeSession, sendeMagicLink, beiAuthWechsel,
          meldeAnMitPasskey, registrierePasskey } from './auth.js';
 import { holeModul } from './registry.js';
 import { wendeThemeAn, wechsleTheme } from './theme.js';
+import { wendeSchriftgroesseAn } from './module/einstellungen/schriftgroesse.js';
 import './module/ernaehrung/index.js';
 import './module/todos/index.js';
 import './module/finanzen/index.js';
@@ -12,6 +13,7 @@ import './module/sendungen/index.js';
 import './module/home/index.js';
 import './module/suche/index.js';
 import './module/profil/index.js';
+import './module/einstellungen/index.js';
 
 const NAV_MODULE = ['home', 'finanzen', 'berichtsheft', 'suche', 'profil'];
 
@@ -122,5 +124,6 @@ for (const knopf of themeKnoepfe) {
   knopf.addEventListener('click', () => aktualisiereThemeUI(wechsleTheme()));
 }
 aktualisiereThemeUI(wendeThemeAn());
+wendeSchriftgroesseAn();
 
 route();

@@ -39,6 +39,8 @@ body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-seri
        background: var(--bg); color: var(--text);
        padding: max(16px, env(safe-area-inset-top)) 16px
                 calc(78px + env(safe-area-inset-bottom)); }
+:root[data-schriftgroesse="klein"] body { font-size: 14px; }
+:root[data-schriftgroesse="gross"] body { font-size: 18px; }
 #app { max-width: 720px; margin: 0 auto; }
 h1 { font-size: 1.4rem; }
 #login-ansicht { margin-top: 15vh; text-align: center; }
