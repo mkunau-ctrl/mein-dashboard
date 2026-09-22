@@ -1,4 +1,5 @@
 import { registriere } from '../../registry.js';
+import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
 import { gesamtKontostand, unechterGesamtKontostand, summeProMonat } from '../finanzen/berechnung.js';
 import { sortiereOffeneTodos } from '../todos/planung.js';
@@ -19,6 +20,7 @@ function heute() {
 }
 
 let zustand = null;
+let containerRef = null;
 
 async function ladeZustand() {
   zustand = await ladeAlles();
@@ -30,49 +32,77 @@ function abschnitt(titel, ziel, zeilenHtml) {
     <div class="punkt-liste">${zeilenHtml || '<p class="lade">Nichts Offenes.</p>'}</div>`;
 }
 
+function renderHome(container) {
+  const { finanzen, todos, sendungen } = zustand;
+  const gesetzt = finanzen.konten.length > 0;
+  const stand = gesetzt ? gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heute()) : null;
+  const unecht = gesetzt ? unechterGesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, finanzen.teile, heute()) : null;
+  const heuteDatum = new Date();
+  const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
+
+  const termineHtml = sortiereTermine(sendungen.termine).slice(0, 3)
+    .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div></div>`)
+    .join('');
+  const sendungenHtml = sortiereSendungen(sendungen.sendungen).filter((s) => s.status !== 'zugestellt').slice(0, 3)
+    .map((s) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(s.haendler)}</strong><small>${esc(s.status)}</small></div></div>`)
+    .join('');
+  const todosHtml = sortiereOffeneTodos(todos.offen, heute()).slice(0, 3)
+    .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.text)}</strong></div></div>`)
+    .join('');
+
+  container.innerHTML = `
+    <header class="modul-kopf"><h2>Home</h2></header>
+    <div class="stat-karte gross" id="home-kontostand" style="cursor:pointer;">
+      <small>Kontostand</small>
+      <span>${gesetzt ? stand.toFixed(2) + ' €' : '–'}</span>
+      ${gesetzt ? `<small>${unecht.toFixed(2)} € inkl. Warenwert</small>` : ''}
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><div class="icon-badge">${WALLET_ICON}</div>
+        <div class="stat-lbl">Kontostand</div>
+        <div class="stat-val">${gesetzt ? stand.toFixed(2) + ' €' : '–'}</div></div>
+      <div class="stat"><div class="icon-badge">${BOX_ICON}</div>
+        <div class="stat-lbl">Unecht</div>
+        <div class="stat-val">${gesetzt ? unecht.toFixed(2) + ' €' : '–'}</div></div>
+      <div class="stat"><div class="icon-badge rot">${AUSGABE_ICON}</div>
+        <div class="stat-lbl">Ausgaben Monat</div>
+        <div class="stat-val">${ausgabenMonat.toFixed(2)} €</div></div>
+    </div>
+    <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
+    <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
+    <section>${abschnitt('Offene To-dos', '#/todos', todosHtml)}</section>`;
+
+  if (gesetzt) {
+    container.querySelector('#home-kontostand').addEventListener('click', () => {
+      location.hash = '#/home/kontostand';
+    });
+  }
+}
+
+async function zeigeAktuelleAnsicht() {
+  const { unterseite } = parseHash(location.hash);
+  if (unterseite === 'kontostand') {
+    const { zeigeKontostandDetail } = await import('./kontostand.js');
+    containerRef.innerHTML = '';
+    await zeigeKontostandDetail(containerRef, zustand);
+  } else {
+    renderHome(containerRef);
+  }
+}
+
+function beiHashwechsel() {
+  const { modul } = parseHash(location.hash);
+  if (modul === 'home' && containerRef && containerRef.isConnected) zeigeAktuelleAnsicht();
+}
+
 registriere({
   id: 'home',
   titel: 'Home',
   icon: HOME_ICON,
   async init(container) {
+    containerRef = container;
     await ladeZustand();
-    const { finanzen, todos, sendungen } = zustand;
-    const gesetzt = finanzen.konten.length > 0;
-    const stand = gesetzt ? gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heute()) : null;
-    const unecht = gesetzt ? unechterGesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, finanzen.teile, heute()) : null;
-    const heuteDatum = new Date();
-    const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
-
-    const termineHtml = sortiereTermine(sendungen.termine).slice(0, 3)
-      .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div></div>`)
-      .join('');
-    const sendungenHtml = sortiereSendungen(sendungen.sendungen).filter((s) => s.status !== 'zugestellt').slice(0, 3)
-      .map((s) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(s.haendler)}</strong><small>${esc(s.status)}</small></div></div>`)
-      .join('');
-    const todosHtml = sortiereOffeneTodos(todos.offen, heute()).slice(0, 3)
-      .map((t) => `<div class="punkt-zeile"><div class="punkt-info"><strong>${esc(t.text)}</strong></div></div>`)
-      .join('');
-
-    container.innerHTML = `
-      <header class="modul-kopf"><h2>Home</h2></header>
-      <div class="stat-karte gross">
-        <small>Kontostand</small>
-        <span>${gesetzt ? stand.toFixed(2) + ' €' : '–'}</span>
-        ${gesetzt ? `<small>${unecht.toFixed(2)} € inkl. Warenwert</small>` : ''}
-      </div>
-      <div class="stat-grid">
-        <div class="stat"><div class="icon-badge">${WALLET_ICON}</div>
-          <div class="stat-lbl">Kontostand</div>
-          <div class="stat-val">${gesetzt ? stand.toFixed(2) + ' €' : '–'}</div></div>
-        <div class="stat"><div class="icon-badge">${BOX_ICON}</div>
-          <div class="stat-lbl">Unecht</div>
-          <div class="stat-val">${gesetzt ? unecht.toFixed(2) + ' €' : '–'}</div></div>
-        <div class="stat"><div class="icon-badge rot">${AUSGABE_ICON}</div>
-          <div class="stat-lbl">Ausgaben Monat</div>
-          <div class="stat-val">${ausgabenMonat.toFixed(2)} €</div></div>
-      </div>
-      <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
-      <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
-      <section>${abschnitt('Offene To-dos', '#/todos', todosHtml)}</section>`;
+    window.addEventListener('hashchange', beiHashwechsel);
+    await zeigeAktuelleAnsicht();
   },
 });
