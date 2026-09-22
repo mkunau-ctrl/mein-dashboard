@@ -29,5 +29,13 @@ test('sucheAlles: Termine werden durchsucht und liefern eine Sprung-Route', () =
   const treffer = sucheAlles(zustand, 'zahnarzt');
   assert.equal(treffer.length, 1);
   assert.equal(treffer[0].typ, 'termin');
-  assert.equal(treffer[0].ziel, '#/sendungen/termine');
+  assert.equal(treffer[0].ziel, '#/sendungen/termine/te1');
+});
+
+test('sucheAlles: Treffer zeigen auf Detailrouten mit ID', () => {
+  const treffer = sucheAlles(zustand, 'netflix');
+  const todo = treffer.find((t) => t.typ === 'todo');
+  const sendung = treffer.find((t) => t.typ === 'sendung');
+  assert.equal(todo.ziel, '#/todos/erledigt/t2');
+  assert.equal(sendung.ziel, '#/sendungen/pakete/s1');
 });
