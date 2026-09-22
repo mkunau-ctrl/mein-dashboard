@@ -6,7 +6,7 @@ function fehler(kontext, error) {
 }
 
 export async function ladeAlles() {
-  const [expenses, settings, teile, konten, einnahmen, einnahmenVorlagen, schulden, zahlungen] = await Promise.all([
+  const [expenses, settings, teile, konten, einnahmen, einnahmenVorlagen, schulden, zahlungen, ausgabenVorlagen] = await Promise.all([
     supabase.from('expenses').select('*').order('datum', { ascending: false }),
     supabase.from('finance_settings').select('key,value'),
     supabase.from('parts').select('*'),
@@ -15,11 +15,12 @@ export async function ladeAlles() {
     supabase.from('einnahmen_vorlagen').select('*').eq('aktiv', true),
     supabase.from('schulden').select('*').order('erstellt_am', { ascending: false }),
     supabase.from('schulden_zahlungen').select('*'),
+    supabase.from('ausgaben_vorlagen').select('*').eq('aktiv', true),
   ]);
   for (const [name, r] of Object.entries({
     Ausgaben: expenses, Einstellungen: settings, Teile: teile, Konten: konten,
     Einnahmen: einnahmen, 'Einnahmen-Vorlagen': einnahmenVorlagen, Schulden: schulden,
-    'Schulden-Zahlungen': zahlungen,
+    'Schulden-Zahlungen': zahlungen, 'Ausgaben-Vorlagen': ausgabenVorlagen,
   })) {
     if (r.error) throw fehler(`${name} laden`, r.error);
   }
@@ -28,7 +29,7 @@ export async function ladeAlles() {
   return {
     expenses: expenses.data, settings: settingsObj, teile: teile.data,
     konten: konten.data, einnahmen: einnahmen.data, einnahmenVorlagen: einnahmenVorlagen.data,
-    schulden: schulden.data, zahlungen: zahlungen.data,
+    schulden: schulden.data, zahlungen: zahlungen.data, ausgabenVorlagen: ausgabenVorlagen.data,
   };
 }
 
@@ -41,8 +42,13 @@ export async function legeAusgabeAn({ betrag, kategorie, notiz, datum, quelle, k
   if (error) throw fehler('Ausgabe anlegen', error);
 }
 
-export async function entferneAusgabe(id) {
-  const { error } = await supabase.from('expenses').delete().eq('id', id);
+export async function entferneAusgabe(ausgabe) {
+  if (ausgabe.vorlage_id) {
+    const { error: vErr } = await supabase.from('ausgaben_vorlagen')
+      .update({ aktiv: false }).eq('id', ausgabe.vorlage_id);
+    if (vErr) throw fehler('Wiederkehr beenden', vErr);
+  }
+  const { error } = await supabase.from('expenses').delete().eq('id', ausgabe.id);
   if (error) throw fehler('Ausgabe entfernen', error);
 }
 
@@ -154,4 +160,27 @@ export async function verbucheZahlung(schuldId, betrag) {
     schuld_id: schuldId, betrag,
   });
   if (error) throw fehler('Zahlung verbuchen', error);
+}
+
+export async function legeAusgabenVorlageAn({ bezeichnung, betrag, plan_tag_im_monat, konto_id, naechste_faelligkeit }) {
+  const { error } = await supabase.from('ausgaben_vorlagen').insert({
+    bezeichnung, betrag, plan_tag_im_monat, naechste_faelligkeit, konto_id,
+  });
+  if (error) throw fehler('Regelmäßige Ausgabe anlegen', error);
+}
+
+export async function bestaetigeAusgabenVorlage(vorlage) {
+  const naechste = naechsteFaelligkeit(
+    { plan_typ: 'monatlich', plan_tag_im_monat: vorlage.plan_tag_im_monat },
+    vorlage.naechste_faelligkeit,
+  );
+  const { error: upErr } = await supabase.from('ausgaben_vorlagen')
+    .update({ naechste_faelligkeit: naechste }).eq('id', vorlage.id);
+  if (upErr) throw fehler('Vorlage fortschreiben', upErr);
+  const { error: eErr } = await supabase.from('expenses').insert({
+    betrag: vorlage.betrag, kategorie: vorlage.bezeichnung,
+    datum: vorlage.naechste_faelligkeit, quelle: 'manuell',
+    konto_id: vorlage.konto_id, vorlage_id: vorlage.id,
+  });
+  if (eErr) throw fehler('Ausgabe anlegen', eErr);
 }

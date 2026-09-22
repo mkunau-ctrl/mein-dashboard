@@ -31,8 +31,11 @@ export async function zeigeAusgaben(container, zustand, aktualisieren) {
       <strong class="betrag-minus">-${e.betrag.toFixed(2)} €</strong>
       <div class="punkt-aktionen"><button data-a="weg">✕</button></div>`;
     zeile.querySelector('[data-a=weg]').addEventListener('click', async () => {
-      if (!confirm('Ausgabe entfernen?')) return;
-      try { await entferneAusgabe(e.id); await aktualisieren(); }
+      const hinweis = e.vorlage_id
+        ? `„${e.notiz || e.kategorie}" entfernen? Die Wiederkehr wird beendet.`
+        : 'Ausgabe entfernen?';
+      if (!confirm(hinweis)) return;
+      try { await entferneAusgabe(e); await aktualisieren(); }
       catch (err) { alert(err.message); }
     });
     liste.appendChild(zeile);
