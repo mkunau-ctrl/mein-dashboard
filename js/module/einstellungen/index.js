@@ -15,7 +15,6 @@ export function zeigeEinstellungen(container) {
   container.innerHTML = `
     <div class="modul-kopf">
       <button id="ein-zurueck" type="button">‹ Profil</button>
-      <h2>Einstellungen</h2>
     </div>`;
   container.querySelector('#ein-zurueck').addEventListener('click', () => { location.hash = '#/profil'; });
 

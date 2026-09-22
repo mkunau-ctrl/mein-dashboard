@@ -97,7 +97,6 @@ registriere({
       container.innerHTML = `
         <div class="modul-kopf">
           <button id="rn-zurueck" type="button">‹ Zurück</button>
-          <h2>Rechnungen</h2>
         </div>
         <div class="stat-karte gross">
           <small>Offene Rechnungen</small>
