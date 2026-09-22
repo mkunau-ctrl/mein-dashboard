@@ -5,15 +5,19 @@ function fehler(kontext, error) {
 }
 
 export async function ladeAlles() {
-  const [eintraege, settings] = await Promise.all([
+  const [eintraege, settings, termine, todosOffen] = await Promise.all([
     supabase.from('berichtsheft_eintraege').select('*').order('datum', { ascending: false }),
     supabase.from('berichtsheft_settings').select('key,value'),
+    supabase.from('termine').select('*'),
+    supabase.from('todos').select('*').eq('erledigt', false).order('erstellt_am'),
   ]);
   if (eintraege.error) throw fehler('Einträge laden', eintraege.error);
   if (settings.error) throw fehler('Einstellungen laden', settings.error);
+  if (termine.error) throw fehler('Termine laden', termine.error);
+  if (todosOffen.error) throw fehler('Todos laden', todosOffen.error);
   const settingsObj = {};
   for (const row of settings.data) settingsObj[row.key] = row.value;
-  return { eintraege: eintraege.data, settings: settingsObj };
+  return { eintraege: eintraege.data, settings: settingsObj, termine: termine.data, todosOffen: todosOffen.data };
 }
 
 export async function speichereEintrag(eintrag) {

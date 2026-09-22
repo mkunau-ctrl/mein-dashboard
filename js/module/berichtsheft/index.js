@@ -3,7 +3,7 @@ import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
 import { wochenStart } from './berechnung.js';
 
-const TABS = [['eintraege', 'Einträge'], ['drucken', 'Drucken']];
+const TABS = [['uebersicht', 'Übersicht'], ['eintraege', 'Berichtsheft'], ['drucken', 'Drucken']];
 
 let zustand = null;
 let containerRef = null;
@@ -43,13 +43,14 @@ function baueRahmen(container) {
 }
 
 const LADER = {
+  uebersicht: () => import('./uebersicht.js').then((m) => m.zeigeUebersicht),
   eintraege: () => import('./eintraege.js').then((m) => m.zeigeEintraege),
   drucken: () => import('./drucken.js').then((m) => m.zeigeDrucken),
 };
 
 async function zeigeAktuellenTab() {
   const { unterseite } = parseHash(location.hash);
-  const tab = TABS.some(([id]) => id === unterseite) ? unterseite : 'eintraege';
+  const tab = TABS.some(([id]) => id === unterseite) ? unterseite : 'uebersicht';
   const inhalt = containerRef.querySelector('#tab-inhalt');
   containerRef.querySelectorAll('.tab-leiste button')
     .forEach((b) => b.classList.toggle('aktiv', b.dataset.tab === tab));
