@@ -205,9 +205,17 @@ export function kontostandVerlauf(konten, expenses, einnahmen, tage, heute) {
   return ergebnis;
 }
 
+function csvFeldSicher(wert) {
+  const text = String(wert);
+  // Schutz vor CSV-Formel-Injection: Excel/Sheets interpretieren Zellen, die
+  // mit =, +, - oder @ beginnen, als Formel. Ein vorangestelltes Apostroph
+  // erzwingt Text-Interpretation, ohne den sichtbaren Inhalt zu veraendern.
+  return /^[=+\-@]/.test(text) ? `'${text}` : text;
+}
+
 export function zuCsvZeilen(transaktionen) {
   const header = 'Datum,Typ,Bezeichnung,Betrag,Quelle';
   const zeilen = transaktionen.map((t) =>
-    [t.datum, t.typ, `"${String(t.bezeichnung).replace(/"/g, '""')}"`, t.betrag.toFixed(2), t.quelle].join(','));
+    [t.datum, t.typ, `"${csvFeldSicher(t.bezeichnung).replace(/"/g, '""')}"`, t.betrag.toFixed(2), t.quelle].join(','));
   return [header, ...zeilen];
 }

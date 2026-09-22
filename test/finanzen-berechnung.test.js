@@ -228,3 +228,15 @@ test('zuCsvZeilen: Header plus eine Zeile pro Transaktion, Anfuehrungszeichen we
     '2026-09-03,einnahme,"Kunde ""Max""",750.00,manuell',
   ]);
 });
+
+test('zuCsvZeilen: Bezeichnung mit fuehrendem =/+/-/@ wird mit Apostroph entschaerft (CSV-Formel-Injection)', () => {
+  const zeilen = zuCsvZeilen([
+    { datum: '2026-09-01', typ: 'ausgabe', bezeichnung: '=cmd|"/c calc"!A1', betrag: 5, quelle: 'manuell' },
+    { datum: '2026-09-02', typ: 'ausgabe', bezeichnung: '+SUMME(A1:A9)', betrag: 5, quelle: 'manuell' },
+  ]);
+  assert.deepEqual(zeilen, [
+    'Datum,Typ,Bezeichnung,Betrag,Quelle',
+    '2026-09-01,ausgabe,"\'=cmd|""/c calc""!A1",5.00,manuell',
+    '2026-09-02,ausgabe,"\'+SUMME(A1:A9)",5.00,manuell',
+  ]);
+});
