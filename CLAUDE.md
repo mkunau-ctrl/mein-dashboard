@@ -166,6 +166,16 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   Einnahme (Tabelle `einnahmen`, Item A). Ideen-Ergänzung 2026-09-19:
   Abholdatum eines Auftrags könnte automatisch einen Kalender-Termin/
   Erinnerung erzeugen (Verknüpfung mit Item M).
+  **Reale Rohdaten von Mark (Screenshot, 2026-09-22), noch nicht
+  eingetragen (Tabelle existiert noch nicht) — beim Bauen von N direkt
+  verwenden:** iPhone 14 Pro: Kosten 305 €, voraussichtlicher
+  Verkauf/Preis 370 €. iPhone 16 Pro: Kosten 450 €, voraussichtlich
+  550 €. iPhone 13 mini: 200 €. iPhone 14: 130 €. iPhone 14: 160 €,
+  voraussichtlich 220 € (zwei separate iPhone-14-Aufträge). iPhone 15
+  Pro, 2 Rückseiten: 50 €. iPhone 15, Kamera: 30 €. iPhone 14, Kamera:
+  38 €. Kein Kundenname/Status pro Zeile bekannt — beim Umsetzen mit
+  Mark abgleichen, welcher Preis Einkauf/Ersatzteil und welcher
+  Kunden-Verkaufspreis ist, und Kundennamen/Status nachtragen.
 - **O) Teile-Bestellen ↔ Sendungen verknüpfen** — Sendung "zugestellt" →
   Vorschlag, zugehöriges Teil im Lager auf Status "da" zu setzen.
 - **P) Kalender-Export (ICS)** für Termine/Ausbildung, damit sie auch im
