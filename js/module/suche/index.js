@@ -57,7 +57,6 @@ registriere({
   async init(container) {
     await ladeZustand();
     container.innerHTML = `
-      <header class="modul-kopf"><h2>Suche</h2></header>
       <div class="searchbar" style="margin:16px 0;">
         ${SUCHE_ICON}
         <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …">

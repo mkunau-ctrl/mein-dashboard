@@ -32,7 +32,6 @@ registriere({
     const buchstabe = email ? email[0].toUpperCase() : '?';
     const name = email ? email.split('@')[0] : '–';
     container.innerHTML = `
-      <header class="modul-kopf"><h2>Profil</h2></header>
       <div class="avatar">${esc(buchstabe)}</div>
       <p style="text-align:center;font-weight:700;margin:0;">${esc(name)}</p>
       <p style="text-align:center;color:var(--gedaempft);margin:2px 0 16px;">${esc(email) || '–'}</p>
