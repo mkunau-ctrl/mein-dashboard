@@ -183,9 +183,51 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   einem früheren Plan einer anderen Session angedacht (siehe
   `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`),
   aber nie gebaut — jetzt explizit erneut bestätigt.
+- **R) UI-Politur & Diktat-Korrekturen** (neu, 2026-09-22, vom Nutzer
+  ausdrücklich als **eigener Buchstabe und nächster Schritt** gewünscht,
+  vor M) — sieben Punkte aus Screenshot-Feedback nach der
+  Design-Nacharbeit, bounded-Brainstorming bereits im Chat gelaufen,
+  zwei Rückfragen beantwortet:
+  1. **Doppelter Modul-Titel:** globaler Header (`#modul-titel` in
+     `js/app.js`) UND jedes Modul selbst (`<header class="modul-kopf">`,
+     z. B. `js/module/home/index.js:80`, `js/module/finanzen/index.js:29-31`)
+     zeichnen denselben Titel — einmal reicht.
+  2. **Home-Begrüßung statt "Home":** zeitabhängige Begrüßung ("Guten
+     Morgen/Tag/Abend, Mark") + heutiges Datum, wie im Prototyp
+     (`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`)
+     — bestätigt.
+  3. **Header-Buttons neu sortiert:** Passkey-Einrichtung raus aus dem
+     Modul-Header, rein ins bestehende Einstellungen-Modul. Tag/Nacht-
+     Umschalter bleibt an der Passkey-Stelle, aber unauffälliger/kleiner
+     als der aktuelle gefüllte Kreis-Button.
+  4. **"‹ Dashboard"-Zeile:** Safaris eigene Browser-Chrome, kein Teil
+     unseres Codes. `manifest.webmanifest` hat bereits
+     `"display": "standalone"` — dürfte beim Öffnen über ein
+     Home-Bildschirm-Icon (statt Safari-Tab) von selbst verschwinden.
+     **Offene Rückfrage, noch unbeantwortet:** öffnet Mark die App
+     aktuell über ein Home-Bildschirm-Icon oder direkt in Safari? Vor
+     dem Umsetzen dieses Punktes klären, sonst läuft man ins Leere.
+  5. **Smoother Tab-Übergang in Finanzen** beim Wechsel zwischen
+     Übersicht/Transaktionen/Analyse/Regelmäßige-Ausgaben statt hartem
+     Wechsel.
+  6. **Kategorien in "Ausgaben nach Kategorien" anklickbar**
+     (`js/module/finanzen/uebersicht.js`, `js/module/finanzen/analyse.js`)
+     → Detailliste aller Ausgaben dieser Kategorie, **inklusive per
+     Kassenbon-Foto erfasster** (`expenses.quelle = 'foto'`, gleiche
+     Tabelle), dort wiederum nach (Unter-)Kategorie sortiert/gruppiert
+     plus Filter (genaue Filterart beim Umsetzen abstimmen).
+  7. **Regelmäßige-Ausgaben-Datenkorrektur:** `ausgaben_vorlagen` ist
+     leer. Drei feste monatliche Vorlagen anlegen: Claude Abo 22 €,
+     Wispr Flow 15 €, Friseur 10 € (nicht 18 €, wie die einmalige
+     `expenses`-Buchung vom 2026-09-19 fälschlich zeigt — dieser
+     Ausgaben-Eintrag ist vor/während dem Anlegen der Vorlage im Betrag
+     zu korrigieren). Reine Chat-Diktat-Aktion per Supabase-MCP.
+
+  Details/Kontext: `docs/PROJEKT-LOG.md`, Eintrag 2026-09-22 "Weiteres
+  Design-/Daten-Feedback gesammelt".
 
 **Wichtige Arbeitsweise-Regel ab 2026-09-19 (Prototyp-Phase):** Diese
-gesamte Backlog-Abarbeitung (A–Q) wird bewusst als **Prototyp**
+gesamte Backlog-Abarbeitung (A–Q, seit 2026-09-22 A–R) wird bewusst als **Prototyp**
 behandelt, kein sauberer Endzustand. Jeden Coding-Schritt beim Umsetzen
 dokumentieren — **auch Fehler im Code und Ansätze, die nicht
 funktioniert haben**, nicht nur das Endergebnis. Grund: Mark erwartet,
@@ -197,19 +239,30 @@ sauberen Neuaufbau zu machen.
 echte PNG-Icons (192/512, `apple-touch-icon`, seit Etappe 0), kompletter
 manueller Testlauf am echten Gerät (seit Etappe 2–5).
 
-**Reihenfolge ab jetzt (Nutzer-Entscheidung 2026-09-21/22):** Nachdem
-das parallele Brainstorming vieler Sub-Etappen gleichzeitig zu den oben
-dokumentierten Fork-Vorfällen führte, hat Mark die Reihenfolge bewusst
-zurück auf "eine Sache nach der anderen, fertig bauen" gestellt: erst
-**E+F** (fertig), dann **B** (Finanzen-Redesign, fertig), dann der
-**Rest von C** (Transaktionen-Detail-Klick, fertig — damit auch ganz C
-fertig), dann **D** (Rechnungen-Modul, fertig), dann **M**, dann
-**N/O/I/P**, dann **Q**, dann **H**, ganz zuletzt die
-Sicherheits-/Auth-lastigen Punkte **G/J/K+L**. Spec+Plan für N, P, Q
-(und eine Spec für I) sind bereits geschrieben, aber noch nicht
-gebaut — siehe die jeweiligen Bullets oben für die Dateipfade. Für
-**M** gibt es noch keinen Plan — braucht laut Backlog erst einen
-eigenen CalDAV-Machbarkeits-Spike, bevor Design/Spec sinnvoll sind.
+**Reihenfolge ab jetzt (Nutzer-Entscheidung 2026-09-21/22, R-Vorzug +
+Spikes-ans-Ende-Regel 2026-09-22):** Nachdem das parallele Brainstorming
+vieler Sub-Etappen gleichzeitig zu den oben dokumentierten
+Fork-Vorfällen führte, hat Mark die Reihenfolge bewusst zurück auf "eine
+Sache nach der anderen, fertig bauen" gestellt: erst **E+F** (fertig),
+dann **B** (Finanzen-Redesign, fertig), dann der **Rest von C**
+(Transaktionen-Detail-Klick, fertig — damit auch ganz C fertig), dann
+**D** (Rechnungen-Modul, fertig), dann **R** (UI-Politur &
+Diktat-Korrekturen — vom Nutzer am 2026-09-22 ausdrücklich vorgezogen,
+jetzt **nächster Schritt**, noch nicht begonnen).
+
+**Danach explizit (Nutzer-Entscheidung 2026-09-22): erst alles bauen,
+was ohne Spike direkt umsetzbar ist — Spikes kommen ganz zuletzt,
+Mark will zuerst, dass alles Bestehende funktioniert.** Also: **N**,
+**O**, **P**, **Q** (Spec+Plan jeweils schon geschrieben, siehe Bullets
+oben), danach **I** (Wetter-Widget — hat bereits eine Spec, aber noch
+keinen fertig abgestimmten Plan, prüfen ob noch offene Fragen aus dem
+ursprünglichen Brainstorming bestehen). **Ganz zuletzt, in beliebiger
+Reihenfolge, alles was einen Spike/Machbarkeits-Check braucht:** **M**
+(CalDAV-Spike), **H** (KI-Fortschritt/Wächter-Spike), **G** (Google-
+Drive-Spike), **J** (eBay-Spike), sowie die Sicherheits-/Auth-lastigen
+Punkte **K+L**. Für **R** gibt es noch keinen Plan (bounded-Brainstorming
+im Chat bereits gelaufen, s. o., aber eine Rückfrage — Punkt 4 — noch
+unbeantwortet).
 
 **Session-Begrenzung 2026-09-22 (Nutzer-Entscheidung):** Der Nutzer hat
 Bau-Sessions explizit **nach Tasks begrenzt** statt "immer weiter bis
@@ -249,62 +302,6 @@ direkt auf `main` (kein Feature-Branch, Nutzer-Entscheidung), nach jeder
 Task/jedem Meilenstein `git push origin main` (Controller pusht selbst,
 nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
 + `CLAUDE.md` aktualisieren.
-
-## Offene Design-/Daten-Korrekturen (Rückmeldung 2026-09-22, **ausdrücklich noch nicht gebaut** – Nutzerwunsch: erst sammeln, dann auf Freigabe warten)
-
-Mark hat nach der Design-Nacharbeit (siehe `docs/PROJEKT-LOG.md`,
-Eintrag 2026-09-22 "Design-Nacharbeit") per Screenshot weiteres Feedback
-gegeben und ausdrücklich gesagt: nicht bauen, nur speichern, Rückfragen
-stellen. Rückfragen sind geklärt (s. u.), aber **nichts davon ist
-umgesetzt** – wartet auf explizite Freigabe:
-
-1. **Doppelter Modul-Titel:** `js/app.js`s globaler Header
-   (`#modul-titel`) UND jedes Modul selbst (`<header class="modul-kopf">`,
-   z. B. `js/module/home/index.js:80`, `js/module/finanzen/index.js:29-31`)
-   zeichnen denselben Titel – einmal reicht. Ursache klar, kein
-   Rückfrage-Bedarf.
-2. **Home-Begrüßung statt "Home":** Home-Screen soll wie im Prototyp
-   `docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`
-   eine zeitabhängige Begrüßung ("Guten Morgen/Tag/Abend, Mark") plus
-   das heutige Datum zeigen statt der reinen Überschrift "Home"
-   (bestätigt durch Rückfrage).
-3. **Header-Buttons neu sortiert:** Passkey-Einrichtung raus aus dem
-   Modul-Header, rein ins Einstellungen-Modul (existiert schon,
-   `js/module/einstellungen/`). Tag/Nacht-Umschalter bleibt an der
-   Stelle, wo aktuell der Passkey-Button steht, aber deutlich
-   unauffälliger/kleiner als der aktuelle gefüllte Kreis-Button.
-4. **"‹ Dashboard"-Zeile:** ist Safaris eigene Browser-Chrome (Zurück-
-   Hinweis + Reload), kein Teil unseres Codes/HTML. `manifest.webmanifest`
-   hat bereits `"display": "standalone"` gesetzt – dürfte beim Öffnen
-   über ein Home-Bildschirm-Icon (statt Safari-Tab/Lesezeichen) schon
-   von selbst verschwinden. **Offen:** Rückfrage an Mark, ob er die App
-   aktuell über ein Home-Bildschirm-Icon öffnet, noch unbeantwortet –
-   vor dem nächsten Anlauf klären, sonst läuft man ins Leere (Safari-UI
-   ist von einer Web-App aus nicht steuerbar).
-5. **Smoother Tab-Übergang in Finanzen:** beim Wechsel zwischen
-   Übersicht/Transaktionen/Analyse/Regelmäßige-Ausgaben soll es eine
-   weiche Übergangs-Animation geben statt eines harten Wechsels.
-6. **Kategorien in "Ausgaben nach Kategorien" anklickbar:** Klick auf
-   eine Kategorie-Zeile (`js/module/finanzen/uebersicht.js`,
-   `js/module/finanzen/analyse.js`) soll zu einer Detailliste aller
-   Ausgaben dieser Kategorie führen – **inklusive der per Kassenbon-Foto
-   erfassten** (`expenses.quelle = 'foto'`, gleiche Tabelle, kein
-   Extra-Datenmodell nötig). Dort selbst nochmal nach (Unter-)Kategorie
-   sortiert/gruppiert plus ein Filter (Zeitraum/Text – genaue Filterart
-   beim Umsetzen mit Mark abstimmen, aktuell nicht spezifiziert).
-7. **Regelmäßige-Ausgaben-Datenkorrektur:** `ausgaben_vorlagen` ist
-   aktuell komplett leer. Mark will drei feste monatliche Vorlagen:
-   **Claude Abo 22 €**, **Wispr Flow 15 €**, **Friseur 10 €** (nicht
-   18 €, wie die einmalige `expenses`-Buchung vom 2026-09-19 fälschlich
-   zeigt – dieser einzelne Ausgaben-Eintrag ist im Betrag zu korrigieren,
-   bevor/während die Vorlage angelegt wird). Reine Chat-Diktat-Aktion
-   per Supabase-MCP (kein Code nötig), aber laut Nutzerwunsch
-   zurückgestellt, bis er grünes Licht gibt.
-
-**Nicht vergessen:** bevor an einem dieser Punkte gebaut wird, erst
-offene Frage 4 klären, dann normal brainstormen (vermutlich bounded,
-da bestehende Screens) und wie gewohnt Design kurz im Chat bestätigen
-lassen, bevor Code entsteht.
 
 ## Aufbau (Stand Etappe 8 v2 – Navigations-Redesign + Optik-Addendum nach Marks Prototyp)
 

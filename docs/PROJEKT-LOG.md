@@ -25,6 +25,18 @@ unseren Code beeinflussbar).
 dieser Eintrag). Wartet auf Freigabe, bevor irgendetwas davon gebaut
 wird.
 
+**Nachtrag (noch selber Tag):** Mark wollte die sieben Punkte nicht nur
+als lose Notiz, sondern als vollwertigen Backlog-Buchstaben mit
+Priorität — jetzt als **R) UI-Politur & Diktat-Korrekturen** in
+`CLAUDE.md`s Sub-Etappen-Liste (A–Q → A–R) aufgenommen und in der
+Reihenfolge direkt vor M eingeordnet, als nächster Schritt. Zusätzlich
+neue Grundsatzentscheidung: alle Punkte, die einen eigenen
+Machbarkeits-Spike brauchen (M/CalDAV, H/KI-Fortschritt, G/Google
+Drive, J/eBay), kommen jetzt bewusst ganz ans Ende der Reihenfolge —
+erst soll alles fertig gebaut werden, was ohne Spike direkt umsetzbar
+ist (R, dann N/O/P/Q, dann I). `CLAUDE.md`s "Reihenfolge ab jetzt"
+entsprechend umgeschrieben.
+
 ---
 
 ## 2026-09-22 – Design-Nacharbeit: Home-Icons, Kategorien-Balken, Header-Buttons
