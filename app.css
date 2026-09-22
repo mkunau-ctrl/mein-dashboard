@@ -140,6 +140,11 @@ button:disabled { opacity: .6; cursor: default; }
 .dot.gruen { background: var(--hm-gruen); }
 .dot.grau { background: var(--gedaempft); }
 
+.kreisdiagramm-box { display: flex; align-items: center; gap: 20px; margin: 18px 0; }
+.kreisdiagramm { width: 96px; height: 96px; flex: none; transform: rotate(-90deg); }
+.kreisdiagramm-legende { flex: 1; display: flex; flex-direction: column; gap: 6px; font-size: .82rem; }
+.kreisdiagramm-legende-zeile { display: flex; align-items: center; gap: 8px; }
+
 /* Kategorien-Aufschluesselung mit Fortschrittsbalken */
 .kategorie-zeile { padding: 10px 4px; }
 .kategorie-zeile + .kategorie-zeile { border-top: 1px solid var(--rand); }

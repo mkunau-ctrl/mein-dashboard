@@ -1,4 +1,4 @@
-import { gesamtKontostand, zeitraumVon, summenProKategorieZeitraum, kategorisiereIconTyp, warenwert } from './berechnung.js';
+import { gesamtKontostand, zeitraumVon, summenProKategorieZeitraum, kategorisiereIconTyp, warenwert, kreisdiagrammSegmente } from './berechnung.js';
 
 const RANGES = [['7T', '7T'], ['30T', '30T'], ['3M', '3M'], ['6M', '6M'], ['1J', '1J']];
 
@@ -38,6 +38,7 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
   const differenz = einnahmenSumme - ausgabenSumme;
   const kategorien = summenProKategorieZeitraum(zustand.expenses, von, heuteStr).slice(0, 4);
   const warenwertBetrag = warenwert(zustand.teile);
+  const segmente = kreisdiagrammSegmente(kategorien);
 
   container.innerHTML = `
     <div class="stat-karte gross" id="uebersicht-kontostand">
@@ -47,6 +48,16 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
       </div>
       <div class="range-row">
         ${RANGES.map(([id, txt]) => `<button type="button" data-range="${id}" class="range${id === zeitraum ? ' aktiv' : ''}">${txt}</button>`).join('')}
+      </div>
+    </div>
+    <div class="kreisdiagramm-box">
+      <svg viewBox="0 0 36 36" class="kreisdiagramm">
+        <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--icon-bg)" stroke-width="4"/>
+        ${segmente.map((s) => `<circle cx="18" cy="18" r="15.9" fill="none" stroke="${s.farbe}" stroke-width="4"
+          stroke-dasharray="${s.prozent} ${100 - s.prozent}" stroke-dashoffset="${100 - s.dashOffset + 25}"/>`).join('')}
+      </svg>
+      <div class="kreisdiagramm-legende">
+        ${segmente.map((s) => `<div class="kreisdiagramm-legende-zeile"><span class="dot" style="background:${s.farbe};"></span>${esc(s.kategorie)} · ${s.prozent}%</div>`).join('')}
       </div>
     </div>
     <div class="punkt-liste">

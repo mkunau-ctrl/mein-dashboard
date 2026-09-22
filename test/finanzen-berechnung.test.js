@@ -7,7 +7,7 @@ import { summeProMonat, summenProKategorie, erkenneAbos,
   sortiereSchulden, nettoVermoegen, zeitraumVon,
   summenProKategorieZeitraum, summenProBezeichnungZeitraum,
   letzteMonate, jahresUebersicht, kontostandVerlauf, zuCsvZeilen,
-  kategorisiereTransaktionIcon }
+  kategorisiereTransaktionIcon, kreisdiagrammSegmente }
   from '../js/module/finanzen/berechnung.js';
 
 const konten = [
@@ -255,4 +255,21 @@ test('kategorisiereTransaktionIcon: erkennt Haendler-Schluesselwoerter, sonst so
   assert.equal(kategorisiereTransaktionIcon('REWE'), 'einkauf');
   assert.equal(kategorisiereTransaktionIcon('Gehaltseingang'), 'gehalt');
   assert.equal(kategorisiereTransaktionIcon('Irgendwas'), 'sonstiges');
+});
+
+test('kreisdiagrammSegmente: weist Farben zu und berechnet kumulierten dashOffset', () => {
+  const segmente = kreisdiagrammSegmente([
+    { kategorie: 'lebensmittel', summe: 50, prozent: 50 },
+    { kategorie: 'tanken', summe: 30, prozent: 30 },
+    { kategorie: 'freizeit', summe: 20, prozent: 20 },
+  ]);
+  assert.equal(segmente.length, 3);
+  assert.equal(segmente[0].dashOffset, 0);
+  assert.equal(segmente[1].dashOffset, 50);
+  assert.equal(segmente[2].dashOffset, 80);
+  assert.ok(segmente.every((s) => typeof s.farbe === 'string' && s.farbe.startsWith('var(--')));
+});
+
+test('kreisdiagrammSegmente: leere Liste ergibt leeres Array', () => {
+  assert.deepEqual(kreisdiagrammSegmente([]), []);
 });

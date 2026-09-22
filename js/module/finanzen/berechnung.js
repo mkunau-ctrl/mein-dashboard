@@ -129,6 +129,17 @@ export function kategorisiereTransaktionIcon(text) {
   return 'sonstiges';
 }
 
+const KREISDIAGRAMM_FARBEN = ['var(--hm-rot)', 'var(--hm-gelb)', 'var(--hm-gruen)', 'var(--akzent)', 'var(--gedaempft)'];
+
+export function kreisdiagrammSegmente(kategorien) {
+  let kumuliert = 0;
+  return kategorien.map((k, i) => {
+    const segment = { kategorie: k.kategorie, prozent: k.prozent, farbe: KREISDIAGRAMM_FARBEN[i % KREISDIAGRAMM_FARBEN.length], dashOffset: kumuliert };
+    kumuliert += k.prozent;
+    return segment;
+  });
+}
+
 export function schuldenRestbetrag(schuld, zahlungen) {
   const bezahlt = zahlungen
     .filter((z) => z.schuld_id === schuld.id)
