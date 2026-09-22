@@ -1,7 +1,7 @@
 import { parseHash } from './router.js';
 import { entscheideAnsicht } from './view.js';
 import { holeSession, sendeMagicLink, beiAuthWechsel,
-         meldeAnMitPasskey, registrierePasskey } from './auth.js';
+         meldeAnMitPasskey } from './auth.js';
 import { holeModul } from './registry.js';
 import { wendeThemeAn, wechsleTheme } from './theme.js';
 import { wendeSchriftgroesseAn } from './module/einstellungen/schriftgroesse.js';
@@ -24,7 +24,6 @@ const loginForm = document.getElementById('login-form');
 const emailFeld = document.getElementById('email');
 const loginHinweis = document.getElementById('login-hinweis');
 const modulTitel = document.getElementById('modul-titel');
-const passkeyHinweis = document.getElementById('passkey-hinweis');
 const modulDetail = document.getElementById('modul-detail');
 const tabLeiste = document.getElementById('tab-leiste-unten');
 const themeMeta = document.querySelector('meta[name="theme-color"]');
@@ -107,15 +106,6 @@ document.getElementById('passkey-login').addEventListener('click', async () => {
   loginHinweis.textContent = 'Passkey wird abgefragt …';
   const { ok, fehler } = await meldeAnMitPasskey();
   if (!ok) loginHinweis.textContent = `Fehler: ${fehler}`;
-});
-
-document.getElementById('passkey-registrieren').addEventListener('click', async (e) => {
-  const knopf = e.currentTarget;
-  knopf.disabled = true;
-  passkeyHinweis.textContent = 'Passkey wird angelegt …';
-  const { ok, fehler } = await registrierePasskey();
-  passkeyHinweis.textContent = ok ? 'Passkey gespeichert.' : `Fehler: ${fehler}`;
-  knopf.disabled = false;
 });
 
 beiAuthWechsel(() => route());

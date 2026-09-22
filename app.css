@@ -51,19 +51,15 @@ button { background: var(--akzent); color: #fff; border: none; cursor: pointer; 
 button:disabled { opacity: .6; cursor: default; }
 #login-hinweis { min-height: 1.5em; color: var(--gedaempft); }
 .login-kopf { display: flex; justify-content: flex-end; max-width: 320px; margin: 0 auto; }
-.theme-toggle { width: 40px; height: 40px; padding: 0; border-radius: 999px;
-       background: var(--karte); color: var(--text); border: 1px solid var(--rand);
-       box-shadow: var(--schatten); display: grid; place-items: center; }
+.theme-toggle { width: 34px; height: 34px; padding: 0; border-radius: 999px;
+       background: transparent; color: var(--gedaempft); border: none;
+       display: grid; place-items: center; }
 .theme-toggle svg { width: 20px; height: 20px; }
 .trenner { color: var(--gedaempft); text-align: center; margin: 4px auto; max-width: 320px; }
 #passkey-login { display: block; margin: 0 auto; max-width: 320px; width: 100%;
        background: transparent; color: var(--text); border: 1px solid var(--rand); }
 #dashboard-ansicht header { display: flex; justify-content: space-between; align-items: center; }
 #dashboard-ansicht header .kopf-aktionen { display: flex; gap: 8px; }
-#dashboard-ansicht header button { background: var(--karte); color: var(--gedaempft);
-       border: 1px solid var(--rand); box-shadow: var(--schatten); }
-#passkey-hinweis { min-height: 1.2em; color: var(--gedaempft); font-size: .85rem; margin: 6px 0 0; }
-#passkey-hinweis:empty { display: none; }
 
 /* Tab-Leiste unten */
 #tab-leiste-unten { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
