@@ -4,6 +4,85 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-22 – Sub-Etappe S: Design-/Performance-Verfeinerung
+
+**Was:** Alle zwölf Bau-Tasks aus
+`docs/superpowers/plans/2026-09-22-etappe-4-sub-s-design-perf-verfeinerung.md`
+sind fertig, Task 13 (dieser Log-/CLAUDE.md-Eintrag) schließt die
+Sub-Etappe ab. Kernpunkte:
+
+- **Service Worker** (`sw.js`, neu im Repo-Wurzelverzeichnis):
+  Cache-first für die eigenen statischen Dateien, Cross-Origin-
+  Requests (Supabase, jsDelivr-CDN) bleiben unangetastet.
+- **Stale-while-revalidate** beim Modul-Wechsel für alle sieben
+  datenladenden Module (Home, Finanzen, Todos, Ernährung, Sendungen,
+  Ausbildung, Suche). Beim Umsetzen kam eine Korrektur zur
+  ursprünglichen Spec-Annahme ans Licht: nicht alle Module hatten
+  dasselbe Problem. Nur Home und Suche luden bei jedem Besuch
+  blockierend neu (spürbare Verzögerung); die anderen fünf luden
+  dagegen nur **einmal pro Session** und aktualisierten sich danach
+  nie mehr (stille Veraltung). Stale-while-revalidate (alte Daten
+  sofort zeigen, im Hintergrund neu laden, still aktualisieren) löst
+  beide Fälle gleichzeitig, ohne dass zwei unterschiedliche Muster
+  nötig waren.
+- **Generalisierte Einblend-Animation** (`.einblenden`, ersetzt das
+  Finanzen-spezifische `.tab-wechsel` aus Sub-Etappe R) bei jedem
+  Modul- und Tab-Wechsel statt eines Ladebalkens.
+- **Farbschema:** `--akzent` ist kein iOS-Blau (`#0A84FF`) mehr,
+  sondern Schwarz/Weiß je nach Theme — Basis-Buttons und der
+  Ausbildungsfortschritt-Ring übernehmen die neue Farbe automatisch
+  über die CSS-Variable.
+- **Struktur-Fix:** der Neuladen-Button ist aus den einzelnen
+  Modul-Köpfen (Finanzen/Todos/Ernährung/Sendungen/Ausbildung) raus
+  und sitzt jetzt zentral im globalen Header neben dem Hell/Dunkel-
+  Umschalter (`#neu-laden-global`, ruft `modul.aktualisieren()` auf).
+- **Zurück-Buttons** ohne Rahmen/Hintergrund, nur noch Text.
+- **Tab-Leiste** ohne grauen Container-Hintergrund, nur die aktive
+  Pille selbst ist noch hervorgehoben.
+- **Individuelle Icons + Status-Punkte** statt generischer Icons/
+  Status-Pillen bei Sendungen (`kategorisiereSendungIcon`) und
+  Transaktionen (`kategorisiereTransaktionIcon`) — Stichwort-basierte
+  Zuordnung, analog zum bestehenden `kategorisiereIconTyp`-Muster.
+- **Finanzen-Übersicht-Neustruktur:** Tab-Leiste von 11 auf 6 Tabs
+  reduziert (Übersicht/Transaktionen/Analyse/Regelmäßige Ausgaben/
+  Teile/Bestellen). Kontostand-Karte zeigt jetzt "Kontostand" und
+  "Warenwert" als zwei getrennte Zahlen statt einem kombinierten
+  "echt"/"unecht"-Wert. Neues Kreisdiagramm für Ausgaben nach
+  Kategorie (`kreisdiagrammSegmente`, handgebautes SVG, kein Chart-
+  Framework). Drei neue Kacheln (Einnahmen+Ausgaben/Konten/Schulden)
+  führen zu Detailansichten statt eigener Tabs — die bestehenden
+  Dateien `einnahmen.js`/`konten.js`/`schulden.js` blieben dabei
+  inhaltlich unverändert (hatten schon keinen eigenen Header). Dabei
+  wurde nebenbei ein Bug behoben: die Zeitraum-Buttons (7T/30T/…) auf
+  der alten, klickbaren Kontostand-Karte lösten durch fehlendes
+  `stopPropagation()` eine versehentliche Navigation zu Home aus —
+  nach dem Umbau (Elternkarte nicht mehr klickbar) ist der Bug weg,
+  ohne den Range-Handler selbst anfassen zu müssen.
+
+**Entscheidungen:** Eine Wisch-Geste zum Zurücknavigieren (wie in
+nativen iOS-Apps) war Teil der Spec-Diskussion, wurde vom Nutzer
+aber ausdrücklich verworfen — die bestehenden Zurück-Buttons bleiben
+die einzige Navigationsmethode.
+
+**Loser Faden (beim Doku-Schreiben entdeckt, kein Bug):**
+`js/module/finanzen/kontostand.js` (die alte vierte Tab-Datei mit
+Gesamt-Kontostand/Ausgaben-diesen-Monat/unechtem Kontostand/Netto-
+Vermögen) wird seit der Tab-Reduzierung in Task 10 von nirgends mehr
+referenziert — weder `TABS`/`LADER` noch eine der drei neuen Kacheln
+zeigen darauf. Die Datei existiert weiterhin, ist aber tote, nicht
+mehr erreichbare Fracht. In `CLAUDE.md` vermerkt, keine akute
+Konsequenz (keine Tests/Funktionalität betroffen), aber beim nächsten
+Anfassen von Finanzen entweder löschen oder als vierte Kachel
+anbinden.
+
+**Stand danach:** `npm test` 111/111 grün. Commits `b39d038` bis
+`5eb6252` (Bau-Tasks) plus dieser Doku-Commit. Gebaut in drei
+Hintergrund-Fork-Batches (Tasks 1–4, 5–8, 9–12) ohne Zwischenstopp,
+auf Nutzerwunsch durchgehend statt in einzeln freigegebenen 4er-
+Blöcken wie noch bei Sub-Etappe R.
+
+---
+
 ## 2026-09-22 – Sub-Etappe R: UI-Politur & Diktat-Korrekturen
 
 **Was:** Alle neun Tasks aus `docs/superpowers/plans/2026-09-22-etappe-4-sub-r-ui-politur.md`

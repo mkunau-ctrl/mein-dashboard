@@ -238,9 +238,53 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   Details: `docs/superpowers/plans/2026-09-22-etappe-4-sub-r-ui-politur.md`,
   `docs/PROJEKT-LOG.md`, Einträge 2026-09-22 ("Weiteres Design-/Daten-
   Feedback gesammelt", "Sub-Etappe R: UI-Politur & Diktat-Korrekturen").
+- **S) Design-/Performance-Verfeinerung** — **fertig (2026-09-22)**,
+  direkt im Anschluss an R vom Nutzer als eigener Vorzug eingeschoben
+  (architektonisches Brainstorming, eigene Spec):
+  1. **Service Worker** (`sw.js`, neu im Wurzelverzeichnis):
+     Cache-first für die eigenen statischen Dateien, damit die App vom
+     Home-Bildschirm-Icon aus sofort erscheint statt jedes Mal neu zu
+     laden. Supabase/CDN-Requests bleiben unangetastet.
+  2. **Stale-while-revalidate** beim Modul-Wechsel für alle sieben
+     datenladenden Module — alte Daten sofort anzeigen, im Hintergrund
+     aktualisieren. Löst zwei unterschiedliche Probleme gleichzeitig:
+     Home/Suche luden vorher bei jedem Besuch blockierend neu, die
+     anderen fünf Module luden dagegen nur einmal pro Session und
+     wurden nie wieder aktualisiert.
+  3. **Generalisierte Einblend-Animation** (`.einblenden`) bei jedem
+     Modul-/Tab-Wechsel statt Ladebalken.
+  4. **Farbschema:** `--akzent` von iOS-Blau auf Schwarz/Weiß
+     umgestellt (passend zum Prototyp, der Blau nur für den
+     Sendungsstatus "unterwegs" nutzt, nicht als UI-Akzent).
+  5. **Neuladen-Button** aus den einzelnen Modul-Köpfen raus, sitzt
+     jetzt zentral im globalen Header (`#neu-laden-global`, ruft
+     `modul.aktualisieren()` des jeweils aktiven Moduls auf).
+  6. **Zurück-Buttons** ohne Rahmen/Hintergrund, nur noch Text. **Tab-
+     Leiste** ohne grauen Container-Hintergrund.
+  7. **Individuelle Icons + Status-Punkte** statt generischer Icons/
+     Status-Pillen bei Sendungen (`kategorisiereSendungIcon`) und
+     Transaktionen (`kategorisiereTransaktionIcon`).
+  8. **Finanzen-Übersicht-Neustruktur:** Tab-Leiste 11 → 6 Tabs
+     (Übersicht/Transaktionen/Analyse/Regelmäßige Ausgaben/Teile/
+     Bestellen). Kontostand-Karte zeigt "Kontostand" und "Warenwert"
+     getrennt statt einem kombinierten "echt"/"unecht"-Wert. Neues
+     Kreisdiagramm für Ausgaben nach Kategorie
+     (`kreisdiagrammSegmente`, handgebautes SVG). Drei neue Kacheln
+     (Einnahmen+Ausgaben/Konten/Schulden) führen zu Detailansichten
+     statt eigener Tabs. Dabei nebenbei behoben: Klick auf die
+     Zeitraum-Buttons (7T/30T/…) löste durch fehlendes
+     `stopPropagation()` eine versehentliche Navigation zu Home aus.
+
+  **Explizit nicht umgesetzt:** eine Wisch-Geste zum Zurücknavigieren
+  war Teil der Spec-Diskussion, vom Nutzer aber verworfen.
+
+  Details: `docs/superpowers/specs/2026-09-22-etappe-4-sub-s-design-perf-verfeinerung-design.md`,
+  `docs/superpowers/plans/2026-09-22-etappe-4-sub-s-design-perf-verfeinerung.md`,
+  `docs/PROJEKT-LOG.md`, Eintrag 2026-09-22 ("Sub-Etappe S: Design-/
+  Performance-Verfeinerung").
 
 **Wichtige Arbeitsweise-Regel ab 2026-09-19 (Prototyp-Phase):** Diese
-gesamte Backlog-Abarbeitung (A–Q, seit 2026-09-22 A–R) wird bewusst als **Prototyp**
+gesamte Backlog-Abarbeitung (A–Q, seit 2026-09-22 A–S) wird bewusst als **Prototyp**
 behandelt, kein sauberer Endzustand. Jeden Coding-Schritt beim Umsetzen
 dokumentieren — **auch Fehler im Code und Ansätze, die nicht
 funktioniert haben**, nicht nur das Endergebnis. Grund: Mark erwartet,
@@ -260,8 +304,9 @@ Sache nach der anderen, fertig bauen" gestellt: erst **E+F** (fertig),
 dann **B** (Finanzen-Redesign, fertig), dann der **Rest von C**
 (Transaktionen-Detail-Klick, fertig — damit auch ganz C fertig), dann
 **D** (Rechnungen-Modul, fertig), dann **R** (UI-Politur &
-Diktat-Korrekturen — vom Nutzer am 2026-09-22 ausdrücklich vorgezogen,
-jetzt ebenfalls **fertig**).
+Diktat-Korrekturen, fertig), dann **S** (Design-/Performance-
+Verfeinerung — vom Nutzer am 2026-09-22 direkt im Anschluss an R
+eingeschoben, jetzt ebenfalls **fertig**).
 
 **Danach explizit (Nutzer-Entscheidung 2026-09-22): erst alles bauen,
 was ohne Spike direkt umsetzbar ist — Spikes kommen ganz zuletzt,
@@ -303,10 +348,18 @@ Plan + Ledger
 `.superpowers/sdd/2026-09-21-etappe-4-sub-d-rechnungen/`; R: kein
 eigenes Spec-Dokument (bounded-Brainstorming im Chat), Plan
 `docs/superpowers/plans/2026-09-22-etappe-4-sub-r-ui-politur.md`,
-9 Tasks in zwei 4er-Batches + einem Doku-Task gebaut). Als
-Nächstes: **Sub-Etappe N** (Handyreparatur-Aufträge) — Spec+Plan bereits
-geschrieben, noch nicht gebaut. Jede weitere Sub-Etappe danach ebenso
-einzeln, nicht alles auf einmal.
+9 Tasks in zwei 4er-Batches + einem Doku-Task gebaut; S: Spec
+`docs/superpowers/specs/2026-09-22-etappe-4-sub-s-design-perf-verfeinerung-design.md`,
+Plan `docs/superpowers/plans/2026-09-22-etappe-4-sub-s-design-perf-verfeinerung.md`,
+13 Tasks in drei 4er-Batches + einem Doku-Task gebaut, durchgehend ohne
+Zwischenstopp auf Nutzerwunsch). Als Nächstes: **Sub-Etappe N**
+(Handyreparatur-Aufträge) — **Spec bereits geschrieben und vom Nutzer
+noch zu bestätigen**
+(`docs/superpowers/specs/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege-design.md`,
+wichtige Korrektur zur ursprünglichen Backlog-Notiz: Geschäftsmodell
+ist Ankauf-Reparatur-Weiterverkauf, kein Kunden-Reparaturservice),
+**noch kein Implementierungsplan**. Jede weitere Sub-Etappe danach
+ebenso einzeln, nicht alles auf einmal.
 
 **Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
 falls nicht anders gesagt): `superpowers:brainstorming` →
@@ -326,8 +379,12 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   (`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`), 1:1
   übernommen (nicht mehr das ältere Pixelanalyse-Redesign). Dunkel:
   `--bg:#000000`, `--karte:#0A0A0B`, `--karte-getoent:#0D0D0F`,
-  `--text:#fff`, `--akzent:#0A84FF` (iOS-Blau). Hell: `--bg:#F7F8FA`,
-  `--karte:#fff`, `--text:#14161A`. Gemeinsam für beide Themes:
+  `--text:#fff`, `--akzent:#ffffff` (**seit Sub-Etappe S**, 2026-09-22 —
+  ursprünglich `#0A84FF`/iOS-Blau wie im Prototyp übernommen, auf
+  Nutzerwunsch auf neutrales Schwarz/Weiß umgestellt; der Prototyp
+  selbst nutzt Blau ohnehin nur für die Sendungsstatus-Markierung
+  "unterwegs", nicht als UI-Akzent). Hell: `--bg:#F7F8FA`,
+  `--karte:#fff`, `--text:#14161A`, `--akzent:#14161A`. Gemeinsam für beide Themes:
   `--radius:16px`, `--schatten` (Box-Shadow-Token), `--nav-bg`
   (halbtransparent + `backdrop-filter: blur(10px)` für die Bottom-Nav),
   getönte Hintergründe `--hm-rot-bg`/`--hm-gruen-bg`/`--akzent-bg`. Default
@@ -391,14 +448,22 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   Konten/Schulden), **seit Etappe 8 v2 inklusive des ehemaligen
   Lager-Moduls**, **seit Sub-Etappe A (2026-09-21) inklusive Mehrkonten,
   Einnahmen und Schulden**, **seit Sub-Etappe B (2026-09-22) mit den
-  drei Prototyp-Tabs Übersicht/Transaktionen/Analyse ganz vorne**:
+  drei Prototyp-Tabs Übersicht/Transaktionen/Analyse ganz vorne**,
+  **seit Sub-Etappe S (2026-09-22) auf 6 Tabs reduziert**:
   - `index.js` – Registrierung, Tabs „Übersicht"/„Transaktionen"/
-    „Analyse"/„Ausgaben"/„Einnahmen"/„Kontostand"/„Konten"/„Schulden"/
-    „Regelmäßige Ausgaben"/„Teile"/„Bestellen", Kachel-Text. Hält seit
-    Sub-Etappe B den **geteilten Zeitraum-Zustand** (`zeitraum`/
-    `setZeitraum`), der an `zeigeFn(inhalt, zustand, aktualisieren,
-    zeitraum, setZeitraum)` durchgereicht wird — Übersicht und
-    Transaktionen teilen sich denselben Zeitraum-Filter.
+    „Analyse"/„Regelmäßige Ausgaben"/„Teile"/„Bestellen", Kachel-Text.
+    **Seit Sub-Etappe S kein eigener Neuladen-Button mehr im
+    Modul-Kopf** — stattdessen `aktualisieren()`-Methode im
+    `registriere`-Block, die der globale Header-Button
+    (`#neu-laden-global` in `js/app.js`) aufruft. Hält seit Sub-Etappe B
+    den **geteilten Zeitraum-Zustand** (`zeitraum`/`setZeitraum`), der an
+    `zeigeFn(inhalt, zustand, aktualisieren, zeitraum, setZeitraum,
+    detail)` durchgereicht wird — Übersicht und Transaktionen teilen
+    sich denselben Zeitraum-Filter. **„Ausgaben"/„Einnahmen"/
+    „Kontostand"/„Konten"/„Schulden" sind seit Sub-Etappe S keine
+    eigenen Tabs mehr** — ihre Funktionalität ist in die Übersicht
+    gewandert (s. u.), die zugehörigen Dateien bestehen unverändert
+    fort und werden per Detail-Route aus der Übersicht heraus geladen.
   - `daten.js` – Supabase-Zugriff auf `expenses` + `finance_settings` +
     `parts` (Teile-Zugriff `speicherTeil`/`entferneTeil`/`setzeStatus` 1:1
     aus dem ehemaligen `lager/daten.js` übernommen) + seit Sub-Etappe A
@@ -421,16 +486,38 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     `letzteMonate`, `jahresUebersicht`, `kontostandVerlauf`,
     `zuCsvZeilen` (nutzt intern `csvFeldSicher` — stellt Freitextfeldern,
     die mit `=`/`+`/`-`/`@` beginnen, ein Apostroph voran, Schutz gegen
-    CSV-Formel-Injection beim Öffnen in Excel/Sheets).
-  - `uebersicht.js`, `transaktionen.js`, `analyse.js` (neu seit
-    Sub-Etappe B, die drei vorderen Tabs; `transaktionen.js` seit "Rest
-    von C" mit Detail-Klick auf `transaktion-detail.js`; `uebersicht.js`
-    und `analyse.js` seit Sub-Etappe R zusätzlich mit klickbaren
-    Ausgaben-Kategorien auf die neue `kategorie-detail.js`
-    — Detailliste inkl. Kassenbon-Foto-Ausgaben, mit Textsuche), `ausgaben.js`, `kontostand.js`
-    (zeigt seit Sub-Etappe A vier Kennzahlen: Gesamt-Kontostand, Ausgaben
-    diesen Monat, unechter Kontostand inkl. Warenwert, Netto-Vermögen
-    inkl. Warenwert und offener Schulden), `regelmaessige-ausgaben.js`
+    CSV-Formel-Injection beim Öffnen in Excel/Sheets); seit Sub-Etappe S
+    zusätzlich `kategorisiereTransaktionIcon` (Stichwort-Zuordnung für
+    individuelle Transaktions-Icons, analog `kategorisiereIconTyp`) und
+    `kreisdiagrammSegmente` (reine Segment-/Farb-/Offset-Berechnung
+    fürs Kategorien-Kreisdiagramm, handgebautes SVG ohne Chart-Framework).
+  - `uebersicht.js` – seit Sub-Etappe S die zentrale Seite des Moduls:
+    Kontostand-Karte zeigt „Kontostand" und „Warenwert" als zwei
+    getrennte Zahlen (ersetzt das frühere kombinierte „echt"/„unecht"),
+    darunter das neue Kreisdiagramm für Ausgaben nach Kategorie, darunter
+    drei Kacheln „Einnahmen & Ausgaben"/„Konten"/„Schulden", die per
+    Detail-Route (`#/finanzen/uebersicht/einnahmen-ausgaben` bzw.
+    `konten`/`schulden`) die bestehenden, inhaltlich unveränderten
+    Dateien `einnahmen.js`/`konten.js`/`schulden.js` einblenden statt
+    eigener Tabs. Seit Sub-Etappe R zusätzlich klickbare
+    Ausgaben-Kategorien auf `kategorie-detail.js` (Detailliste inkl.
+    Kassenbon-Foto-Ausgaben, mit Textsuche). Ein Bug aus der
+    ursprünglichen Kontostand-Karte (Klick auf Zeitraum-Buttons löste
+    durch fehlendes `stopPropagation()` eine versehentliche Navigation
+    zu Home aus) ist seit dem Sub-Etappe-S-Umbau (Elternkarte nicht mehr
+    klickbar) behoben. **Bekannter loser Faden aus Sub-Etappe S:**
+    `finanzen/kontostand.js` (die alte, vierte "Kontostand"-Tab-Datei
+    mit Gesamt-Kontostand/Ausgaben-diesen-Monat/unechtem
+    Kontostand/Netto-Vermögen) ist seit der Tab-Reduzierung **von
+    nirgends mehr referenziert** (verifiziert: weder in `TABS`/`LADER`
+    noch als Kachel-Ziel) — kein Fehler/Bug, aber totes Gewicht im
+    Repo, das bei Gelegenheit entweder gelöscht oder als vierte Kachel
+    ergänzt werden sollte. `transaktionen.js` (seit "Rest von C" mit
+    Detail-Klick auf `transaktion-detail.js`, seit Sub-Etappe S mit
+    individuellen Icons je Händler/Kategorie statt generischem
+    Einnahme-/Ausgabe-Icon), `analyse.js` (seit Sub-Etappe R zusätzlich
+    mit klickbaren Ausgaben-Kategorien auf `kategorie-detail.js`),
+`regelmaessige-ausgaben.js`
     (seit Sub-Etappe B, **ersetzt** `abos.js` — echte
     `ausgaben_vorlagen` + „Bezahlt"-Bestätigung + weiterhin die
     automatische Muster-Erkennung `erkenneAbos` als Vorschlag), `teile.js`,
@@ -586,7 +673,10 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   - `index.js` – Registrierung, Tabs „Pakete"/„Termine", Kachel-Text.
   - `daten.js` – Supabase-Zugriff auf `sendungen` + `termine`.
   - `berechnung.js` – `sortiereSendungen`, `offeneSendungen`, `sortiereTermine`,
-    `naechsterSendungStatus`. Vier Status-Kategorien: **`unterwegs`** →
+    `naechsterSendungStatus`; seit Sub-Etappe S zusätzlich
+    `kategorisiereSendungIcon` (Stichwort-Zuordnung Handy/Kopfhörer/
+    Kleidung/Elektronik, sonst Box-Icon — nutzt `haendler`+`beschreibung`).
+    Vier Status-Kategorien: **`unterwegs`** →
     **`abholbereit`** (seit Etappe 3, 2026-09-19) → **`zugestellt`**, dazu
     der Sonderfall **`unbekannt`**. Zwei getrennte, exportierte Konstanten/
     Funktionen dafür (bewusst getrennt seit der Whole-Branch-Review von
@@ -599,16 +689,22 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     (unexportiert, nur fürs UI) definiert den Klick-Zyklus `unterwegs →
     abholbereit → zugestellt → unterwegs` (`unbekannt` klickt zu
     `unterwegs`).
-  - `pakete.js`, `termine.js` – die zwei Tabs; Status-Pille für
-    `abholbereit` gelb/orange getönt (`--hm-gelb-bg`). **Seit Sub-Etappe
+  - `pakete.js`, `termine.js` – die zwei Tabs. **Seit Sub-Etappe
     E+F (2026-09-22)** sind Zeilen anklickbar → `#/sendungen/pakete/<id>`
     bzw. `#/sendungen/termine/<id>`; Status-/Löschen-Buttons stoppen das
-    Klick-Bubbling selbst.
+    Klick-Bubbling selbst. **Seit Sub-Etappe S:** individuelles Icon
+    (`kategorisiereSendungIcon`) statt immer derselben Box, Status als
+    kleiner farbiger Punkt (`.dot`+Farbmodifikator) inline neben dem
+    Statustext statt als separate rechtsbündige Pille (`.status-badge`
+    existiert als CSS-Klasse weiterhin, wird hier aber nicht mehr
+    verwendet) — der Klick-zum-Status-weiterschalten-Mechanismus blieb
+    unverändert erhalten, nur die Optik änderte sich.
   - `sendung-detail.js`, `termin-detail.js` (neu, E+F) –
     `zeigeSendungDetail`/`zeigeTerminDetail`: Detailansicht mit
     Zurück-Navigation; bei Sendungen zusätzlich `abholcode`/
     `abholadresse`/`abholzeiten` und die Status-Historie aus
-    `sendungen_ereignisse`.
+    `sendungen_ereignisse`. Seit Sub-Etappe S ebenfalls mit
+    individuellem Icon + Status-Punkt statt Pille.
   - `daten.js` – **seit E+F:** `ladeAlles()` lädt zusätzlich
     `sendungen_ereignisse` (für die Detailansicht).
   Details: `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`
@@ -617,6 +713,14 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   und `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
 - `manifest.webmanifest`, `icon.svg` – PWA. **Echte PNG-Icons (192/512) und
   `apple-touch-icon` fehlen weiterhin** (offener Punkt seit Etappe 0).
+- `sw.js` – **neu seit Sub-Etappe S (2026-09-22)**, Service Worker im
+  Wurzelverzeichnis: Cache-first für die eigenen statischen Dateien
+  (`CACHE_NAME` versioniert, alte Caches werden im `activate`-Event
+  aufgeräumt), Cross-Origin-Requests (Supabase, jsDelivr-CDN) werden im
+  `fetch`-Handler unangetastet durchgereicht. Registrierung in
+  `js/app.js` am Dateiende (`navigator.serviceWorker.register`, mit
+  Feature-Check, blockiert den App-Start nicht bei fehlender
+  Unterstützung).
 - `automatisierung/` – **lokales** Node-Skript, kein Teil der Browser-App:
   - `postfach-scan.mjs` – täglicher Scan von Marks GMX-Postfach per IMAP,
     Klassifikation jeder Mail per `claude -p` (Details/Warum siehe
@@ -693,7 +797,8 @@ Einstellungen" im Profil-Screen.
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 89 grün.
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 111 grün
+  (verifiziert 2026-09-22, nach Sub-Etappe S).
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.
