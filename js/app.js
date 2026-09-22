@@ -118,3 +118,11 @@ aktualisiereThemeUI(wendeThemeAn());
 wendeSchriftgroesseAn();
 
 route();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {
+      // Registrierung fehlgeschlagen (z.B. alter Browser) - kein Blocker, App läuft ohne Cache weiter.
+    });
+  });
+}
