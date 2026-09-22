@@ -4,6 +4,39 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-22 – Design-Nacharbeit: Home-Icons, Kategorien-Balken, Header-Buttons
+
+**Was:** Mark hat per Screenshot-Vergleich (Prototyp vs. Live-App)
+drei konkrete Design-Lücken gemeldet, die trotz "fertiger"
+Design-Angleichung in Sub-Etappe E übersehen wurden. Bounded-Brainstorming
+(kein Spec-Dokument) ergab: (1) die drei Home-Screen-Listen (Nächste
+Termine/Aktuelle Sendungen/Offene To-dos) waren die einzige Stelle im
+Projekt ohne Icon-Badges — ergänzt, plus neuer "Neu"-Punkt pro Zeile
+(erscheint, wenn `erstellt_am` neuer als der per `localStorage`
+gemerkte Zuletzt-gesehen-Zeitpunkt der jeweiligen Liste ist — echte
+Bedeutung, keine reine Deko wie im Prototyp, auf Nutzerwunsch). (2)
+"Ausgaben nach Kategorie(n)" (Übersicht- und Analyse-Tab) zeigte nur
+Icon+Name+Betrag ohne Prozentanteil/Balken — `summenProKategorie`/
+`summenProKategorieZeitraum` liefern jetzt zusätzlich ein
+`prozent`-Feld (Anteil an der Gesamtsumme, berechnet vor jeder Kürzung
+der Anzeigeliste, damit z. B. die Top-4-Anzeige in der Übersicht
+trotzdem korrekte Prozentwerte zeigt), gerendert als Fortschrittsbalken
+wie im Prototyp. (3) Theme-Toggle/Passkey-Buttons im Modul-Header hatten
+transparenten Hintergrund statt der gefüllten Karten-Optik mit Schatten
+aus dem Prototyp.
+
+**Entscheidung:** Die "‹ Dashboard"-Zeile aus Marks Screenshots ist
+Safaris eigene Browser-Chrome (Zurück-Hinweis + Reload-Button), kein
+Teil unseres Designs — nicht angefasst. Umfang bewusst auf den
+Home-Screen begrenzt (nicht alle ca. 25 Stellen mit `.punkt-zeile`
+app-weit), da die meisten Modul-Listen (Sendungen/Termine/Todos/
+Rechnungen/Transaktionen) Icon-Badges aus früheren Sub-Etappen schon
+haben und kein Punkt-Konzept vorsahen.
+
+**Stand danach:** `npm test` 107/107 grün, Commit `6a3c19d`, gepusht.
+
+---
+
 ## 2026-09-22 – Etappe 4 Sub-D: Rechnungen-Modul
 
 **Was:** Die fünfte von 17 Sub-Etappen (A–Q, siehe `CLAUDE.md`) ist
