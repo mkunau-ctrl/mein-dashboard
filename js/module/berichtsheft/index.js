@@ -22,16 +22,12 @@ export function eintraegeDieseWoche() {
 function baueRahmen(container) {
   container.innerHTML = `
     <header class="modul-kopf">
-      <button class="zurueck" type="button">‹ Dashboard</button>
-      <h2>Ausbildung</h2>
       <button class="neu-laden" type="button" title="Aktualisieren">⟳</button>
     </header>
     <nav class="tab-leiste">
       ${TABS.map(([id, txt]) => `<button data-tab="${id}" type="button">${txt}</button>`).join('')}
     </nav>
     <div id="tab-inhalt"></div>`;
-  container.querySelector('.zurueck')
-    .addEventListener('click', () => { location.hash = ''; });
   container.querySelector('.neu-laden')
     .addEventListener('click', async () => {
       await ladeZustand();
