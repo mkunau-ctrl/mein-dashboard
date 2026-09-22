@@ -176,6 +176,18 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   38 €. Kein Kundenname/Status pro Zeile bekannt — beim Umsetzen mit
   Mark abgleichen, welcher Preis Einkauf/Ersatzteil und welcher
   Kunden-Verkaufspreis ist, und Kundennamen/Status nachtragen.
+  **Datenmodell-Ergänzung von Mark (2026-09-22):** die erste Zahl
+  (z. B. 305 € beim iPhone 14 Pro) zählt als **Warenwert** — offene
+  Handyreparatur-Aufträge (noch nicht abgeholt/verkauft) sollen in die
+  bestehende `warenwert()`-Berechnung (`finanzen/berechnung.js`)
+  einfließen, wie Teile aus dem Lager. Die zweite Zahl
+  ("voraussichtlich", z. B. 370 €) ist der erwartete Verkaufspreis.
+  Gewünschte neue Kennzahl: **erwarteter Gewinn** = Summe
+  (voraussichtlicher Verkaufspreis − Warenwert) über alle offenen
+  Aufträge — sowie später eine **monatliche Ist-Gewinn-Anzeige**
+  (tatsächlicher Gewinn aus im Monat abgeholten/verkauften Aufträgen,
+  sobald der Status "abgeholt" den Auftrag abschließt). Beides beim
+  Schreiben der Spec für N als eigene Anforderung mit aufnehmen.
 - **O) Teile-Bestellen ↔ Sendungen verknüpfen** — Sendung "zugestellt" →
   Vorschlag, zugehöriges Teil im Lager auf Status "da" zu setzen.
 - **P) Kalender-Export (ICS)** für Termine/Ausbildung, damit sie auch im
