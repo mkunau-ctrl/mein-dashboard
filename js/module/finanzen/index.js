@@ -4,8 +4,6 @@ import { ladeAlles } from './daten.js';
 
 const TABS = [
   ['uebersicht', 'Übersicht'], ['transaktionen', 'Transaktionen'], ['analyse', 'Analyse'],
-  ['ausgaben', 'Ausgaben'], ['einnahmen', 'Einnahmen'], ['kontostand', 'Kontostand'],
-  ['konten', 'Konten'], ['schulden', 'Schulden'],
   ['regelmaessige-ausgaben', 'Regelmäßige Ausgaben'],
   ['teile', 'Teile'], ['bestellen', 'Bestellen'],
 ];
@@ -39,11 +37,6 @@ const LADER = {
   uebersicht: () => import('./uebersicht.js').then((m) => m.zeigeUebersicht),
   transaktionen: () => import('./transaktionen.js').then((m) => m.zeigeTransaktionen),
   analyse: () => import('./analyse.js').then((m) => m.zeigeAnalyse),
-  ausgaben: () => import('./ausgaben.js').then((m) => m.zeigeAusgaben),
-  einnahmen: () => import('./einnahmen.js').then((m) => m.zeigeEinnahmen),
-  kontostand: () => import('./kontostand.js').then((m) => m.zeigeKontostand),
-  konten: () => import('./konten.js').then((m) => m.zeigeKonten),
-  schulden: () => import('./schulden.js').then((m) => m.zeigeSchulden),
   'regelmaessige-ausgaben': () => import('./regelmaessige-ausgaben.js').then((m) => m.zeigeRegelmaessigeAusgaben),
   teile: () => import('./teile.js').then((m) => m.zeigeTeile),
   bestellen: () => import('./bestellen.js').then((m) => m.zeigeBestellen),

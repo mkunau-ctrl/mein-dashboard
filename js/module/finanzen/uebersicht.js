@@ -1,4 +1,4 @@
-import { gesamtKontostand, zeitraumVon, summenProKategorieZeitraum, kategorisiereIconTyp } from './berechnung.js';
+import { gesamtKontostand, zeitraumVon, summenProKategorieZeitraum, kategorisiereIconTyp, warenwert } from './berechnung.js';
 
 const RANGES = [['7T', '7T'], ['30T', '30T'], ['3M', '3M'], ['6M', '6M'], ['1J', '1J']];
 
@@ -37,11 +37,14 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
   const einnahmenSumme = zustand.einnahmen.filter(imFenster).reduce((s, e) => s + e.betrag, 0);
   const differenz = einnahmenSumme - ausgabenSumme;
   const kategorien = summenProKategorieZeitraum(zustand.expenses, von, heuteStr).slice(0, 4);
+  const warenwertBetrag = warenwert(zustand.teile);
 
   container.innerHTML = `
-    <div class="stat-karte gross" id="uebersicht-kontostand" style="cursor:pointer;">
-      <small>Kontostand</small>
-      <span>${stand.toFixed(2)} €</span>
+    <div class="stat-karte gross" id="uebersicht-kontostand">
+      <div class="kontostand-zweispaltig">
+        <div><small>Kontostand</small><span>${stand.toFixed(2)} €</span></div>
+        <div><small>Warenwert</small><span>${warenwertBetrag.toFixed(2)} €</span></div>
+      </div>
       <div class="range-row">
         ${RANGES.map(([id, txt]) => `<button type="button" data-range="${id}" class="range${id === zeitraum ? ' aktiv' : ''}">${txt}</button>`).join('')}
       </div>
@@ -72,9 +75,6 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
 
   container.querySelectorAll('[data-range]').forEach((btn) => {
     btn.addEventListener('click', () => setZeitraum(btn.dataset.range));
-  });
-  container.querySelector('#uebersicht-kontostand').addEventListener('click', () => {
-    location.hash = '#/home/kontostand';
   });
   container.querySelector('#uebersicht-alle-kategorien').addEventListener('click', () => {
     location.hash = '#/finanzen/analyse';

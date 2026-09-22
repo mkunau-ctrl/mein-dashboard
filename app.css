@@ -193,6 +193,9 @@ button:disabled { opacity: .6; cursor: default; }
 .stat-karte.gross .stat-kopf { display: flex; align-items: center; gap: 10px; }
 .stat-karte.gross .stat-kopf small { color: var(--gedaempft); font-size: .82rem; font-weight: 500; }
 .stat-karte.gross span { font-size: 2rem; margin-top: 8px; }
+.kontostand-zweispaltig { display: flex; gap: 24px; }
+.kontostand-zweispaltig small { display: block; color: var(--gedaempft); font-size: .8rem; }
+.kontostand-zweispaltig span { display: block; font-size: 1.6rem; font-weight: 700; margin-top: 2px; }
 .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
 .stat-grid .stat { background: var(--karte-getoent); border: 1px solid var(--rand);
   border-radius: 14px; padding: 12px; box-shadow: var(--schatten); }
