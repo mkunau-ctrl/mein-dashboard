@@ -57,13 +57,37 @@ Ausblenden des Betrags und der Warenwert-Zeile.
   eigenem Test. Dieses Muster (`csvFeldSicher`) sollte für jeden
   künftigen CSV-Export mit Freitext-Feldern wiederverwendet werden.
 
-**Stand danach:** `npm test` 100/100 grün. Sub-Etappe B ist fertig.
-**Offene Punkte:** Sub-Etappe C ("Detail-Klicks überall") war bisher nur
-teilweise fertig (Sendungen/Termine/To-dos aus E+F) — der „Rest von C"
-(Transaktionen anklickbar machen) wartete auf B und wird direkt im
-Anschluss an diesen Eintrag umgesetzt (siehe nachfolgenden Log-Eintrag
-falls vorhanden, sonst `CLAUDE.md` „Aktueller Stand" für den
-tatsächlichen Stand). Ganzer Backlog A–Q weiterhin in `CLAUDE.md`.
+**Stand danach:** `npm test` 100/100 grün. Sub-Etappe B ist fertig. Der
+„Rest von C" (Transaktionen anklickbar machen) wurde direkt im
+Anschluss umgesetzt, siehe nachfolgenden Log-Eintrag — damit ist auch
+Sub-Etappe C jetzt vollständig fertig. Ganzer Backlog A–Q weiterhin in
+`CLAUDE.md`.
+
+---
+
+## 2026-09-22 – Etappe 4, Rest von Sub-C: Transaktionen-Detail-Klick
+
+**Was:** Letzter offener Teil von Sub-Etappe C. Transaktionen im in
+Sub-Etappe B neu gebauten Transaktionen-Tab sind jetzt anklickbar und
+zeigen eine eigene Detailansicht (Betrag, Datum, Kategorie bei
+Ausgaben, Quelle, Konto) — exakt dasselbe Muster wie die
+Detailansichten für Sendungen/Termine/To-dos aus Sub-Etappe E+F. Neue
+Route `#/finanzen/transaktionen/<typ>-<id>`: da Ausgaben und Einnahmen
+aus zwei getrennten Tabellen (`expenses`/`einnahmen`) stammen und ihre
+IDs unabhängig voneinander vergeben werden, kombiniert die Routen-ID
+Typ-Präfix (`ausgabe`/`einnahme`) und Datensatz-ID
+(`findeTransaktion`/`routeId` in `transaktionen.js` kapseln das
+Zusammensetzen/Aufsplitten). `finanzen/index.js` gibt seit dieser
+Änderung das `detail`-Segment aus `parseHash` an alle Tab-Funktionen
+weiter (vorher nur bei Todos/Sendungen verdrahtet).
+
+**Stand danach:** `npm test` 100/100 grün. Sub-Etappe C ("Detail-Klicks
+überall") ist damit **vollständig fertig** (Sendungen, Termine, To-dos,
+Transaktionen). Nächster Schritt laut `CLAUDE.md` „Reihenfolge ab
+jetzt": Sub-Etappe D (Rechnungen-Modul) — Spec und Plan liegen bereits
+fertig vor, Umsetzung hat noch nicht begonnen (bewusst nicht in dieser
+Session begonnen, siehe `CLAUDE.md` „Aktueller Stand" für den Grund:
+Nutzer hat die Arbeit für diese Session explizit nach Tasks begrenzt).
 
 ---
 

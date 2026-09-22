@@ -91,14 +91,14 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   `csvFeldSicher`-Schutz gegen CSV-Formel-Injection in Freitextfeldern).
   Details: `docs/superpowers/specs/2026-09-21-etappe-4-sub-b-finanzen-redesign-design.md`
   und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-22).
-- **C) Detail-Klicks überall** — **teilweise fertig** (Sendungen/
-  Termine/To-dos, s. u. bei E+F). Sendungen (inkl. `abholcode`/
-  `abholadresse`/`abholzeiten`, die die E-Mail-Automatisierung seit
-  Etappe 3 schon erfasst, aber bisher nirgends anzeigte), Termine und
-  To-dos sind jetzt anklickbar und zeigen eine Detailansicht.
-  **Offener Rest von C:** Transaktionen (Einnahmen/Ausgaben) anklickbar
-  machen — wartet auf Sub-Etappe B (Finanzen-Redesign mit
-  Transaktionen-Tab), siehe dort.
+- **C) Detail-Klicks überall** — **fertig (2026-09-22)**. Sendungen
+  (inkl. `abholcode`/`abholadresse`/`abholzeiten`, die die
+  E-Mail-Automatisierung seit Etappe 3 schon erfasst, aber bisher
+  nirgends anzeigte), Termine, To-dos (alle drei aus Sub-Etappe E+F) und
+  seit heute auch Transaktionen (Einnahmen/Ausgaben aus dem
+  Finanzen-Transaktionen-Tab von Sub-Etappe B) sind anklickbar und
+  zeigen eine eigene Detailansicht. Details:
+  `docs/PROJEKT-LOG.md` (Eintrag "Rest von Sub-C", 2026-09-22).
 - **D) Neues Rechnungen-Modul** — komplett neu (kein bisheriges
   Datenmodell): offen/bezahlt/überfällig mit Filter-Chips (Vorbild:
   Prototyp-Screen "Rechnungen"), plus Fälligkeits-Erinnerungen auf dem
@@ -197,28 +197,43 @@ manueller Testlauf am echten Gerät (seit Etappe 2–5).
 das parallele Brainstorming vieler Sub-Etappen gleichzeitig zu den oben
 dokumentierten Fork-Vorfällen führte, hat Mark die Reihenfolge bewusst
 zurück auf "eine Sache nach der anderen, fertig bauen" gestellt: erst
-**E+F** (fertig, s. o.), dann **B** (Finanzen-Redesign), dann der
-**Rest von C** (Transaktionen-Detail-Klick, braucht B), dann **D**,
-dann **M**, dann **N/O/I/P**, dann **Q**, dann **H**, ganz zuletzt die
-Sicherheits-/Auth-lastigen Punkte **G/J/K+L**. Spec+Plan für D, N, P, Q
-(und eine Spec für I) sind bereits geschrieben, aber noch nicht gebaut
-— siehe die jeweiligen Bullets oben für die Dateipfade.
+**E+F** (fertig), dann **B** (Finanzen-Redesign, fertig), dann der
+**Rest von C** (Transaktionen-Detail-Klick, fertig — damit auch ganz C
+fertig), dann **D**, dann **M**, dann **N/O/I/P**, dann **Q**, dann
+**H**, ganz zuletzt die Sicherheits-/Auth-lastigen Punkte **G/J/K+L**.
+Spec+Plan für D, N, P, Q (und eine Spec für I) sind bereits geschrieben,
+aber noch nicht gebaut — siehe die jeweiligen Bullets oben für die
+Dateipfade.
 
-**Nächster Schritt beim Fortsetzen:** Sub-Etappen A und E+F sind
+**Session-Begrenzung 2026-09-22 (Nutzer-Entscheidung):** Der Nutzer hat
+diese Bau-Session explizit **nach Tasks begrenzt** statt "immer weiter
+bis zum Nutzungslimit" — Grund: Claude hat keinen Einblick in
+Token-Verbrauch/Nutzungslimit-Prozentzahlen und kann eine
+zeit-/tokenbasierte Grenze nicht selbst einhalten. Deshalb wurde nach
+Sub-Etappe B + Rest-von-C bewusst **gestoppt**, ohne mit Sub-Etappe D
+weiterzumachen, obwohl D als Nächstes ansteht und Spec+Plan bereits
+fertig sind. Für künftige Sessions: Umfang lieber explizit nach
+Tasks/Sub-Etappen begrenzen lassen statt nach Zeit/Tokens.
+
+**Nächster Schritt beim Fortsetzen:** Sub-Etappen A, E+F, B und C sind
 komplett umgesetzt und dokumentiert (A: Spec
 `docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`,
 Plan `.superpowers/sdd/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden/`;
 E+F: Spec
 `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`,
 Plan + Ledger
-`.superpowers/sdd/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks/`).
-Als Nächstes: **Sub-Etappe B** (Finanzen-Redesign, s. o.) braucht ihren
-eigenen Brainstorming→Spec→Plan→Umsetzung-Zyklus — Spec und Plan sind
-zwar schon geschrieben
-(`docs/superpowers/specs/2026-09-21-etappe-4-sub-b-finanzen-redesign-design.md`,
-`docs/superpowers/plans/2026-09-21-etappe-4-sub-b-finanzen-redesign.md`),
-die Umsetzung selbst hat aber noch nicht begonnen. Jede weitere
-Sub-Etappe danach ebenso einzeln, nicht alles auf einmal.
+`.superpowers/sdd/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks/`;
+B: Spec
+`docs/superpowers/specs/2026-09-21-etappe-4-sub-b-finanzen-redesign-design.md`,
+Plan + Ledger
+`.superpowers/sdd/2026-09-21-etappe-4-sub-b-finanzen-redesign/`; Rest
+von C: kein eigener Plan nötig, kleine Erweiterung nach bestehendem
+Muster, siehe `docs/PROJEKT-LOG.md`). Als Nächstes: **Sub-Etappe D**
+(Rechnungen-Modul) — Spec und Plan sind bereits geschrieben
+(`docs/superpowers/specs/2026-09-21-etappe-4-sub-d-rechnungen-design.md`,
+`docs/superpowers/plans/2026-09-21-etappe-4-sub-d-rechnungen.md`), die
+Umsetzung selbst hat aber noch nicht begonnen. Jede weitere Sub-Etappe
+danach ebenso einzeln, nicht alles auf einmal.
 
 **Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
 falls nicht anders gesagt): `superpowers:brainstorming` →
