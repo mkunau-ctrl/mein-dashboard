@@ -162,6 +162,11 @@ button:disabled { opacity: .6; cursor: default; }
 .punkt-formular input, .punkt-formular select { flex: 1; min-width: 100px; }
 .punkt-formular button { flex: none; }
 
+.home-begruessung { margin-bottom: 16px; }
+.home-begruessung .greeting { margin: 0; color: var(--gedaempft); font-size: .92rem; }
+.home-begruessung h1 { margin: 2px 0 4px; font-size: 1.7rem; }
+.home-begruessung .date { margin: 0; color: var(--gedaempft); font-size: .82rem; }
+
 .range-row { display: flex; gap: 8px; margin: 14px 0 4px; }
 .range { flex: 1; text-align: center; padding: 7px 4px; border-radius: 9px;
   font-size: .78rem; font-weight: 600; background: var(--icon-bg);

@@ -41,6 +41,17 @@ function heute() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function begruessung() {
+  const stunde = new Date().getHours();
+  if (stunde < 11) return 'Guten Morgen';
+  if (stunde < 18) return 'Guten Tag';
+  return 'Guten Abend';
+}
+
+function heutigesDatum() {
+  return new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 let zustand = null;
 let containerRef = null;
 
@@ -77,7 +88,11 @@ function renderHome(container) {
     .join('');
 
   container.innerHTML = `
-    <header class="modul-kopf"><h2>Home</h2></header>
+    <div class="home-begruessung">
+      <p class="greeting">${begruessung()},</p>
+      <h1>Mark</h1>
+      <p class="date">${heutigesDatum()}</p>
+    </div>
     <div class="stat-karte gross" id="home-kontostand" style="cursor:pointer;">
       <small>Kontostand</small>
       <span>${gesetzt ? stand.toFixed(2) + ' €' : '–'}</span>
