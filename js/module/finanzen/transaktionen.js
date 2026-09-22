@@ -15,10 +15,28 @@ let kategorie = 'alle';
 
 function baueTransaktionen(zustand, von, bis) {
   const ausgaben = zustand.expenses.filter((e) => e.datum >= von && e.datum <= bis)
-    .map((e) => ({ datum: e.datum, typ: 'ausgabe', bezeichnung: e.notiz || e.kategorie, kategorie: e.kategorie, betrag: e.betrag, quelle: e.quelle }));
+    .map((e) => ({ id: e.id, datum: e.datum, typ: 'ausgabe', bezeichnung: e.notiz || e.kategorie, kategorie: e.kategorie, betrag: e.betrag, quelle: e.quelle }));
   const einnahmen = zustand.einnahmen.filter((e) => e.datum >= von && e.datum <= bis)
-    .map((e) => ({ datum: e.datum, typ: 'einnahme', bezeichnung: e.bezeichnung, kategorie: null, betrag: e.betrag, quelle: e.quelle }));
+    .map((e) => ({ id: e.id, datum: e.datum, typ: 'einnahme', bezeichnung: e.bezeichnung, kategorie: null, betrag: e.betrag, quelle: e.quelle }));
   return [...ausgaben, ...einnahmen].sort((a, b) => (a.datum < b.datum ? 1 : -1));
+}
+
+function routeId(t) {
+  return `${t.typ}-${t.id}`;
+}
+
+function findeTransaktion(zustand, detail) {
+  const [typ, ...rest] = detail.split('-');
+  const id = rest.join('-');
+  if (typ === 'ausgabe') {
+    const e = zustand.expenses.find((x) => String(x.id) === id);
+    return e ? { ...e, typ: 'ausgabe' } : null;
+  }
+  if (typ === 'einnahme') {
+    const e = zustand.einnahmen.find((x) => String(x.id) === id);
+    return e ? { ...e, typ: 'einnahme' } : null;
+  }
+  return null;
 }
 
 function ladeCsv(transaktionen) {
@@ -32,7 +50,16 @@ function ladeCsv(transaktionen) {
   URL.revokeObjectURL(url);
 }
 
-export async function zeigeTransaktionen(container, zustand, aktualisieren, zeitraum) {
+export async function zeigeTransaktionen(container, zustand, aktualisieren, zeitraum, _setZeitraum, detail) {
+  if (detail) {
+    const transaktion = findeTransaktion(zustand, detail);
+    if (transaktion) {
+      const { zeigeTransaktionDetail } = await import('./transaktion-detail.js');
+      zeigeTransaktionDetail(container, transaktion, () => { location.hash = '#/finanzen/transaktionen'; });
+      return;
+    }
+  }
+
   const heuteStr = new Date().toISOString().slice(0, 10);
   const von = zeitraumVon(zeitraum, heuteStr);
   const alleTransaktionen = baueTransaktionen(zustand, von, heuteStr);
@@ -52,11 +79,17 @@ export async function zeigeTransaktionen(container, zustand, aktualisieren, zeit
     });
     const liste = container.querySelector('#tx-liste');
     liste.innerHTML = gefiltert.length === 0 ? '<p class="lade">Keine Treffer.</p>' : gefiltert.map((t) => `
-      <div class="punkt-zeile">
+      <div class="punkt-zeile" data-route="${routeId(t)}">
         <div class="icon-badge">${t.typ === 'einnahme' ? EINNAHME_ICON : AUSGABE_ICON}</div>
         <div class="punkt-info"><strong>${esc(t.bezeichnung)}</strong><small>${t.datum}</small></div>
         <strong class="${t.typ === 'einnahme' ? 'betrag-plus' : 'betrag-minus'}">${t.typ === 'einnahme' ? '+' : '-'}${t.betrag.toFixed(2)} €</strong>
       </div>`).join('');
+    liste.querySelectorAll('[data-route]').forEach((zeile) => {
+      zeile.style.cursor = 'pointer';
+      zeile.addEventListener('click', () => {
+        location.hash = `#/finanzen/transaktionen/${zeile.dataset.route}`;
+      });
+    });
   }
 
   container.querySelector('#tx-suche').addEventListener('input', (e) => {

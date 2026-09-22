@@ -62,7 +62,7 @@ const LADER = {
 };
 
 async function zeigeAktuellenTab() {
-  const { unterseite } = parseHash(location.hash);
+  const { unterseite, detail } = parseHash(location.hash);
   const tab = TABS.some(([id]) => id === unterseite) ? unterseite : 'uebersicht';
   const inhalt = containerRef.querySelector('#tab-inhalt');
   containerRef.querySelectorAll('.tab-leiste button')
@@ -77,7 +77,7 @@ async function zeigeAktuellenTab() {
     await zeigeFn(inhalt, zustand, async () => {
       await ladeZustand();
       zeigeAktuellenTab();
-    }, zeitraum, setZeitraum);
+    }, zeitraum, setZeitraum, detail);
   } catch (e) {
     inhalt.innerHTML = `<p class="lade">Fehler: ${e.message}</p>`;
   }
