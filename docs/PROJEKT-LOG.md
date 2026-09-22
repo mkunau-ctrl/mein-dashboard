@@ -4,6 +4,55 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-22 – Etappe 4 Sub-D: Rechnungen-Modul
+
+**Was:** Die fünfte von 17 Sub-Etappen (A–Q, siehe `CLAUDE.md`) ist
+fertig. Komplett neues, eigenständiges Modul `js/module/rechnungen/`:
+offene/bezahlte/überfällige Rechnungen (Stromrechnung, Telefonrechnung,
+Mitgliedsbeiträge etc.) verwalten, im Design des Prototyp-Screens
+"Rechnungen" (Summenkarte oben, Filter-Chips Alle/Offen/Bezahlt/
+Überfällig, Liste mit "als bezahlt markieren"/Entfernen). Neue Tabelle
+`rechnungen` (RLS, Check-Constraint `status in ('offen','bezahlt')`)
+komplett getrennt vom bestehenden `expenses`-Datenmodell. Erfassung
+per App-Formular **und** per Chat-Diktat/Foto (wie Einnahmen/Konten/
+Schulden aus Sub-Etappe A) — dafür nimmt `legeRechnungAn()` dieselben
+Felder wie das Formular entgegen. Die E-Mail-Automatisierung erkennt
+jetzt zusätzlich zu Belegen/Sendungen/Terminen auch Rechnungen (neuer
+Klassifikations-Typ `rechnung` in `automatisierung/klassifizieren.js`,
+neuer Schreib-Zweig in `postfach-scan.mjs`) — wichtige Abgrenzung im
+neuen Prompt: "beleg" ist ein bereits bezahlter Kassenbon, "rechnung"
+ist eine noch offene Verbindlichkeit mit Fälligkeitsdatum. Kein eigener
+Bottom-Nav-Punkt: Einstieg über den in Sub-Etappe E+F gebauten, bis
+jetzt dekorativen "Rechnungen"-Schnelleinstieg in der Suche, der jetzt
+echt zu `#/rechnungen` navigiert statt einen Toast zu zeigen.
+
+**Entscheidungen (Doku-Rigor-Regel — ohne direkte Nutzer-Rückfrage
+getroffen, da parallele Forks liefen, als die Spec entstand):**
+- **Bezahlte Rechnung erzeugt keine `expenses`-Zeile.** Eine Rechnung
+  ist schon vor der Zahlung real (offene Verbindlichkeit); die
+  tatsächliche Ausgabe entsteht weiterhin über den etablierten Weg
+  (Chat-Diktat/Foto), wenn Mark sie wirklich bezahlt hat. Automatische
+  Verknüpfung hätte das Risiko von Doppel-Buchungen.
+- **"Überfällig" ist eine reine Berechnung** (`faellig_am < heute` UND
+  `status = 'offen'`), kein gespeichertes Feld, kein Kulanz-Zeitraum —
+  konsistent mit dem Schulden-Muster aus Sub-Etappe A.
+- **Fälligkeits-Erinnerungen auf dem Home-Screen** sind bewusst NICHT
+  Teil dieser Sub-Etappe — das ist für Sub-Etappe M (Kalender &
+  Erinnerungen) vorgesehen, wo es ohnehin ein zentrales Erinnerungs-
+  Konzept braucht.
+- **Kein eigener Bottom-Nav-Punkt** — passt zum bereits etablierten
+  Muster "nicht jedes Modul braucht einen Nav-Punkt" (Einstellungen,
+  Projekte-Übersicht).
+
+**Stand danach:** `npm test` 106/106 grün. Alle 6 Tasks committed und
+auf `main` gepusht (`dce4232`…`236339e`). Tabelle `rechnungen` per
+Supabase-MCP angelegt, Advisors geprüft — keine neuen Sicherheitsfunde
+zur neuen Tabelle. Nächster Schritt laut `CLAUDE.md`: Sub-Etappe M
+(Kalender & Notizen) — braucht vorher einen eigenen CalDAV-Spike, noch
+nicht begonnen.
+
+---
+
 ## 2026-09-22 – Etappe 4 Sub-B: Finanzen-Redesign
 
 **Was:** Die dritte von 17 Sub-Etappen (A–Q, siehe `CLAUDE.md`) ist

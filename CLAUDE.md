@@ -99,11 +99,15 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   Finanzen-Transaktionen-Tab von Sub-Etappe B) sind anklickbar und
   zeigen eine eigene Detailansicht. Details:
   `docs/PROJEKT-LOG.md` (Eintrag "Rest von Sub-C", 2026-09-22).
-- **D) Neues Rechnungen-Modul** — komplett neu (kein bisheriges
-  Datenmodell): offen/bezahlt/überfällig mit Filter-Chips (Vorbild:
-  Prototyp-Screen "Rechnungen"), plus Fälligkeits-Erinnerungen auf dem
-  Home-Screen. Spec + Plan bereits geschrieben (s. u. "Wo weiterlesen"),
-  noch nicht gebaut.
+- **D) Neues Rechnungen-Modul** — **fertig (2026-09-22)**. Komplett
+  neues, eigenständiges Modul (kein bisheriges Datenmodell): offen/
+  bezahlt/überfällig mit Filter-Chips + Summenkarte (Vorbild:
+  Prototyp-Screen "Rechnungen"), Erfassung per Formular und
+  Chat-Diktat/Foto, E-Mail-Automatisierung erkennt Rechnungen jetzt
+  automatisch. Fälligkeits-Erinnerungen auf dem Home-Screen sind
+  bewusst NICHT Teil dieser Sub-Etappe (kommt mit Sub-Etappe M). Details:
+  `docs/superpowers/specs/2026-09-21-etappe-4-sub-d-rechnungen-design.md`
+  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-22).
 - **E) Design-Angleichung an Prototyp** — **fertig (2026-09-22)**.
   Profil-, Suche- (inkl. Schnelleinstiege + Letzte Suchen) und
   Ausbildung-Screen (Fortschritts-Ring) sehen jetzt 1:1 wie im Prototyp
@@ -199,24 +203,25 @@ dokumentierten Fork-Vorfällen führte, hat Mark die Reihenfolge bewusst
 zurück auf "eine Sache nach der anderen, fertig bauen" gestellt: erst
 **E+F** (fertig), dann **B** (Finanzen-Redesign, fertig), dann der
 **Rest von C** (Transaktionen-Detail-Klick, fertig — damit auch ganz C
-fertig), dann **D**, dann **M**, dann **N/O/I/P**, dann **Q**, dann
-**H**, ganz zuletzt die Sicherheits-/Auth-lastigen Punkte **G/J/K+L**.
-Spec+Plan für D, N, P, Q (und eine Spec für I) sind bereits geschrieben,
-aber noch nicht gebaut — siehe die jeweiligen Bullets oben für die
-Dateipfade.
+fertig), dann **D** (Rechnungen-Modul, fertig), dann **M**, dann
+**N/O/I/P**, dann **Q**, dann **H**, ganz zuletzt die
+Sicherheits-/Auth-lastigen Punkte **G/J/K+L**. Spec+Plan für N, P, Q
+(und eine Spec für I) sind bereits geschrieben, aber noch nicht
+gebaut — siehe die jeweiligen Bullets oben für die Dateipfade. Für
+**M** gibt es noch keinen Plan — braucht laut Backlog erst einen
+eigenen CalDAV-Machbarkeits-Spike, bevor Design/Spec sinnvoll sind.
 
 **Session-Begrenzung 2026-09-22 (Nutzer-Entscheidung):** Der Nutzer hat
-diese Bau-Session explizit **nach Tasks begrenzt** statt "immer weiter
-bis zum Nutzungslimit" — Grund: Claude hat keinen Einblick in
+Bau-Sessions explizit **nach Tasks begrenzt** statt "immer weiter bis
+zum Nutzungslimit" — Grund: Claude hat keinen Einblick in
 Token-Verbrauch/Nutzungslimit-Prozentzahlen und kann eine
-zeit-/tokenbasierte Grenze nicht selbst einhalten. Deshalb wurde nach
-Sub-Etappe B + Rest-von-C bewusst **gestoppt**, ohne mit Sub-Etappe D
-weiterzumachen, obwohl D als Nächstes ansteht und Spec+Plan bereits
-fertig sind. Für künftige Sessions: Umfang lieber explizit nach
-Tasks/Sub-Etappen begrenzen lassen statt nach Zeit/Tokens.
+zeit-/tokenbasierte Grenze nicht selbst einhalten. Sub-Etappe D wurde
+danach in einer eigenen, freigegebenen Session gebaut. Für künftige
+Sessions: Umfang lieber explizit nach Tasks/Sub-Etappen begrenzen
+lassen statt nach Zeit/Tokens.
 
-**Nächster Schritt beim Fortsetzen:** Sub-Etappen A, E+F, B und C sind
-komplett umgesetzt und dokumentiert (A: Spec
+**Nächster Schritt beim Fortsetzen:** Sub-Etappen A, E+F, B, C und D
+sind komplett umgesetzt und dokumentiert (A: Spec
 `docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`,
 Plan `.superpowers/sdd/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden/`;
 E+F: Spec
@@ -228,12 +233,14 @@ B: Spec
 Plan + Ledger
 `.superpowers/sdd/2026-09-21-etappe-4-sub-b-finanzen-redesign/`; Rest
 von C: kein eigener Plan nötig, kleine Erweiterung nach bestehendem
-Muster, siehe `docs/PROJEKT-LOG.md`). Als Nächstes: **Sub-Etappe D**
-(Rechnungen-Modul) — Spec und Plan sind bereits geschrieben
-(`docs/superpowers/specs/2026-09-21-etappe-4-sub-d-rechnungen-design.md`,
-`docs/superpowers/plans/2026-09-21-etappe-4-sub-d-rechnungen.md`), die
-Umsetzung selbst hat aber noch nicht begonnen. Jede weitere Sub-Etappe
-danach ebenso einzeln, nicht alles auf einmal.
+Muster, siehe `docs/PROJEKT-LOG.md`; D: Spec
+`docs/superpowers/specs/2026-09-21-etappe-4-sub-d-rechnungen-design.md`,
+Plan + Ledger
+`.superpowers/sdd/2026-09-21-etappe-4-sub-d-rechnungen/`). Als
+Nächstes: **Sub-Etappe M** (Kalender & Notizen) — braucht vorher einen
+eigenen CalDAV-Machbarkeits-Spike, noch nicht begonnen (kein Spec/Plan
+vorhanden). Jede weitere Sub-Etappe danach ebenso einzeln, nicht alles
+auf einmal.
 
 **Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
 falls nicht anders gesagt): `superpowers:brainstorming` →
@@ -452,6 +459,34 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     über deren jeweiliges `ladeAlles()`), `ladeAlsDatei(daten)`
     (Blob-Download als JSON).
   Details: `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
+- `js/module/rechnungen/` – neues, eigenständiges Modul (Sub-Etappe D,
+  2026-09-22): offene/bezahlte/überfällige Rechnungen (Stromrechnung,
+  Telefonrechnung, Mitgliedsbeiträge etc.), komplett getrennt vom
+  `expenses`-Datenmodell. Kein eigener Bottom-Nav-Punkt (s. Abschnitt
+  "Nav") – Einstieg über den Suche-Schnelleinstieg "Rechnungen"
+  (`#/rechnungen`, seit E+F dekorativ, jetzt echt verlinkt):
+  - `berechnung.js` – `istUeberfaellig(rechnung, heute)` (reiner
+    Datumsvergleich: `status==='offen'` und `faellig_am < heute`, kein
+    gespeichertes Feld, kein Kulanz-Zeitraum),
+    `sortiereRechnungen(rechnungen, heute)` (überfällig → offen →
+    bezahlt, jeweils nach Fälligkeit/`bezahlt_am` sortiert),
+    `summeOffenerRechnungen(rechnungen)`.
+  - `daten.js` – Supabase-Zugriff auf `rechnungen`: `ladeAlles`,
+    `legeRechnungAn({haendler,betrag,faellig_am,notiz,quelle})` (auch
+    für Chat-Diktat/Foto-Erfassung nutzbar, analog Einnahmen/Konten/
+    Schulden aus Sub-Etappe A), `setzeRechnungBezahlt(id)`,
+    `entferneRechnung(id)`.
+  - `index.js` – Registrierung (`id:'rechnungen'`), Summenkarte
+    "Offene Rechnungen", Filter-Chips (Alle/Offen/Bezahlt/Überfällig,
+    wiederverwendet `.chips`/`.chip`-CSS aus Sub-Etappe B), Formular,
+    Liste mit "als bezahlt markieren"/Entfernen.
+  Eine bezahlte Rechnung erzeugt **bewusst keine** `expenses`-Zeile
+  (Doppel-Buchungs-Risiko) – die tatsächliche Ausgabe läuft weiterhin
+  über den etablierten Chat-Diktat/Foto-Weg. Fälligkeits-Erinnerungen
+  auf dem Home-Screen sind bewusst nicht Teil dieser Sub-Etappe
+  (kommt mit Sub-Etappe M). Details:
+  `docs/superpowers/specs/2026-09-21-etappe-4-sub-d-rechnungen-design.md`
+  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-22).
 - `js/module/berichtsheft/` – fünftes Fachmodul (Ausbildungsnachweis),
   **Anzeigename seit Etappe 8 v2 "Ausbildung"** (interne Modul-ID bleibt
   unverändert `berichtsheft`, keine Routen-/Datenbank-Änderung):
@@ -516,7 +551,8 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   - `postfach-scan.mjs` – täglicher Scan von Marks GMX-Postfach per IMAP,
     Klassifikation jeder Mail per `claude -p` (Details/Warum siehe
     `docs/PROJEKT-LOG.md`, Eintrag 2026-09-17), schreibt Belege/Sendungen/
-    Termine nach Supabase. **Seit Etappe 3 (2026-09-19):** erkennt
+    Termine/**Rechnungen** (seit Sub-Etappe D, 2026-09-22) nach Supabase.
+    **Seit Etappe 3 (2026-09-19):** erkennt
     bestehende Sendungen per Trackingnummer wieder
     (`findeBestehendeSendung`) und aktualisiert sie statt eine neue Zeile
     anzulegen (behebt den seit Etappe 6 bekannten Duplikat-Bug — jede
@@ -532,6 +568,12 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     ab, Default `unbekannt`) — extrahiert dafür `statusText`/`ort`/
     `abholcode`/`abholadresse`/`abholzeiten` aus Sendungs-Mails (nur wenn
     wörtlich in der Mail vorhanden, sonst `null`) (reine Logik, getestet).
+    **Seit Sub-Etappe D (2026-09-22):** `ERLAUBTE_TYPEN` kennt zusätzlich
+    `rechnung` (noch offene, zu bezahlende Rechnung mit Fälligkeitsdatum
+    — Abgrenzung zu `beleg`, das ein bereits bezahlter Kassenbon ist);
+    `postfach-scan.mjs`s `schreibeErgebnis()` schreibt diesen Typ nach
+    `rechnungen` (ohne `konto_id` — eine Rechnung ist noch keine
+    Kontobuchung).
   - `letzter-lauf.js` – `leseLetztenLauf`, `schreibeLetztenLauf` (reine Logik, getestet).
   - `.env` (nicht im Repo, siehe Konventionen unten) – GMX- und Supabase-Zugangsdaten.
   - `letzter-lauf.json` (nicht im Repo) – Zeitstempel des letzten erfolgreichen Laufs.
@@ -550,8 +592,11 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   (seit Etappe 3, 2026-09-19, inkl. `abholbereit`-Sortierung/-Priorität/
   -Zyklus), `suche-berechnung` (seit E+F: `ziel` zeigt auf Detailrouten
   mit ID), `automatisierung-klassifizieren`
-  (seit Etappe 3 inkl. `kategorisiereStatus`), `automatisierung-letzter-lauf`
-  (89 grün; `lager-berechnung.test.js` existiert seit Etappe 8 v2 nicht mehr).
+  (seit Etappe 3 inkl. `kategorisiereStatus`, seit Sub-Etappe D inkl.
+  Typ `rechnung`), `automatisierung-letzter-lauf`, seit Sub-Etappe D
+  neu: `rechnungen-berechnung` (`istUeberfaellig`/`sortiereRechnungen`/
+  `summeOffenerRechnungen`)
+  (106 grün; `lager-berechnung.test.js` existiert seit Etappe 8 v2 nicht mehr).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
 
@@ -661,7 +706,7 @@ auf Deutsch. Datenschutz beachten.
   - Relying Party Origins: `https://mkunau-ctrl.github.io`
   Danach in der App einloggen (Magic-Link) und oben „Passkey einrichten"
   tippen – erst dann geht „Mit Passkey anmelden" auf dem Login-Screen.
-- Tabellen (Stand Sub-Etappe B, 2026-09-22): `checklist_items`, `daily_log`,
+- Tabellen (Stand Sub-Etappe D, 2026-09-22): `checklist_items`, `daily_log`,
   `weight_log`, `settings` (Ernährung), `todos`, `todo_vorlagen`, `expenses`
   (seit Sub-Etappe A zusätzlich Pflichtspalte `konto_id`, seit
   Sub-Etappe B zusätzlich nullable `vorlage_id`),
@@ -680,5 +725,9 @@ auf Deutsch. Datenschutz beachten.
   Datum, Notiz), sowie neu seit Sub-Etappe B (2026-09-22):
   **`ausgaben_vorlagen`** (analog zu `einnahmen_vorlagen`: Bezeichnung,
   Betrag, Plan-Tag im Monat, `naechste_faelligkeit`, `konto_id`,
-  `aktiv`). Alle sechs neuen Tabellen mit RLS nach dem bestehenden
-  Muster (`user_id = auth.uid()`, `for all to authenticated`).
+  `aktiv`), sowie neu seit Sub-Etappe D (2026-09-22): **`rechnungen`**
+  (Händler, Betrag, `faellig_am`, `status` `offen`/`bezahlt` mit
+  Check-Constraint, `bezahlt_am`, Notiz, Quelle
+  `manuell`/`foto`/`email`), komplett getrennt vom
+  `expenses`-Datenmodell. Alle sieben neuen Tabellen mit RLS nach dem
+  bestehenden Muster (`user_id = auth.uid()`, `for all to authenticated`).
