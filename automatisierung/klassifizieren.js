@@ -1,6 +1,6 @@
 // Reine Logik zur Klassifikation von E-Mail-Text. Kein Netz, kein Dateisystem.
 
-const ERLAUBTE_TYPEN = ['beleg', 'sendung', 'amazon', 'termin', 'sonstiges'];
+const ERLAUBTE_TYPEN = ['beleg', 'sendung', 'amazon', 'termin', 'rechnung', 'sonstiges'];
 
 const STATUS_SCHLUESSELWOERTER = [
   { kategorie: 'abholbereit', muster: /abholbereit|zur abholung|packstation.*bereit|packstation.*abgegeben|paketshop.*hinterlegt|paketshop.*abgegeben|abholung möglich/i },
@@ -18,14 +18,16 @@ export function kategorisiereStatus(statusText) {
 
 export function baustePrompt() {
   return `Du bekommst den Text einer E-Mail über stdin. Klassifiziere sie in genau einen Typ:
-- "beleg": Kassenbon/Rechnung für einen Kauf
+- "beleg": Kassenbon für einen bereits bezahlten Kauf (z. B. Supermarkt-Kassenbon per Mail)
+- "rechnung": eine noch zu bezahlende Rechnung mit Fälligkeitsdatum (z. B. Stromrechnung, Telefonrechnung, Mitgliedsbeitrag)
 - "sendung": Versandbestätigung eines Paketdienstes (DHL, Hermes, DPD, GLS, UPS)
 - "amazon": Amazon-Bestellbestätigung oder -Versandbestätigung
-- "termin": E-Mail mit einer konkreten Frist/einem Termin (z. B. Prüfungsanmeldung, Rechnungsfälligkeit)
+- "termin": E-Mail mit einer konkreten Frist/einem Termin ohne Rechnungsbetrag (z. B. Prüfungsanmeldung)
 - "sonstiges": alles andere, inkl. Werbung/Newsletter
 
 Antworte NUR mit einem einzelnen JSON-Objekt, ohne Markdown-Codeblock, ohne Erklärtext:
 - beleg: {"typ":"beleg","haendler":string,"betrag":number,"datum":"YYYY-MM-DD","kategorie":string}
+- rechnung: {"typ":"rechnung","haendler":string,"betrag":number,"faelligAm":"YYYY-MM-DD"}
 - sendung: {"typ":"sendung","haendler":string,"trackingnummer":string|null,"beschreibung":string|null,"statusText":string|null,"ort":string|null,"abholcode":string|null,"abholadresse":string|null,"abholzeiten":string|null}
 - amazon: {"typ":"amazon","beschreibung":string|null,"trackingnummer":string|null,"statusText":string|null,"ort":string|null,"abholcode":string|null,"abholadresse":string|null,"abholzeiten":string|null}
 - termin: {"typ":"termin","titel":string,"faelligAm":"YYYY-MM-DD"}
@@ -59,6 +61,10 @@ export function parseKlassifikation(rohtext) {
   }
   if (objekt.typ === 'termin' && (!objekt.titel || !objekt.faelligAm)) {
     throw new Error(`Termin unvollständig: ${rohtext}`);
+  }
+  if (objekt.typ === 'rechnung' &&
+      (!objekt.haendler || typeof objekt.betrag !== 'number' || !objekt.faelligAm)) {
+    throw new Error(`Rechnung unvollständig: ${rohtext}`);
   }
   return objekt;
 }

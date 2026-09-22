@@ -157,6 +157,14 @@ async function schreibeErgebnis(k, kontoId) {
     if (error) throw new Error(`Beleg speichern: ${error.message}`);
     return;
   }
+  if (k.typ === 'rechnung') {
+    const { error } = await supabase.from('rechnungen').insert({
+      user_id: DASHBOARD_USER_ID, haendler: k.haendler, betrag: k.betrag,
+      faellig_am: k.faelligAm, quelle: 'email',
+    });
+    if (error) throw new Error(`Rechnung speichern: ${error.message}`);
+    return;
+  }
   if (k.typ === 'sendung' || k.typ === 'amazon') {
     await schreibeSendung(k);
     return;

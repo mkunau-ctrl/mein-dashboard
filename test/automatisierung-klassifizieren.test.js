@@ -66,3 +66,19 @@ test('baustePrompt: enthaelt die neuen optionalen Sendungsfelder', () => {
     assert.ok(prompt.includes(feld), `Prompt sollte "${feld}" erwaehnen`);
   }
 });
+
+test('parseKlassifikation: akzeptiert Typ rechnung mit vollstaendigen Feldern', () => {
+  const ergebnis = parseKlassifikation(JSON.stringify({
+    typ: 'rechnung', haendler: 'E.ON', betrag: 148.32, faelligAm: '2026-08-29',
+  }));
+  assert.equal(ergebnis.typ, 'rechnung');
+  assert.equal(ergebnis.haendler, 'E.ON');
+});
+
+test('parseKlassifikation: rechnung ohne Haendler wirft Fehler', () => {
+  assert.throws(() => parseKlassifikation(JSON.stringify({ typ: 'rechnung', betrag: 10, faelligAm: '2026-08-29' })));
+});
+
+test('baustePrompt: erwaehnt den neuen Typ rechnung', () => {
+  assert.ok(baustePrompt().includes('rechnung'));
+});
