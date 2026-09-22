@@ -1,7 +1,7 @@
 :root {
   color-scheme: dark;
   --bg: #000000; --karte: #0A0A0B; --karte-getoent: #0D0D0F; --text: #ffffff;
-  --gedaempft: #8E9196; --akzent: #0A84FF; --rand: #232326;
+  --gedaempft: #8E9196; --akzent: #ffffff; --rand: #232326;
   --icon-bg: #141416; --icon-farbe: var(--text);
   --pille-bg: var(--karte); --pille-text: var(--text);
   --hm-gruen: #22C55E; --hm-rot: #F0473F; --hm-gelb: #e0b73a;
@@ -13,7 +13,7 @@
   :root:not([data-theme="dark"]) {
     color-scheme: light;
     --bg: #F7F8FA; --karte: #ffffff; --karte-getoent: #EEF1F3; --text: #14161A;
-    --gedaempft: #868B93; --akzent: #0A84FF; --rand: #E7E9EC;
+    --gedaempft: #868B93; --akzent: #14161A; --rand: #E7E9EC;
     --icon-bg: #EEF1F3; --icon-farbe: var(--text);
     --pille-bg: var(--karte); --pille-text: var(--text);
     --hm-gruen: #16A34A; --hm-rot: #EF4444; --hm-gelb: #e0b73a;
@@ -25,7 +25,7 @@
 :root[data-theme="light"] {
   color-scheme: light;
   --bg: #F7F8FA; --karte: #ffffff; --karte-getoent: #EEF1F3; --text: #14161A;
-  --gedaempft: #868B93; --akzent: #0A84FF; --rand: #E7E9EC;
+  --gedaempft: #868B93; --akzent: #14161A; --rand: #E7E9EC;
   --icon-bg: #EEF1F3; --icon-farbe: var(--text);
   --pille-bg: var(--karte); --pille-text: var(--text);
   --hm-gruen: #16A34A; --hm-rot: #EF4444; --hm-gelb: #e0b73a;
@@ -47,7 +47,7 @@ h1 { font-size: 1.4rem; }
 #login-form { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 24px auto; }
 input, button { font: inherit; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--rand); }
 input { background: var(--karte); color: var(--text); }
-button { background: var(--akzent); color: #fff; border: none; cursor: pointer; }
+button { background: var(--akzent); color: var(--bg); border: none; cursor: pointer; }
 button:disabled { opacity: .6; cursor: default; }
 #login-hinweis { min-height: 1.5em; color: var(--gedaempft); }
 .login-kopf { display: flex; justify-content: flex-end; max-width: 320px; margin: 0 auto; }
