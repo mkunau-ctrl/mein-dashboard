@@ -86,8 +86,8 @@ button:disabled { opacity: .6; cursor: default; }
   font-weight: 600; font-size: .82rem; }
 .tab-leiste button.aktiv { color: var(--pille-text); background: var(--pille-bg);
   box-shadow: var(--schatten); }
-@keyframes tab-inhalt-einblenden { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-#tab-inhalt.tab-wechsel { animation: tab-inhalt-einblenden .18s ease; }
+@keyframes inhalt-einblenden { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.einblenden { animation: inhalt-einblenden .18s ease; }
 .kachel-zahl { display: block; font-size: 1.4rem; font-weight: 700; margin-top: 6px; }
 .lade { color: var(--gedaempft); }
 .section-head { display: flex; justify-content: space-between; align-items: center; margin: 22px 0 12px; }

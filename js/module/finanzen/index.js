@@ -63,7 +63,7 @@ async function zeigeAktuellenTab() {
   const inhalt = containerRef.querySelector('#tab-inhalt');
   containerRef.querySelectorAll('.tab-leiste button')
     .forEach((b) => b.classList.toggle('aktiv', b.dataset.tab === tab));
-  inhalt.classList.remove('tab-wechsel');
+  inhalt.classList.remove('einblenden');
   inhalt.innerHTML = '<p class="lade">Lädt …</p>';
 
   const setZeitraum = (neu) => { zeitraum = neu; zeigeAktuellenTab(); };
@@ -76,7 +76,7 @@ async function zeigeAktuellenTab() {
       zeigeAktuellenTab();
     }, zeitraum, setZeitraum, detail);
     void inhalt.offsetWidth; // Reflow erzwingen, damit die Animation bei jedem Wechsel neu startet
-    inhalt.classList.add('tab-wechsel');
+    inhalt.classList.add('einblenden');
   } catch (e) {
     inhalt.innerHTML = `<p class="lade">Fehler: ${e.message}</p>`;
   }

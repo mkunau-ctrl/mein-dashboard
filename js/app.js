@@ -74,6 +74,9 @@ async function oeffneModul(modul) {
     modulDetail.innerHTML = '';
     try {
       await modul.init(modulDetail);
+      modulDetail.classList.remove('einblenden');
+      void modulDetail.offsetWidth;
+      modulDetail.classList.add('einblenden');
     } catch (e) {
       aktivesModulId = null;
       modulDetail.innerHTML = `<p class="lade">Fehler beim Laden: ${e.message}</p>`;
