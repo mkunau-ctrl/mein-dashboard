@@ -2,12 +2,17 @@ import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
 
-const TABS = [['ausgaben', 'Ausgaben'], ['einnahmen', 'Einnahmen'], ['kontostand', 'Kontostand'],
-  ['konten', 'Konten'], ['schulden', 'Schulden'], ['monat', 'Monat'],
-  ['abos', 'Abos'], ['teile', 'Teile'], ['bestellen', 'Bestellen']];
+const TABS = [
+  ['uebersicht', 'Übersicht'], ['transaktionen', 'Transaktionen'], ['analyse', 'Analyse'],
+  ['ausgaben', 'Ausgaben'], ['einnahmen', 'Einnahmen'], ['kontostand', 'Kontostand'],
+  ['konten', 'Konten'], ['schulden', 'Schulden'],
+  ['regelmaessige-ausgaben', 'Regelmäßige Ausgaben'],
+  ['teile', 'Teile'], ['bestellen', 'Bestellen'],
+];
 
 let zustand = null;
 let containerRef = null;
+let zeitraum = '30T';
 
 async function ladeZustand() {
   zustand = await ladeAlles();
@@ -43,24 +48,28 @@ function baueRahmen(container) {
 }
 
 const LADER = {
+  uebersicht: () => import('./uebersicht.js').then((m) => m.zeigeUebersicht),
+  transaktionen: () => import('./transaktionen.js').then((m) => m.zeigeTransaktionen),
+  analyse: () => import('./analyse.js').then((m) => m.zeigeAnalyse),
   ausgaben: () => import('./ausgaben.js').then((m) => m.zeigeAusgaben),
   einnahmen: () => import('./einnahmen.js').then((m) => m.zeigeEinnahmen),
   kontostand: () => import('./kontostand.js').then((m) => m.zeigeKontostand),
   konten: () => import('./konten.js').then((m) => m.zeigeKonten),
   schulden: () => import('./schulden.js').then((m) => m.zeigeSchulden),
-  monat: () => import('./monat.js').then((m) => m.zeigeMonat),
-  abos: () => import('./abos.js').then((m) => m.zeigeAbos),
+  'regelmaessige-ausgaben': () => import('./regelmaessige-ausgaben.js').then((m) => m.zeigeRegelmaessigeAusgaben),
   teile: () => import('./teile.js').then((m) => m.zeigeTeile),
   bestellen: () => import('./bestellen.js').then((m) => m.zeigeBestellen),
 };
 
 async function zeigeAktuellenTab() {
   const { unterseite } = parseHash(location.hash);
-  const tab = TABS.some(([id]) => id === unterseite) ? unterseite : 'ausgaben';
+  const tab = TABS.some(([id]) => id === unterseite) ? unterseite : 'uebersicht';
   const inhalt = containerRef.querySelector('#tab-inhalt');
   containerRef.querySelectorAll('.tab-leiste button')
     .forEach((b) => b.classList.toggle('aktiv', b.dataset.tab === tab));
   inhalt.innerHTML = '<p class="lade">Lädt …</p>';
+
+  const setZeitraum = (neu) => { zeitraum = neu; zeigeAktuellenTab(); };
 
   try {
     const zeigeFn = await LADER[tab]();
@@ -68,7 +77,7 @@ async function zeigeAktuellenTab() {
     await zeigeFn(inhalt, zustand, async () => {
       await ladeZustand();
       zeigeAktuellenTab();
-    });
+    }, zeitraum, setZeitraum);
   } catch (e) {
     inhalt.innerHTML = `<p class="lade">Fehler: ${e.message}</p>`;
   }
