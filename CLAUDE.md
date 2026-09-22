@@ -26,7 +26,7 @@ unten für Details.
 mehrteiligen Vorhaben angewachsen** (Nutzerwunsch: echte
 Einnahmen-Erfassung, Detail-Klicks überall, neues Rechnungen-Modul,
 Design-Angleichung weiterer Screens, mehr Einstellungen). Zu groß für
-einen Spec — deshalb in **Sub-Etappen A–Q** zerlegt (ursprüngliche
+einen Spec — deshalb in **Sub-Etappen A–Q, seit 2026-09-22 A–R** zerlegt (ursprüngliche
 Reihenfolge vom Nutzer am 2026-09-19 bestätigt, dann am 2026-09-21/22
 nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
 
@@ -183,48 +183,39 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   einem früheren Plan einer anderen Session angedacht (siehe
   `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`),
   aber nie gebaut — jetzt explizit erneut bestätigt.
-- **R) UI-Politur & Diktat-Korrekturen** (neu, 2026-09-22, vom Nutzer
-  ausdrücklich als **eigener Buchstabe und nächster Schritt** gewünscht,
-  vor M) — sieben Punkte aus Screenshot-Feedback nach der
-  Design-Nacharbeit, bounded-Brainstorming bereits im Chat gelaufen,
-  zwei Rückfragen beantwortet:
-  1. **Doppelter Modul-Titel:** globaler Header (`#modul-titel` in
-     `js/app.js`) UND jedes Modul selbst (`<header class="modul-kopf">`,
-     z. B. `js/module/home/index.js:80`, `js/module/finanzen/index.js:29-31`)
-     zeichnen denselben Titel — einmal reicht.
+- **R) UI-Politur & Diktat-Korrekturen** — **fertig (2026-09-22)**,
+  sieben Punkte aus Screenshot-Feedback nach der Design-Nacharbeit,
+  bounded-Brainstorming im Chat, in zwei 4er-Batches gebaut (Nutzer-
+  Vorgabe wegen Nutzungslimit-Unsicherheit):
+  1. **Doppelter Modul-Titel** (globaler Header + jedes Modul selbst)
+     entfernt — in Finanzen/Todos/Ernährung/Sendungen/Ausbildung dabei
+     auch der redundante "‹ Dashboard"-Button, bei Profil/Suche der
+     ganze leere Header-Block, bei Einstellungen/Rechnungen nur der
+     `<h2>` (Zurück-Button blieb, da echte Navigation).
   2. **Home-Begrüßung statt "Home":** zeitabhängige Begrüßung ("Guten
-     Morgen/Tag/Abend, Mark") + heutiges Datum, wie im Prototyp
-     (`docs/superpowers/specs/2026-09-17-etappe-8-redesign-prototyp.html`)
-     — bestätigt.
-  3. **Header-Buttons neu sortiert:** Passkey-Einrichtung raus aus dem
-     Modul-Header, rein ins bestehende Einstellungen-Modul. Tag/Nacht-
-     Umschalter bleibt an der Passkey-Stelle, aber unauffälliger/kleiner
-     als der aktuelle gefüllte Kreis-Button.
-  4. **"‹ Dashboard"-Zeile:** Safaris eigene Browser-Chrome, kein Teil
-     unseres Codes. `manifest.webmanifest` hat bereits
-     `"display": "standalone"` — dürfte beim Öffnen über ein
-     Home-Bildschirm-Icon (statt Safari-Tab) von selbst verschwinden.
-     **Offene Rückfrage, noch unbeantwortet:** öffnet Mark die App
-     aktuell über ein Home-Bildschirm-Icon oder direkt in Safari? Vor
-     dem Umsetzen dieses Punktes klären, sonst läuft man ins Leere.
-  5. **Smoother Tab-Übergang in Finanzen** beim Wechsel zwischen
-     Übersicht/Transaktionen/Analyse/Regelmäßige-Ausgaben statt hartem
-     Wechsel.
-  6. **Kategorien in "Ausgaben nach Kategorien" anklickbar**
-     (`js/module/finanzen/uebersicht.js`, `js/module/finanzen/analyse.js`)
-     → Detailliste aller Ausgaben dieser Kategorie, **inklusive per
-     Kassenbon-Foto erfasster** (`expenses.quelle = 'foto'`, gleiche
-     Tabelle), dort wiederum nach (Unter-)Kategorie sortiert/gruppiert
-     plus Filter (genaue Filterart beim Umsetzen abstimmen).
-  7. **Regelmäßige-Ausgaben-Datenkorrektur:** `ausgaben_vorlagen` ist
-     leer. Drei feste monatliche Vorlagen anlegen: Claude Abo 22 €,
-     Wispr Flow 15 €, Friseur 10 € (nicht 18 €, wie die einmalige
-     `expenses`-Buchung vom 2026-09-19 fälschlich zeigt — dieser
-     Ausgaben-Eintrag ist vor/während dem Anlegen der Vorlage im Betrag
-     zu korrigieren). Reine Chat-Diktat-Aktion per Supabase-MCP.
+     Morgen/Tag/Abend, Mark") + heutiges Datum, wie im Prototyp.
+  3. **Passkey-Button raus aus dem globalen Header** (war in
+     Einstellungen bereits vorhanden, doppelt gepflegt) — **Theme-
+     Toggle unauffälliger** (kleiner, ohne Rahmen/Schatten).
+  4. **"‹ Dashboard"-Zeile war KEIN Safari-Browserelement** — hier
+     dem Nutzer ursprünglich fälschlich als Browser-Chrome erklärt,
+     tatsächlich aber ein echter `.zurueck`-Button in unserem eigenen
+     Code (`js/module/*/index.js`). Mit Punkt 1 zusammen behoben, keine
+     offene Rückfrage nötig gewesen.
+  5. **Sanfter Tab-Übergang in Finanzen** beim Wechsel zwischen den
+     Tabs (CSS-Einblend-Animation).
+  6. **Ausgaben-Kategorien anklickbar** (Übersicht- und Analyse-Tab) →
+     neue Datei `js/module/finanzen/kategorie-detail.js`: Detailliste
+     aller Ausgaben dieser Kategorie inkl. per Kassenbon-Foto
+     erfasster (`expenses.quelle = 'foto'`), mit Textsuche.
+  7. **Regelmäßige-Ausgaben-Datenkorrektur:** `ausgaben_vorlagen` hat
+     jetzt drei aktive monatliche Vorlagen: Claude Abo 22 €, Wispr Flow
+     15 €, Friseur 10 € (die einmalige `expenses`-Fehlbuchung vom
+     2026-09-19, die fälschlich 18 € zeigte, wurde auf 10 € korrigiert).
 
-  Details/Kontext: `docs/PROJEKT-LOG.md`, Eintrag 2026-09-22 "Weiteres
-  Design-/Daten-Feedback gesammelt".
+  Details: `docs/superpowers/plans/2026-09-22-etappe-4-sub-r-ui-politur.md`,
+  `docs/PROJEKT-LOG.md`, Einträge 2026-09-22 ("Weiteres Design-/Daten-
+  Feedback gesammelt", "Sub-Etappe R: UI-Politur & Diktat-Korrekturen").
 
 **Wichtige Arbeitsweise-Regel ab 2026-09-19 (Prototyp-Phase):** Diese
 gesamte Backlog-Abarbeitung (A–Q, seit 2026-09-22 A–R) wird bewusst als **Prototyp**
@@ -248,21 +239,19 @@ dann **B** (Finanzen-Redesign, fertig), dann der **Rest von C**
 (Transaktionen-Detail-Klick, fertig — damit auch ganz C fertig), dann
 **D** (Rechnungen-Modul, fertig), dann **R** (UI-Politur &
 Diktat-Korrekturen — vom Nutzer am 2026-09-22 ausdrücklich vorgezogen,
-jetzt **nächster Schritt**, noch nicht begonnen).
+jetzt ebenfalls **fertig**).
 
 **Danach explizit (Nutzer-Entscheidung 2026-09-22): erst alles bauen,
 was ohne Spike direkt umsetzbar ist — Spikes kommen ganz zuletzt,
-Mark will zuerst, dass alles Bestehende funktioniert.** Also: **N**,
-**O**, **P**, **Q** (Spec+Plan jeweils schon geschrieben, siehe Bullets
-oben), danach **I** (Wetter-Widget — hat bereits eine Spec, aber noch
-keinen fertig abgestimmten Plan, prüfen ob noch offene Fragen aus dem
-ursprünglichen Brainstorming bestehen). **Ganz zuletzt, in beliebiger
-Reihenfolge, alles was einen Spike/Machbarkeits-Check braucht:** **M**
-(CalDAV-Spike), **H** (KI-Fortschritt/Wächter-Spike), **G** (Google-
-Drive-Spike), **J** (eBay-Spike), sowie die Sicherheits-/Auth-lastigen
-Punkte **K+L**. Für **R** gibt es noch keinen Plan (bounded-Brainstorming
-im Chat bereits gelaufen, s. o., aber eine Rückfrage — Punkt 4 — noch
-unbeantwortet).
+Mark will zuerst, dass alles Bestehende funktioniert.** Also jetzt als
+**nächster Schritt N**, dann **O**, **P**, **Q** (Spec+Plan jeweils
+schon geschrieben, siehe Bullets oben), danach **I** (Wetter-Widget —
+hat bereits eine Spec, aber noch keinen fertig abgestimmten Plan,
+prüfen ob noch offene Fragen aus dem ursprünglichen Brainstorming
+bestehen). **Ganz zuletzt, in beliebiger Reihenfolge, alles was einen
+Spike/Machbarkeits-Check braucht:** **M** (CalDAV-Spike), **H**
+(KI-Fortschritt/Wächter-Spike), **G** (Google-Drive-Spike), **J**
+(eBay-Spike), sowie die Sicherheits-/Auth-lastigen Punkte **K+L**.
 
 **Session-Begrenzung 2026-09-22 (Nutzer-Entscheidung):** Der Nutzer hat
 Bau-Sessions explizit **nach Tasks begrenzt** statt "immer weiter bis
@@ -273,7 +262,7 @@ danach in einer eigenen, freigegebenen Session gebaut. Für künftige
 Sessions: Umfang lieber explizit nach Tasks/Sub-Etappen begrenzen
 lassen statt nach Zeit/Tokens.
 
-**Nächster Schritt beim Fortsetzen:** Sub-Etappen A, E+F, B, C und D
+**Nächster Schritt beim Fortsetzen:** Sub-Etappen A, E+F, B, C, D und R
 sind komplett umgesetzt und dokumentiert (A: Spec
 `docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`,
 Plan `.superpowers/sdd/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden/`;
@@ -289,11 +278,13 @@ von C: kein eigener Plan nötig, kleine Erweiterung nach bestehendem
 Muster, siehe `docs/PROJEKT-LOG.md`; D: Spec
 `docs/superpowers/specs/2026-09-21-etappe-4-sub-d-rechnungen-design.md`,
 Plan + Ledger
-`.superpowers/sdd/2026-09-21-etappe-4-sub-d-rechnungen/`). Als
-Nächstes: **Sub-Etappe M** (Kalender & Notizen) — braucht vorher einen
-eigenen CalDAV-Machbarkeits-Spike, noch nicht begonnen (kein Spec/Plan
-vorhanden). Jede weitere Sub-Etappe danach ebenso einzeln, nicht alles
-auf einmal.
+`.superpowers/sdd/2026-09-21-etappe-4-sub-d-rechnungen/`; R: kein
+eigenes Spec-Dokument (bounded-Brainstorming im Chat), Plan
+`docs/superpowers/plans/2026-09-22-etappe-4-sub-r-ui-politur.md`,
+9 Tasks in zwei 4er-Batches + einem Doku-Task gebaut). Als
+Nächstes: **Sub-Etappe N** (Handyreparatur-Aufträge) — Spec+Plan bereits
+geschrieben, noch nicht gebaut. Jede weitere Sub-Etappe danach ebenso
+einzeln, nicht alles auf einmal.
 
 **Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
 falls nicht anders gesagt): `superpowers:brainstorming` →
@@ -410,7 +401,11 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     die mit `=`/`+`/`-`/`@` beginnen, ein Apostroph voran, Schutz gegen
     CSV-Formel-Injection beim Öffnen in Excel/Sheets).
   - `uebersicht.js`, `transaktionen.js`, `analyse.js` (neu seit
-    Sub-Etappe B, die drei vorderen Tabs), `ausgaben.js`, `kontostand.js`
+    Sub-Etappe B, die drei vorderen Tabs; `transaktionen.js` seit "Rest
+    von C" mit Detail-Klick auf `transaktion-detail.js`; `uebersicht.js`
+    und `analyse.js` seit Sub-Etappe R zusätzlich mit klickbaren
+    Ausgaben-Kategorien auf die neue `kategorie-detail.js`
+    — Detailliste inkl. Kassenbon-Foto-Ausgaben, mit Textsuche), `ausgaben.js`, `kontostand.js`
     (zeigt seit Sub-Etappe A vier Kennzahlen: Gesamt-Kontostand, Ausgaben
     diesen Monat, unechter Kontostand inkl. Warenwert, Netto-Vermögen
     inkl. Warenwert und offener Schulden), `regelmaessige-ausgaben.js`

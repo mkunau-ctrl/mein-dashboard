@@ -4,6 +4,69 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-22 – Sub-Etappe R: UI-Politur & Diktat-Korrekturen
+
+**Was:** Alle neun Tasks aus `docs/superpowers/plans/2026-09-22-etappe-4-sub-r-ui-politur.md`
+sind fertig. Modul-Köpfe bereinigt: doppelter Titel (globaler Header +
+Modul-eigener `<h2>`) und der redundante "‹ Dashboard"-Button raus aus
+Finanzen/Todos/Ernährung/Sendungen/Ausbildung, bei Profil/Suche der
+dann leere Header-Block ganz entfernt, bei Einstellungen/Rechnungen
+nur der `<h2>` (Zurück-Button blieb, da echte Navigation zu einem
+anderen Screen, kein Bottom-Nav-Ziel). Home zeigt jetzt eine
+zeitabhängige Begrüßung ("Guten Morgen/Tag/Abend, Mark") + Datum statt
+der reinen Überschrift "Home". Der globale Passkey-Button ist raus
+(Einstellungen hatte längst einen eigenen, funktionierenden
+"Einrichten"-Button — doppelt gepflegt), der Theme-Toggle ist jetzt
+kleiner und ohne Rahmen/Schatten. Finanzen-Tab-Wechsel hat eine sanfte
+Einblend-Animation. Ausgaben-Kategorien in Übersicht und Analyse sind
+anklickbar (neue Datei `js/module/finanzen/kategorie-detail.js`) und
+zeigen eine durchsuchbare Detailliste aller Ausgaben dieser Kategorie,
+inklusive der per Kassenbon-Foto erfassten (`expenses.quelle = 'foto'`).
+`ausgaben_vorlagen` hat jetzt drei aktive monatliche Vorlagen: Claude
+Abo 22 €, Wispr Flow 15 €, Friseur 10 € (die einmalige
+`expenses`-Fehlbuchung vom 2026-09-19, die fälschlich 18 € zeigte,
+wurde dabei auf 10 € korrigiert).
+
+**Korrektur (Doku-Rigor-Regel, auch Fehler dokumentieren):** Die
+"‹ Dashboard"-Zeile wurde Mark beim ursprünglichen Screenshot-Feedback
+fälschlich als Safaris eigene Browser-Chrome erklärt, "nicht
+änderbar". Beim Schreiben des Umsetzungsplans stellte sich heraus:
+`<button class="zurueck">‹ Dashboard</button>` war ein echter Button
+in unserem eigenen Code (`js/module/*/index.js`), keine
+Browser-Oberfläche. Damit war die zunächst offene Rückfrage ("öffnet
+Mark die App über ein Home-Bildschirm-Icon?") hinfällig — der Punkt
+wurde stattdessen zusammen mit dem doppelten-Titel-Fix in Task 1
+regulär behoben.
+
+**Arbeitsweise:** Auf Nutzerwunsch in zwei 4er-Task-Batches gebaut
+(Tasks 1-4, dann Tasks 5-8, danach Task 9 einzeln), mit Stopp und
+Freigabe-Abfrage zwischen den Batches — Grund: kein Einblick in
+Nutzungslimit-Verbrauch, deshalb Umfang nach Tasks statt nach Zeit
+begrenzt (Muster bereits aus der vorangegangenen Sub-Etappe B/Rest-von-C
+bekannt). Beim ersten Versuch, Batch 2 zu bauen, hat ein Fork
+fälschlich nur eine "läuft im Hintergrund, ich melde mich später"-
+Nachricht zurückgegeben, ohne einen einzigen Tool-Aufruf zu machen
+oder etwas zu committen (verifiziert per `git log` — keine neuen
+Commits). Ein zweiter, mit expliziterer Anweisung ("führe die Arbeit
+JETZT SELBST aus") dispatchter Fork hat Batch 2 dann korrekt erledigt.
+
+**Entscheidungen/Korrekturen während der Umsetzung:** Der Implementierer
+hat zwei Bugs im Plan-Code selbst gefunden und beim Umsetzen korrigiert:
+(a) echte Kategorie-Werte in `expenses.kategorie` sind großgeschrieben,
+der Router akzeptiert im Hash aber nur Kleinbuchstaben-Segmente — die
+Kategorie-Route ist jetzt case-insensitiv (Kleinschreibung im Hash,
+Original-Schreibweise aus einer echten Buchung fürs UI übernommen);
+(b) `kategorie-detail.js`s Icon-Lookup hätte ohne `kategorisiereIconTyp()`
+für fast alle echten Kategorien auf "Sonstiges" zurückgefallen.
+
+**Stand danach:** `npm test` 107/107 grün. Sub-Etappe R ist komplett
+fertig und dokumentiert (`CLAUDE.md` "Aktueller Stand" entsprechend
+aktualisiert, R als fertig markiert, nächster Schritt jetzt Sub-Etappe
+N). Commits: `6eec95f`..`081b93c` (Tasks 1-8), dieser Log-Eintrag +
+`CLAUDE.md`-Update (Task 9).
+
+---
+
 ## 2026-09-22 – Weiteres Design-/Daten-Feedback gesammelt (bewusst noch nicht gebaut)
 
 **Was:** Nach der Design-Nacharbeit (s. u.) hat Mark per Screenshot
