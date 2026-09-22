@@ -85,9 +85,10 @@ registriere({
   },
   async init(container) {
     containerRef = container;
-    if (!zustand) await ladeZustand();
     baueRahmen(container);
     window.addEventListener('hashchange', beiHashwechsel);
-    await zeigeAktuellenTab();
+    if (zustand) await zeigeAktuellenTab();
+    await ladeZustand();
+    if (containerRef === container && containerRef.isConnected) await zeigeAktuellenTab();
   },
 });

@@ -146,8 +146,9 @@ registriere({
   icon: HOME_ICON,
   async init(container) {
     containerRef = container;
-    await ladeZustand();
     window.addEventListener('hashchange', beiHashwechsel);
-    await zeigeAktuelleAnsicht();
+    if (zustand) await zeigeAktuelleAnsicht();
+    await ladeZustand();
+    if (containerRef === container && containerRef.isConnected) await zeigeAktuelleAnsicht();
   },
 });

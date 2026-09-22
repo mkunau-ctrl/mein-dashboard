@@ -45,9 +45,84 @@ function speichereLetzteSuche(text) {
 }
 
 let zustand = null;
+let containerRef = null;
 
 async function ladeZustand() {
   zustand = await ladeAlles();
+}
+
+function render(container) {
+  container.innerHTML = `
+    <div class="searchbar" style="margin:16px 0;">
+      ${SUCHE_ICON}
+      <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …">
+    </div>
+    <div id="suche-treffer" class="punkt-liste" hidden></div>
+    <div id="suche-standard">
+      <div class="section-head"><h2>Schnelleinstiege</h2></div>
+      <div class="punkt-liste" id="suche-schnell"></div>
+      <div class="section-head"><h2>Letzte Suchen</h2></div>
+      <div class="punkt-liste" id="suche-letzte">
+        ${ladeLetzteSuchen().length === 0 ? '<p class="lade">Noch keine Suchen.</p>' : ''}
+      </div>
+    </div>`;
+
+  const schnellBox = container.querySelector('#suche-schnell');
+  SCHNELLEINSTIEGE.forEach((item) => {
+    const zeile = document.createElement('div');
+    zeile.className = 'punkt-zeile';
+    zeile.style.cursor = 'pointer';
+    zeile.innerHTML = `<div class="icon-badge">${item.icon}</div>
+      <div class="punkt-info"><strong>${esc(item.label)}</strong></div>
+      <span style="color:var(--gedaempft);">${CHEVRON_ICON}</span>`;
+    zeile.addEventListener('click', () => {
+      if (item.ziel) location.hash = item.ziel;
+      else alert('Noch nicht verfügbar.');
+    });
+    schnellBox.appendChild(zeile);
+  });
+
+  const letzteBox = container.querySelector('#suche-letzte');
+  ladeLetzteSuchen().forEach((text) => {
+    const zeile = document.createElement('div');
+    zeile.className = 'punkt-zeile';
+    zeile.style.cursor = 'pointer';
+    zeile.innerHTML = `<div class="icon-badge">${SUCHE_ICON}</div><div class="punkt-info"><strong>${esc(text)}</strong></div>`;
+    zeile.addEventListener('click', () => { eingabe.value = text; eingabe.dispatchEvent(new Event('input')); });
+    letzteBox.appendChild(zeile);
+  });
+
+  const eingabe = container.querySelector('#suche-eingabe');
+  const trefferListe = container.querySelector('#suche-treffer');
+  const standardBox = container.querySelector('#suche-standard');
+  let letzteSucheGespeichert = '';
+
+  eingabe.addEventListener('input', () => {
+    const wert = eingabe.value;
+    if (!wert.trim()) {
+      trefferListe.hidden = true;
+      standardBox.hidden = false;
+      return;
+    }
+    standardBox.hidden = true;
+    trefferListe.hidden = false;
+    const treffer = sucheAlles(zustand, wert);
+    trefferListe.innerHTML = treffer.length === 0
+      ? '<p class="lade">Keine Treffer.</p>'
+      : treffer.map((t) => `
+        <div class="punkt-zeile" data-ziel="${esc(t.ziel)}" style="cursor:pointer;">
+          <div class="icon-badge">${TYP_ICON[t.typ] || SUCHE_ICON}</div>
+          <div class="punkt-info"><strong>${esc(t.titel)}</strong><small>${esc(t.info)}</small></div>
+          <span style="color:var(--gedaempft);">${CHEVRON_ICON}</span>
+        </div>`).join('');
+    trefferListe.querySelectorAll('[data-ziel]').forEach((zeile) => {
+      zeile.addEventListener('click', () => { location.hash = zeile.dataset.ziel; });
+    });
+    if (wert !== letzteSucheGespeichert) {
+      letzteSucheGespeichert = wert;
+      speichereLetzteSuche(wert);
+    }
+  });
 }
 
 registriere({
@@ -55,77 +130,8 @@ registriere({
   titel: 'Suche',
   icon: SUCHE_ICON,
   async init(container) {
-    await ladeZustand();
-    container.innerHTML = `
-      <div class="searchbar" style="margin:16px 0;">
-        ${SUCHE_ICON}
-        <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …">
-      </div>
-      <div id="suche-treffer" class="punkt-liste" hidden></div>
-      <div id="suche-standard">
-        <div class="section-head"><h2>Schnelleinstiege</h2></div>
-        <div class="punkt-liste" id="suche-schnell"></div>
-        <div class="section-head"><h2>Letzte Suchen</h2></div>
-        <div class="punkt-liste" id="suche-letzte">
-          ${ladeLetzteSuchen().length === 0 ? '<p class="lade">Noch keine Suchen.</p>' : ''}
-        </div>
-      </div>`;
-
-    const schnellBox = container.querySelector('#suche-schnell');
-    SCHNELLEINSTIEGE.forEach((item) => {
-      const zeile = document.createElement('div');
-      zeile.className = 'punkt-zeile';
-      zeile.style.cursor = 'pointer';
-      zeile.innerHTML = `<div class="icon-badge">${item.icon}</div>
-        <div class="punkt-info"><strong>${esc(item.label)}</strong></div>
-        <span style="color:var(--gedaempft);">${CHEVRON_ICON}</span>`;
-      zeile.addEventListener('click', () => {
-        if (item.ziel) location.hash = item.ziel;
-        else alert('Noch nicht verfügbar.');
-      });
-      schnellBox.appendChild(zeile);
-    });
-
-    const letzteBox = container.querySelector('#suche-letzte');
-    ladeLetzteSuchen().forEach((text) => {
-      const zeile = document.createElement('div');
-      zeile.className = 'punkt-zeile';
-      zeile.style.cursor = 'pointer';
-      zeile.innerHTML = `<div class="icon-badge">${SUCHE_ICON}</div><div class="punkt-info"><strong>${esc(text)}</strong></div>`;
-      zeile.addEventListener('click', () => { eingabe.value = text; eingabe.dispatchEvent(new Event('input')); });
-      letzteBox.appendChild(zeile);
-    });
-
-    const eingabe = container.querySelector('#suche-eingabe');
-    const trefferListe = container.querySelector('#suche-treffer');
-    const standardBox = container.querySelector('#suche-standard');
-    let letzteSucheGespeichert = '';
-
-    eingabe.addEventListener('input', () => {
-      const wert = eingabe.value;
-      if (!wert.trim()) {
-        trefferListe.hidden = true;
-        standardBox.hidden = false;
-        return;
-      }
-      standardBox.hidden = true;
-      trefferListe.hidden = false;
-      const treffer = sucheAlles(zustand, wert);
-      trefferListe.innerHTML = treffer.length === 0
-        ? '<p class="lade">Keine Treffer.</p>'
-        : treffer.map((t) => `
-          <div class="punkt-zeile" data-ziel="${esc(t.ziel)}" style="cursor:pointer;">
-            <div class="icon-badge">${TYP_ICON[t.typ] || SUCHE_ICON}</div>
-            <div class="punkt-info"><strong>${esc(t.titel)}</strong><small>${esc(t.info)}</small></div>
-            <span style="color:var(--gedaempft);">${CHEVRON_ICON}</span>
-          </div>`).join('');
-      trefferListe.querySelectorAll('[data-ziel]').forEach((zeile) => {
-        zeile.addEventListener('click', () => { location.hash = zeile.dataset.ziel; });
-      });
-      if (wert !== letzteSucheGespeichert) {
-        letzteSucheGespeichert = wert;
-        speichereLetzteSuche(wert);
-      }
-    });
+    containerRef = container;
+    render(container); // sofort anzeigen, sucheAlles() liest zustand erst beim Tippen
+    ladeZustand(); // bewusst nicht awaited: laeuft im Hintergrund, zustand ist spaetestens beim ersten Tastendruck da
   },
 });
