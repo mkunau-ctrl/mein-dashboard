@@ -111,6 +111,24 @@ export function kategorisiereIconTyp(kategorie) {
   return 'sonstiges';
 }
 
+const TRANSAKTION_ICON_SCHLUESSELWOERTER = [
+  { typ: 'tanken', muster: /tank|sprit|benzin/i },
+  { typ: 'streaming', muster: /netflix|spotify|disney|prime|streaming/i },
+  { typ: 'miete', muster: /miete|wohnung/i },
+  { typ: 'kleidung', muster: /kleidung|shirt|hose|schuh|zalando/i },
+  { typ: 'handy', muster: /handy|mobilfunk|telekom|vodafone|o2/i },
+  { typ: 'einkauf', muster: /rewe|edeka|lidl|aldi|supermarkt|einkauf/i },
+  { typ: 'gehalt', muster: /gehalt|lohn|nebenjob/i },
+];
+
+export function kategorisiereTransaktionIcon(text) {
+  if (!text) return 'sonstiges';
+  for (const { typ, muster } of TRANSAKTION_ICON_SCHLUESSELWOERTER) {
+    if (muster.test(text)) return typ;
+  }
+  return 'sonstiges';
+}
+
 export function schuldenRestbetrag(schuld, zahlungen) {
   const bezahlt = zahlungen
     .filter((z) => z.schuld_id === schuld.id)

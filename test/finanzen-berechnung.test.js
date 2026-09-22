@@ -6,7 +6,8 @@ import { summeProMonat, summenProKategorie, erkenneAbos,
   unechterGesamtKontostand, schuldenRestbetrag, offeneSchulden,
   sortiereSchulden, nettoVermoegen, zeitraumVon,
   summenProKategorieZeitraum, summenProBezeichnungZeitraum,
-  letzteMonate, jahresUebersicht, kontostandVerlauf, zuCsvZeilen }
+  letzteMonate, jahresUebersicht, kontostandVerlauf, zuCsvZeilen,
+  kategorisiereTransaktionIcon }
   from '../js/module/finanzen/berechnung.js';
 
 const konten = [
@@ -243,4 +244,15 @@ test('zuCsvZeilen: Bezeichnung mit fuehrendem =/+/-/@ wird mit Apostroph entscha
     '2026-09-01,ausgabe,"\'=cmd|""/c calc""!A1",5.00,manuell',
     '2026-09-02,ausgabe,"\'+SUMME(A1:A9)",5.00,manuell',
   ]);
+});
+
+test('kategorisiereTransaktionIcon: erkennt Haendler-Schluesselwoerter, sonst sonstiges', () => {
+  assert.equal(kategorisiereTransaktionIcon('Tankstelle'), 'tanken');
+  assert.equal(kategorisiereTransaktionIcon('Netflix'), 'streaming');
+  assert.equal(kategorisiereTransaktionIcon('Miete'), 'miete');
+  assert.equal(kategorisiereTransaktionIcon('Kleidung'), 'kleidung');
+  assert.equal(kategorisiereTransaktionIcon('Handyvertrag'), 'handy');
+  assert.equal(kategorisiereTransaktionIcon('REWE'), 'einkauf');
+  assert.equal(kategorisiereTransaktionIcon('Gehaltseingang'), 'gehalt');
+  assert.equal(kategorisiereTransaktionIcon('Irgendwas'), 'sonstiges');
 });

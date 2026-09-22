@@ -1,7 +1,16 @@
-import { zeitraumVon, zuCsvZeilen, kategorisiereIconTyp } from './berechnung.js';
+import { zeitraumVon, zuCsvZeilen, kategorisiereIconTyp, kategorisiereTransaktionIcon } from './berechnung.js';
 
-const AUSGABE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2V3z"/><path d="M8 8h8M8 12h8"/></svg>';
 const EINNAHME_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+const AUSGABE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2V3z"/><path d="M8 8h8M8 12h8"/></svg>';
+const TRANSAKTION_ICON = {
+  tanken: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l6-4h4l6 6v12"/><path d="M3 22h16"/></svg>',
+  streaming: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M9 20h6"/></svg>',
+  miete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>',
+  kleidung: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 2 4-2 4 4-3 3v11H7V10L4 7l4-4Z"/></svg>',
+  handy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>',
+  einkauf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-2 9H8L6 2H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>',
+  gehalt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>',
+};
 const KATEGORIEN = ['alle', 'auto', 'essen', 'freizeit', 'sonstiges'];
 const KATEGORIE_TEXT = { alle: 'Alle', auto: 'Auto', essen: 'Essen', freizeit: 'Freizeit', sonstiges: 'Sonstiges' };
 
@@ -80,7 +89,7 @@ export async function zeigeTransaktionen(container, zustand, aktualisieren, zeit
     const liste = container.querySelector('#tx-liste');
     liste.innerHTML = gefiltert.length === 0 ? '<p class="lade">Keine Treffer.</p>' : gefiltert.map((t) => `
       <div class="punkt-zeile" data-route="${routeId(t)}">
-        <div class="icon-badge">${t.typ === 'einnahme' ? EINNAHME_ICON : AUSGABE_ICON}</div>
+        <div class="icon-badge">${t.typ === 'einnahme' ? EINNAHME_ICON : (TRANSAKTION_ICON[kategorisiereTransaktionIcon(t.bezeichnung)] || AUSGABE_ICON)}</div>
         <div class="punkt-info"><strong>${esc(t.bezeichnung)}</strong><small>${t.datum}</small></div>
         <strong class="${t.typ === 'einnahme' ? 'betrag-plus' : 'betrag-minus'}">${t.typ === 'einnahme' ? '+' : '-'}${t.betrag.toFixed(2)} €</strong>
       </div>`).join('');
