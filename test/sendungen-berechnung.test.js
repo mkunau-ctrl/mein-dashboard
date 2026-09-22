@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sortiereSendungen, offeneSendungen, sortiereTermine, naechsterSendungStatus, STATUS_PRIORITAET, istStatusFortschritt }
+import { sortiereSendungen, offeneSendungen, sortiereTermine, naechsterSendungStatus, STATUS_PRIORITAET, istStatusFortschritt, kategorisiereSendungIcon }
   from '../js/module/sendungen/berechnung.js';
 
 const sendungen = [
@@ -60,4 +60,13 @@ test('istStatusFortschritt: bewegt sich nur vorwaerts', () => {
 
 test('istStatusFortschritt: unbekannter Fremdwert im Bestand blockiert nicht dauerhaft', () => {
   assert.equal(istStatusFortschritt('irgendwas_fremdes', 'unterwegs'), true);
+});
+
+test('kategorisiereSendungIcon: erkennt Handy/Kopfhoerer/Kleidung/Elektronik, sonst Box', () => {
+  assert.equal(kategorisiereSendungIcon('iPhone 15 Pro'), 'handy');
+  assert.equal(kategorisiereSendungIcon('AirPods Pro'), 'kopfhoerer');
+  assert.equal(kategorisiereSendungIcon('T-Shirt'), 'kleidung');
+  assert.equal(kategorisiereSendungIcon('Grafikkarte'), 'elektronik');
+  assert.equal(kategorisiereSendungIcon('Irgendwas Unbekanntes'), 'box');
+  assert.equal(kategorisiereSendungIcon(''), 'box');
 });

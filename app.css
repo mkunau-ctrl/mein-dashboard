@@ -135,6 +135,10 @@ button:disabled { opacity: .6; cursor: default; }
   display: grid; place-items: center; background: var(--icon-bg); color: var(--icon-farbe); }
 .icon-badge svg { width: 20px; height: 20px; }
 .dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--text); }
+.dot.akzent { background: var(--akzent); }
+.dot.gelb { background: var(--hm-gelb); }
+.dot.gruen { background: var(--hm-gruen); }
+.dot.grau { background: var(--gedaempft); }
 
 /* Kategorien-Aufschluesselung mit Fortschrittsbalken */
 .kategorie-zeile { padding: 10px 4px; }

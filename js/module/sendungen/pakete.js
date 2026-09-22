@@ -1,8 +1,15 @@
 import { setzeSendungStatus, entferneSendung } from './daten.js';
-import { sortiereSendungen, naechsterSendungStatus } from './berechnung.js';
+import { sortiereSendungen, naechsterSendungStatus, kategorisiereSendungIcon } from './berechnung.js';
 
 const STATUS_TEXT = { unterwegs: 'unterwegs', abholbereit: 'abholbereit', zugestellt: 'zugestellt', unbekannt: 'unbekannt' };
-const BOX_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>';
+const STATUS_PUNKT_FARBE = { unterwegs: 'akzent', abholbereit: 'gelb', zugestellt: 'gruen', unbekannt: 'grau' };
+const ICON = {
+  handy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>',
+  kopfhoerer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-2a9 9 0 0118 0v2"/><rect x="2" y="14" width="5" height="7" rx="1.5"/><rect x="17" y="14" width="5" height="7" rx="1.5"/></svg>',
+  kleidung: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 2 4-2 4 4-3 3v11H7V10L4 7l4-4Z"/></svg>',
+  elektronik: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+  box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>',
+};
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) =>
@@ -28,13 +35,13 @@ export async function zeigePakete(container, zustand, aktualisieren, _zeitraum, 
     zeile.className = 'punkt-zeile';
     zeile.style.cursor = 'pointer';
     zeile.innerHTML = `
-      <div class="icon-badge">${BOX_ICON}</div>
+      <div class="icon-badge">${ICON[kategorisiereSendungIcon(`${s.haendler} ${s.beschreibung || ''}`)]}</div>
       <div class="punkt-info">
         <strong>${esc(s.haendler)}</strong>
-        <small>${s.beschreibung ? esc(s.beschreibung) : ''}${s.trackingnummer ? ` · ${esc(s.trackingnummer)}` : ''}</small>
+        <small><span class="dot ${STATUS_PUNKT_FARBE[s.status]}"></span> ${STATUS_TEXT[s.status]}${s.trackingnummer ? ` · ${esc(s.trackingnummer)}` : ''}</small>
       </div>
-      <button data-a="status" class="status-badge status-${s.status}">${STATUS_TEXT[s.status]}</button>
       <div class="punkt-aktionen">
+        <button data-a="status" title="Status weiterschalten">${STATUS_TEXT[s.status] === 'zugestellt' ? '' : '›'}</button>
         <button data-a="weg">✕</button>
       </div>`;
     zeile.addEventListener('click', () => { location.hash = `#/sendungen/pakete/${s.id}`; });

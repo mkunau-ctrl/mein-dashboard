@@ -33,3 +33,18 @@ export function sortiereTermine(termine) {
 export function naechsterSendungStatus(status) {
   return STATUS_ZYKLUS[status];
 }
+
+const SENDUNG_ICON_SCHLUESSELWOERTER = [
+  { typ: 'handy', muster: /iphone|handy|smartphone|galaxy|pixel/i },
+  { typ: 'kopfhoerer', muster: /airpods|kopfhoerer|kopfhörer|earbuds/i },
+  { typ: 'kleidung', muster: /shirt|hose|jacke|schuh|kleidung/i },
+  { typ: 'elektronik', muster: /grafikkarte|ram|ssd|prozessor|monitor|tastatur/i },
+];
+
+export function kategorisiereSendungIcon(text) {
+  if (!text) return 'box';
+  for (const { typ, muster } of SENDUNG_ICON_SCHLUESSELWOERTER) {
+    if (muster.test(text)) return typ;
+  }
+  return 'box';
+}
