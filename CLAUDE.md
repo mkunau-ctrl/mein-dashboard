@@ -19,16 +19,16 @@ unten für Details.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
-## Aktueller Stand (2026-09-21) / Nächste Schritte
+## Aktueller Stand (2026-09-22) / Nächste Schritte
 
 **Etappe 4 Teil A (Icon-Audit) ist fertig** (Commit `57b623f`). Teil B
 ("Finanzen-Ausbau") ist beim Brainstorming zu einem **deutlich größeren,
 mehrteiligen Vorhaben angewachsen** (Nutzerwunsch: echte
 Einnahmen-Erfassung, Detail-Klicks überall, neues Rechnungen-Modul,
 Design-Angleichung weiterer Screens, mehr Einstellungen). Zu groß für
-einen Spec — deshalb in **Sub-Etappen A–G** zerlegt (Reihenfolge vom
-Nutzer am 2026-09-19 bestätigt, **noch keine einzige davon spezifiziert
-oder gebaut**):
+einen Spec — deshalb in **Sub-Etappen A–Q** zerlegt (ursprüngliche
+Reihenfolge vom Nutzer am 2026-09-19 bestätigt, dann am 2026-09-21/22
+nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
 
 - **A) Konten-, Einnahmen- & Schulden-Grundlage** — **fertig
   (2026-09-21)**, siehe `docs/PROJEKT-LOG.md` (Umfang war gegenüber der
@@ -85,26 +85,30 @@ oder gebaut**):
   `ausgaben_vorlagen`-Tabelle (analog zu `einnahmen_vorlagen`) zusätzlich
   zur bisherigen automatischen Muster-Erkennung (`erkenneAbos` bleibt
   als Vorschlag). Dazu: CSV-Export für Einnahmen/Ausgaben.
-- **C) Detail-Klicks überall** — Sendungen (inkl. `abholcode`/
+- **C) Detail-Klicks überall** — **teilweise fertig** (Sendungen/
+  Termine/To-dos, s. u. bei E+F). Sendungen (inkl. `abholcode`/
   `abholadresse`/`abholzeiten`, die die E-Mail-Automatisierung seit
-  Etappe 3 schon erfasst, aber bisher nirgends anzeigt), Termine,
-  To-dos, Transaktionen (Einnahmen/Ausgaben) werden anklickbar und
-  zeigen eine Detailansicht. Nutzer-Motivation: **Zeitersparnis**, z. B.
-  Abholcode sehen ohne die E-Mail selbst suchen zu müssen. Deckt auch
-  das alte "Teil D" (Sendungen-Detail) mit ab.
+  Etappe 3 schon erfasst, aber bisher nirgends anzeigte), Termine und
+  To-dos sind jetzt anklickbar und zeigen eine Detailansicht.
+  **Offener Rest von C:** Transaktionen (Einnahmen/Ausgaben) anklickbar
+  machen — wartet auf Sub-Etappe B (Finanzen-Redesign mit
+  Transaktionen-Tab), siehe dort.
 - **D) Neues Rechnungen-Modul** — komplett neu (kein bisheriges
   Datenmodell): offen/bezahlt/überfällig mit Filter-Chips (Vorbild:
   Prototyp-Screen "Rechnungen"), plus Fälligkeits-Erinnerungen auf dem
-  Home-Screen.
-- **E) Design-Angleichung an Prototyp** — Profil-, Suche- (inkl.
-  Schnelleinstiege + Letzte Suchen) und Ausbildung-Screen sollen 1:1 wie
-  im Prototyp aussehen/funktionieren (deckt auch das alte "Teil C"
-  Suche-Ausbau ab).
-- **F) Einstellungen ausbauen** — bisher gibt es nur Theme-Umschalter +
-  Profil-Menü, kein echter Einstellungen-Screen. Neu: Schriftgröße
-  (CSS-Skalierungsfaktor), "Alle Daten exportieren"-Button (JSON-Backup
-  aller Module) — Annahme, mit Nutzer beim Start dieser Sub-Etappe kurz
-  gegenchecken, da nicht 100 % explizit bestätigt.
+  Home-Screen. Spec + Plan bereits geschrieben (s. u. "Wo weiterlesen"),
+  noch nicht gebaut.
+- **E) Design-Angleichung an Prototyp** — **fertig (2026-09-22)**.
+  Profil-, Suche- (inkl. Schnelleinstiege + Letzte Suchen) und
+  Ausbildung-Screen (Fortschritts-Ring) sehen jetzt 1:1 wie im Prototyp
+  aus/funktionieren so (deckt auch das alte "Teil C" Suche-Ausbau ab).
+- **F) Einstellungen ausbauen** — **fertig (2026-09-22)**. Neues
+  Einstellungen-Modul: echter Dark-Mode-Schalter, Schriftgröße
+  (klein/normal/groß, per `data-schriftgroesse`-Attribut), Passkey-
+  Einrichtung, "Alle Daten exportieren"-Button (JSON-Backup aller
+  Module). Details Sub-Etappe E+F:
+  `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`
+  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-22).
 - **G) Google Drive** — erst ein **Spike** (Machbarkeits-Check: Supabase
   unterstützt Google als Auth-Provider, aber Datei-Zugriff auf Drive ist
   ein eigenes Google-API-Thema mit eigenen Zugangsdaten), bevor fest
@@ -183,14 +187,32 @@ sauberen Neuaufbau zu machen.
 echte PNG-Icons (192/512, `apple-touch-icon`, seit Etappe 0), kompletter
 manueller Testlauf am echten Gerät (seit Etappe 2–5).
 
-**Nächster Schritt beim Fortsetzen:** Sub-Etappe A ist komplett umgesetzt
-und dokumentiert (Spec:
+**Reihenfolge ab jetzt (Nutzer-Entscheidung 2026-09-21/22):** Nachdem
+das parallele Brainstorming vieler Sub-Etappen gleichzeitig zu den oben
+dokumentierten Fork-Vorfällen führte, hat Mark die Reihenfolge bewusst
+zurück auf "eine Sache nach der anderen, fertig bauen" gestellt: erst
+**E+F** (fertig, s. o.), dann **B** (Finanzen-Redesign), dann der
+**Rest von C** (Transaktionen-Detail-Klick, braucht B), dann **D**,
+dann **M**, dann **N/O/I/P**, dann **Q**, dann **H**, ganz zuletzt die
+Sicherheits-/Auth-lastigen Punkte **G/J/K+L**. Spec+Plan für D, N, P, Q
+(und eine Spec für I) sind bereits geschrieben, aber noch nicht gebaut
+— siehe die jeweiligen Bullets oben für die Dateipfade.
+
+**Nächster Schritt beim Fortsetzen:** Sub-Etappen A und E+F sind
+komplett umgesetzt und dokumentiert (A: Spec
 `docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`,
-Plan + Tasks: `.superpowers/sdd/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden/`).
+Plan `.superpowers/sdd/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden/`;
+E+F: Spec
+`docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`,
+Plan + Ledger
+`.superpowers/sdd/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks/`).
 Als Nächstes: **Sub-Etappe B** (Finanzen-Redesign, s. o.) braucht ihren
-eigenen Brainstorming→Spec→Plan→Umsetzung-Zyklus, noch nicht begonnen.
-Jede weitere Sub-Etappe (C–Q) danach ebenso einzeln, nicht alles auf
-einmal.
+eigenen Brainstorming→Spec→Plan→Umsetzung-Zyklus — Spec und Plan sind
+zwar schon geschrieben
+(`docs/superpowers/specs/2026-09-21-etappe-4-sub-b-finanzen-redesign-design.md`,
+`docs/superpowers/plans/2026-09-21-etappe-4-sub-b-finanzen-redesign.md`),
+die Umsetzung selbst hat aber noch nicht begonnen. Jede weitere
+Sub-Etappe danach ebenso einzeln, nicht alles auf einmal.
 
 **Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
 falls nicht anders gesagt): `superpowers:brainstorming` →
@@ -234,7 +256,11 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   weiterhin über `registriere()` registriert und per Hash erreichbar
   (`#/ernaehrung`, `#/todos`, `#/sendungen`), tauchen aber nicht in
   `NAV_MODULE` auf, haben also keinen eigenen Bottom-Nav-Punkt mehr.
-- `js/router.js` – `parseHash('#/modul/unterseite')` → `{ modul, unterseite }`.
+- `js/router.js` – `parseHash('#/modul/unterseite/detail')` → `{ modul,
+  unterseite, detail }`. **Seit Sub-Etappe E+F (2026-09-22)** erkennt
+  die Regex ein drittes Segment (`detail`, z. B. eine Datensatz-ID),
+  `null` wenn nicht vorhanden — Grundlage für die Detail-Klick-Routen
+  in Sendungen/Termine/To-dos (s. u.).
 - `js/view.js` – `entscheideAnsicht(session)` → `'login'` | `'dashboard'`.
 - `js/auth.js` – Auth-Wrapper: `sendeMagicLink`, `holeSession`, `meldeAb`,
   `beiAuthWechsel` (Magic-Link) sowie `registrierePasskey`, `meldeAnMitPasskey`
@@ -257,8 +283,16 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   - `index.js` – Registrierung, Tabs „Offen"/„Erledigt", Kachel-Text.
   - `daten.js` – Supabase-Zugriff auf `todos` + `todo_vorlagen`.
   - `planung.js` – `naechsteFaelligkeit`, `sortiereOffeneTodos`, `istUeberfaellig`.
-  - `offen.js`, `erledigt.js` – die zwei Tabs.
-  Details: `docs/superpowers/specs/2026-09-16-etappe-2-todos-design.md`.
+  - `offen.js`, `erledigt.js` – die zwei Tabs. **Seit Sub-Etappe E+F
+    (2026-09-22)** sind Zeilen anklickbar → `#/todos/offen/<id>` bzw.
+    `#/todos/erledigt/<id>`; Abhak-Checkbox und Löschen-Button stoppen
+    das Klick-Bubbling weiterhin selbst (bei der Checkbox zusätzlich
+    das umschließende `<label>`, siehe Fix-Historie in
+    `docs/PROJEKT-LOG.md`).
+  - `todo-detail.js` (neu) – `zeigeTodoDetail`, Detailansicht mit
+    Zurück-Navigation.
+  Details: `docs/superpowers/specs/2026-09-16-etappe-2-todos-design.md`
+  und `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
 - `js/module/finanzen/` – drittes Fachmodul (Ausgaben/Einnahmen/Kontostand/
   Konten/Schulden), **seit Etappe 8 v2 inklusive des ehemaligen
   Lager-Moduls**, **seit Sub-Etappe A (2026-09-21) inklusive Mehrkonten,
@@ -318,32 +352,76 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     "Aktuelle Sendungen"/"Offene To-dos" mit "Alle anzeigen"-Links.
   Details: `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
   (Abschnitt 4).
-- `js/module/suche/` – Suche-Screen (Etappe 8 v2):
+- `js/module/suche/` – Suche-Screen (Etappe 8 v2), **seit Sub-Etappe E+F
+  (2026-09-22) nach Prototyp umgebaut**:
   - `berechnung.js` – `sucheAlles(zustand, suchtext)`: reine Volltextsuche
     über `expenses.notiz`, `todos.text`, `sendungen.haendler`/`beschreibung`,
     `termine.titel`, case-insensitiv, liefert `{ typ, titel, info, ziel }[]`
-    (getestet, kein Netz/DOM).
+    (getestet, kein Netz/DOM). **Seit E+F:** `ziel` zeigt bei
+    todo/sendung/termin auf die jeweilige Detailroute inkl. ID
+    (`#/todos/offen/<id>` etc.) statt nur auf die Listenansicht.
   - `daten.js` – lädt dieselben drei Quellen wie Home.
-  - `index.js` – Registrierung (`id:'suche'`), Eingabefeld mit Live-Filterung.
+  - `index.js` – Registrierung (`id:'suche'`). **Seit E+F:** zeigt ohne
+    Eingabe Schnelleinstiege (Kontostand/Rechnungen/Sendungen/
+    Berichtsheft/Dokumente, zwei davon vorerst Deko-Platzhalter) und
+    „Letzte Suchen" (`localStorage`-Schlüssel `letzteSuchen`, max. 5),
+    mit Eingabe die Live-Trefferliste mit Sprung zur Detailroute.
   Details: `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
-  (Abschnitt 7).
-- `js/module/profil/` – Profil-Screen (Etappe 8 v2):
+  (Abschnitt 7) und
+  `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
+- `js/module/profil/` – Profil-Screen (Etappe 8 v2), **seit Sub-Etappe
+  E+F (2026-09-22) nach Prototyp umgebaut**:
   - `index.js` – Registrierung (`id:'profil'`), kein eigenes `daten.js`
     (nutzt `holeSession()` aus `js/auth.js`). Zeigt Avatar-Kreis mit erstem
-    Buchstaben der E-Mail-Adresse, E-Mail-Adresse, Abmelden-Button (ruft
-    `meldeAb()`). Der frühere globale Header-Logout-Button ist entfernt –
-    Abmelden geht nur noch hier.
+    Buchstaben der E-Mail-Adresse, E-Mail-Adresse, ein Menü (Persönliche
+    Daten/Konten & Verbindungen/Dokumente sind bewusst Deko-Platzhalter,
+    „Berichtsheft" → `#/berichtsheft`, „App-Einstellungen" →
+    `#/einstellungen`) und Abmelden-Button (ruft `meldeAb()`). Der
+    frühere globale Header-Logout-Button ist entfernt – Abmelden geht
+    nur noch hier. Der Prototyp-Menüpunkt "Sicherheit" ist bewusst
+    weggelassen (in Einstellungen aufgegangen, s. u.).
   Details: `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
-  (Abschnitt 8).
+  (Abschnitt 8) und
+  `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
+- `js/module/einstellungen/` – Einstellungen-Screen (neu, Sub-Etappe E+F,
+  2026-09-22), kein eigener Bottom-Nav-Punkt (s. Abschnitt "Nav"):
+  - `index.js` – Registrierung (`id:'einstellungen'`). Abschnitte
+    Darstellung (Dark-Mode-Schalter, Schriftgröße-Auswahl,
+    Push-/E-Mail-Benachrichtigungen als Deko-Schalter), Verbundene
+    Dienste (Deko), Sicherheit (Passkey-Einrichtung, nutzt bestehendes
+    `registrierePasskey`), App (Datenexport-Button, Versionsnummer).
+  - `schriftgroesse.js` – `aktuelleSchriftgroesse`/`setzeSchriftgroesse`/
+    `wendeSchriftgroesseAn`: Werte klein/normal/groß, `localStorage`-
+    Schlüssel `schriftgroesse`, setzt `data-schriftgroesse` am
+    `<html>`-Element; `app.css` hat dafür `font-size`-Overrides. Wird
+    beim App-Start zusätzlich zu `wendeThemeAn()` aus `js/app.js`
+    aufgerufen, sonst wirkt eine gespeicherte Schriftgröße erst nach dem
+    nächsten manuellen Wechsel.
+  - `export.js` – `sammleAlleDaten()` (lädt parallel alle fünf Module
+    über deren jeweiliges `ladeAlles()`), `ladeAlsDatei(daten)`
+    (Blob-Download als JSON).
+  Details: `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
 - `js/module/berichtsheft/` – fünftes Fachmodul (Ausbildungsnachweis),
   **Anzeigename seit Etappe 8 v2 "Ausbildung"** (interne Modul-ID bleibt
   unverändert `berichtsheft`, keine Routen-/Datenbank-Änderung):
-  - `index.js` – Registrierung, Tabs „Einträge"/„Drucken", Kachel-Text.
-  - `daten.js` – Supabase-Zugriff auf `berichtsheft_eintraege` + `berichtsheft_settings`.
-  - `berechnung.js` – `wochenStart`, `gruppiereNachWoche`, `ausbildungsjahr`.
+  - `index.js` – Registrierung, Kachel-Text. **Seit Sub-Etappe E+F
+    (2026-09-22):** Tabs „Übersicht"/„Berichtsheft"/„Drucken" (vorher
+    „Einträge"/„Drucken"), Default-Tab ist jetzt „Übersicht" statt
+    „Einträge".
+  - `daten.js` – Supabase-Zugriff auf `berichtsheft_eintraege` +
+    `berichtsheft_settings`. **Seit E+F:** `ladeAlles` lädt zusätzlich
+    alle `termine` und offene `todos` (für den Übersicht-Tab).
+  - `berechnung.js` – `wochenStart`, `gruppiereNachWoche`,
+    `ausbildungsjahr`, seit E+F zusätzlich `ausbildungsFortschritt`
+    (Jahr + Prozent, für den Fortschritts-Ring).
+  - `uebersicht.js` (neu, E+F) – Fortschritts-Ring (nutzt die aus dem
+    Ernährung-Modul bekannte `.fortschritt-ring`-CSS) + „Nächste
+    Termine" (`sortiereTermine` aus `sendungen/berechnung.js`) +
+    „Offene Aufgaben" (`sortiereOffeneTodos` aus `todos/planung.js`).
   - `eintraege.js` – Liste + Formular.
   - `drucken.js` – Wochenweise Druckansicht (`@media print`, `window.print()`).
-  Details: `docs/superpowers/specs/2026-09-16-etappe-5-berichtsheft-design.md`.
+  Details: `docs/superpowers/specs/2026-09-16-etappe-5-berichtsheft-design.md`
+  und `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
   **Diktat-Weg:** Erzählt Mark im Chat einen oder mehrere Tage, fehlende
   Pflichtfelder (Datum, Stunden, Tätigkeiten) aktiv erfragen, dann direkt per
   Supabase-MCP in `berichtsheft_eintraege` schreiben (`user_id` s. u.).
@@ -366,10 +444,21 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     abholbereit → zugestellt → unterwegs` (`unbekannt` klickt zu
     `unterwegs`).
   - `pakete.js`, `termine.js` – die zwei Tabs; Status-Pille für
-    `abholbereit` gelb/orange getönt (`--hm-gelb-bg`).
+    `abholbereit` gelb/orange getönt (`--hm-gelb-bg`). **Seit Sub-Etappe
+    E+F (2026-09-22)** sind Zeilen anklickbar → `#/sendungen/pakete/<id>`
+    bzw. `#/sendungen/termine/<id>`; Status-/Löschen-Buttons stoppen das
+    Klick-Bubbling selbst.
+  - `sendung-detail.js`, `termin-detail.js` (neu, E+F) –
+    `zeigeSendungDetail`/`zeigeTerminDetail`: Detailansicht mit
+    Zurück-Navigation; bei Sendungen zusätzlich `abholcode`/
+    `abholadresse`/`abholzeiten` und die Status-Historie aus
+    `sendungen_ereignisse`.
+  - `daten.js` – **seit E+F:** `ladeAlles()` lädt zusätzlich
+    `sendungen_ereignisse` (für die Detailansicht).
   Details: `docs/superpowers/specs/2026-09-16-etappe-6-8-automatisierung-auth-redesign-design.md`
-  (Abschnitt 3.4), `docs/superpowers/plans/2026-09-16-etappe-6-email-automatisierung.md`
-  und (Dedup/Status-Historie/Abholdaten) `docs/superpowers/specs/2026-09-19-etappe-3-sendungen-automatisierung-design.md`.
+  (Abschnitt 3.4), `docs/superpowers/plans/2026-09-16-etappe-6-email-automatisierung.md`,
+  (Dedup/Status-Historie/Abholdaten) `docs/superpowers/specs/2026-09-19-etappe-3-sendungen-automatisierung-design.md`
+  und `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
 - `manifest.webmanifest`, `icon.svg` – PWA. **Echte PNG-Icons (192/512) und
   `apple-touch-icon` fehlen weiterhin** (offener Punkt seit Etappe 0).
 - `automatisierung/` – **lokales** Node-Skript, kein Teil der Browser-App:
@@ -396,7 +485,8 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   - `.env` (nicht im Repo, siehe Konventionen unten) – GMX- und Supabase-Zugangsdaten.
   - `letzter-lauf.json` (nicht im Repo) – Zeitstempel des letzten erfolgreichen Laufs.
   Läuft per Windows-Scheduled-Task täglich 7 Uhr, siehe unten.
-- `test/` – `node --test` Unit-Tests: `router`, `view`, `registry`,
+- `test/` – `node --test` Unit-Tests: `router` (seit E+F inkl. Test für
+  das dritte Hash-Segment `detail`), `view`, `registry`,
   `ernaehrung-zeitplan`, `ernaehrung-berechnung`, `todos-planung`,
   `finanzen-berechnung` (seit Etappe 8 v2 inkl. der ehemaligen
   Lager-Fälle: `warenwert`/`sortiereTeile`/`merkliste`/`naechsterStatus`;
@@ -404,11 +494,13 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   `gesamtKontostand`/`unechterGesamtKontostand`/`schuldenRestbetrag`/
   `offeneSchulden`/`sortiereSchulden`/`nettoVermoegen` — die alten
   Einzelkonto-Funktionen `kontostand`/`unechterKontostand` gibt es nicht
-  mehr), `berichtsheft-berechnung`, `sendungen-berechnung`
+  mehr), `berichtsheft-berechnung` (seit E+F inkl. `ausbildungsFortschritt`),
+  `sendungen-berechnung`
   (seit Etappe 3, 2026-09-19, inkl. `abholbereit`-Sortierung/-Priorität/
-  -Zyklus), `suche-berechnung` (Etappe 8 v2), `automatisierung-klassifizieren`
+  -Zyklus), `suche-berechnung` (seit E+F: `ziel` zeigt auf Detailrouten
+  mit ID), `automatisierung-klassifizieren`
   (seit Etappe 3 inkl. `kategorisiereStatus`), `automatisierung-letzter-lauf`
-  (83 grün; `lager-berechnung.test.js` existiert seit Etappe 8 v2 nicht mehr).
+  (89 grün; `lager-berechnung.test.js` existiert seit Etappe 8 v2 nicht mehr).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
 
@@ -423,7 +515,11 @@ weiterhin vollständig registrierte Module mit Code und Daten, haben aber
 anzeigen"-Links auf dem Home-Screen. Ohne Hash öffnet die App den
 Home-Screen. Details/Begründung: `docs/PROJEKT-LOG.md`, Eintrag
 2026-09-18, und `docs/superpowers/specs/2026-09-18-etappe-8-redesign-v2-design.md`
-(Abschnitt 2–3).
+(Abschnitt 2–3). **Seit Sub-Etappe E+F (2026-09-22)** gibt es zusätzlich
+einen **Einstellungen-Screen** (`js/module/einstellungen/`, `id:
+'einstellungen'`), der bewusst **keinen** eigenen Bottom-Nav-Punkt hat —
+erreichbar nur per Hash (`#/einstellungen`) über den Menüpunkt "App-
+Einstellungen" im Profil-Screen.
 
 ## Starten / Testen / Bauen
 
@@ -431,7 +527,7 @@ Home-Screen. Details/Begründung: `docs/PROJEKT-LOG.md`, Eintrag
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 83 grün.
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 89 grün.
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.

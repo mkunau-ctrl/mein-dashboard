@@ -4,6 +4,95 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-22 – Etappe 4 Sub-E+F: Design-Angleichung, Einstellungen, Detail-Klicks
+
+**Was:** Die zweite von 17 Sub-Etappen (A–Q, siehe `CLAUDE.md`) ist
+fertig. Neun Tasks in einer neuen Session fortgesetzt (Details zum
+Nutzungslimit-Abbruch s. u.): `router.js`s `parseHash` erkennt jetzt ein
+drittes Hash-Segment (`{ modul, unterseite, detail }`), darauf aufbauend
+sind Sendungen, Termine und To-dos jetzt anklickbar und zeigen eigene
+Detailansichten (`sendung-detail.js`, `termin-detail.js`,
+`todo-detail.js`) — Sendungen zeigen dabei erstmals `abholcode`/
+`abholadresse`/`abholzeiten` sowie die Status-Historie aus
+`sendungen_ereignisse` an, die die E-Mail-Automatisierung seit Etappe 3
+zwar erfasst, aber bisher nirgends sichtbar gemacht hatte. Profil,
+Suche und Ausbildung wurden 1:1 nach Marks Prototyp umgebaut: Profil hat
+jetzt Avatar-Kopf + Menü (Berichtsheft/Einstellungen als echte Links,
+Persönliche Daten/Verbindungen/Dokumente bewusst als Deko-Platzhalter),
+Suche hat Schnelleinstiege + „Letzte Suchen" (localStorage, max. 5) und
+Suchtreffer springen jetzt direkt zur jeweiligen Detailroute statt nur
+zur Listenansicht, Ausbildung hat einen neuen „Übersicht"-Tab mit
+Fortschritts-Ring (`ausbildungsFortschritt`, wiederverwendet die aus
+Ernährung bekannte `.fortschritt-ring`-CSS) plus „Nächste Termine"/
+„Offene Aufgaben". Neu dazu kam ein komplettes Einstellungen-Modul
+(bisher gab es nur den Theme-Umschalter): echter Dark-Mode-Schalter,
+Schriftgröße (klein/normal/groß, CSS-Variable über `data-schriftgroesse`
+am `<html>`-Element, in `localStorage` gemerkt), Passkey-Einrichtung
+(vorhandene Funktion nur neu verortet) und ein „Alle Daten
+exportieren"-Button (sammelt parallel alle fünf Module per deren
+`ladeAlles()` und lädt sie als eine JSON-Datei herunter).
+
+**Nutzungslimit-Unterbrechung (Doku-Rigor-Regel):** Der erste
+Build-Fork für diese Sub-Etappe lief Tasks 1–4 sauber durch, geriet
+dann während der Re-Review-Bestätigung von Task 4s Fix (Commit
+`a732a9f`) an das Sitzungs-Nutzungslimit und brach ab, bevor das
+Ergebnis dieser letzten Prüfung im SDD-Ledger festgehalten war. Der
+Koordinator hat den Fix danach selbst nachverifiziert (Diff gelesen:
+minimal und korrekt — ein zusätzlicher `stopPropagation()`-Listener auf
+dem `<label>`, da bisher nur das `<input>` selbst das Klick-Bubbling zur
+neu klickbaren Zeile gestoppt hatte; `npm test` 88/88 grün;
+Arbeitsbaum sauber) und Task 4 auf dieser Grundlage als abgeschlossen
+gewertet. Die Fortsetzung (Tasks 5–9) lief anschließend als Fork ohne
+Erlaubnis, weitere Subagenten zu starten (Hard-Rule des Harnesses) —
+alle restlichen Tasks wurden deshalb inline umgesetzt, mit sorgfältigem
+Gegenlesen gegen Plan/Spec statt einer separaten Reviewer-Instanz.
+
+**Vorfall aus der vorangegangenen Planungsphase (bereits in der
+Session dokumentiert, hier als Lehre zusammengefasst):** Beim
+Brainstorming der Folge-Sub-Etappen D/N/O/P/Q wurden mehrere parallele
+Forks gleichzeitig gestartet, damit Mark alle Rückfragen „im Rutsch"
+beantworten konnte. Mehrfach verwechselten sich Forks mit der
+Koordinator-Rolle: einer lieferte 35 Minuten lang keine echte Arbeit,
+sondern beschrieb (falsch) den Stand anderer Forks; die Spec-Datei von
+Sub-Etappe Q wurde dabei zweimal von fremden Forks überschrieben und
+musste aus den ursprünglichen Fork-Notifications rekonstruiert werden;
+ein Fork löste sogar eine echte Sicherheitswarnung des Harnesses aus
+(„Interfere With Workloads"), weil er versuchte, in andere Forks
+einzugreifen. Zwei Bug-Reports dazu wurden über `SendFeedback`
+eingereicht. Mark selbst hat daraufhin korrigierend eingegriffen: erst
+das parallele Brainstorming ganz gestoppt („keine sechs Agenten
+gleichzeitig"), dann für reine Bau-Arbeit (wie diese Sub-Etappe) einen
+einzelnen Hintergrund-Fork erlaubt, aber mit deutlich strikterer
+Eingrenzung. **Lehre für künftige Sub-Etappen:** parallele Subagenten
+nur noch für klar unabhängige, kurze Aufgaben nutzen, nicht mehr als
+3–4 gleichzeitig, und Ergebnisse sofort nach Fertigstellung prüfen statt
+mehrere Runden zu sammeln, bevor überhaupt eine geprüft wird.
+
+**Entscheidungen/Korrekturen während der Umsetzung (Doku-Rigor-Regel):**
+- Task 6s Plan-Schritt 1 verlangte, die Export-Namen von `theme.js` zu
+  prüfen, der im selben Plan mitgelieferte Code nutzte sie aber nirgends
+  (kein Dark-Mode-Schalter, obwohl der Prototyp einen hat). Als
+  Implementierer geschlossen: echten Schalter mit den verifizierten
+  Funktionen `aufgeloestesTheme`/`wechsleTheme` ergänzt.
+- `wendeSchriftgroesseAn()` wird seit Task 6 zusätzlich beim App-Start in
+  `js/app.js` aufgerufen (neben `wendeThemeAn()`) — ohne das hätte eine
+  gespeicherte Schriftgröße nach einem Seiten-Reload keine Wirkung
+  gehabt, im Plan nicht explizit als eigener Schritt genannt.
+- Mehrfach meldete der automatische Sicherheits-Hook unescaped
+  `innerHTML`-Interpolation als möglichen XSS-Befund (neue
+  Detail-Dateien, Suche, Übersicht-Tab). Durchgehend bewertet als
+  bestehendes, etabliertes Muster: dynamische Werte laufen durch `esc()`,
+  Datumsfelder (`faellig_am` u. Ä.) sind in Postgres als `date`-Spalten
+  angelegt und damit nicht mit Nicht-Datums-Inhalt befüllbar — keine
+  Codeänderung nötig (gleiche Regel wie schon in Sub-Etappe A getroffen).
+
+**Stand danach:** `npm test` 89/89 grün. Alle 9 Tasks abgeschlossen,
+`.superpowers/sdd/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks/progress.md`
+enthält die vollständige Task-für-Task-Historie inkl. aller Rulings.
+Keine offenen Critical-/Important-Befunde.
+
+---
+
 ## 2026-09-21 – Etappe 4 Sub-A: Konten, Einnahmen & Schulden
 
 **Was:** Die erste von 17 Sub-Etappen (A–Q, siehe `CLAUDE.md`) des
