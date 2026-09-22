@@ -21,7 +21,14 @@ function heute() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export async function zeigeUebersicht(container, zustand, aktualisieren, zeitraum, setZeitraum) {
+export async function zeigeUebersicht(container, zustand, aktualisieren, zeitraum, setZeitraum, detail) {
+  if (detail && detail.startsWith('kategorie-')) {
+    const { zeigeKategorieDetail } = await import('./kategorie-detail.js');
+    zeigeKategorieDetail(container, zustand, detail.slice('kategorie-'.length), () => {
+      location.hash = '#/finanzen/uebersicht';
+    });
+    return;
+  }
   const heuteStr = heute();
   const von = zeitraumVon(zeitraum, heuteStr);
   const stand = gesamtKontostand(zustand.konten, zustand.expenses, zustand.einnahmen, heuteStr);
@@ -54,7 +61,7 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
       <button type="button" class="link-muted" id="uebersicht-alle-kategorien">Alle anzeigen</button></div>
     <div class="punkt-liste">
       ${kategorien.length === 0 ? '<p class="lade">Keine Ausgaben in diesem Zeitraum.</p>' : kategorien.map((k) => `
-        <div class="kategorie-zeile">
+        <div class="kategorie-zeile" data-kategorie="${esc(k.kategorie.toLowerCase())}" style="cursor:pointer;">
           <div class="kategorie-zeile-kopf">
             <span class="kategorie-zeile-name"><span class="icon-badge">${KATEGORIE_ICON[kategorisiereIconTyp(k.kategorie)]}</span>${esc(k.kategorie)}</span>
             <span class="kategorie-zeile-wert">${k.prozent}%&nbsp;&nbsp;<strong>${k.summe.toFixed(2)} €</strong></span>
@@ -71,5 +78,10 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
   });
   container.querySelector('#uebersicht-alle-kategorien').addEventListener('click', () => {
     location.hash = '#/finanzen/analyse';
+  });
+  container.querySelectorAll('[data-kategorie]').forEach((el) => {
+    el.addEventListener('click', () => {
+      location.hash = `#/finanzen/uebersicht/kategorie-${el.dataset.kategorie}`;
+    });
   });
 }

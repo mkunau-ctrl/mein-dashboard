@@ -16,7 +16,7 @@ function esc(s) {
 }
 
 function kategorieZeile(k) {
-  return `<div class="kategorie-zeile">
+  return `<div class="kategorie-zeile" data-kategorie="${esc(k.kategorie.toLowerCase())}" style="cursor:pointer;">
     <div class="kategorie-zeile-kopf">
       <span class="kategorie-zeile-name"><span class="icon-badge">${KATEGORIE_ICON[kategorisiereIconTyp(k.kategorie)]}</span>${esc(k.kategorie)}</span>
       <span class="kategorie-zeile-wert">${k.prozent}%&nbsp;&nbsp;<strong>${k.summe.toFixed(2)} €</strong></span>
@@ -25,7 +25,14 @@ function kategorieZeile(k) {
   </div>`;
 }
 
-export async function zeigeAnalyse(container, zustand, aktualisieren) {
+export async function zeigeAnalyse(container, zustand, aktualisieren, zeitraum, setZeitraum, detail) {
+  if (detail && detail.startsWith('kategorie-')) {
+    const { zeigeKategorieDetail } = await import('./kategorie-detail.js');
+    zeigeKategorieDetail(container, zustand, detail.slice('kategorie-'.length), () => {
+      location.hash = '#/finanzen/analyse';
+    });
+    return;
+  }
   const heuteStr = new Date().toISOString().slice(0, 10);
   const jahr = Number(heuteStr.slice(0, 4));
   const monat = Number(heuteStr.slice(5, 7));
@@ -77,4 +84,10 @@ export async function zeigeAnalyse(container, zustand, aktualisieren) {
       <div class="punkt-zeile"><div class="punkt-info"><strong>Ausgaben</strong></div><strong class="betrag-minus">-${jahresDaten.ausgabenSumme.toFixed(2)} €</strong></div>
       <div class="punkt-zeile"><div class="punkt-info"><strong>Sparquote</strong></div><strong>${jahresDaten.sparquote === null ? '–' : jahresDaten.sparquote + ' %'}</strong></div>
     </div>`;
+
+  container.querySelectorAll('[data-kategorie]').forEach((el) => {
+    el.addEventListener('click', () => {
+      location.hash = `#/finanzen/analyse/kategorie-${el.dataset.kategorie}`;
+    });
+  });
 }
