@@ -1,4 +1,4 @@
-import { gesamtKontostand, zeitraumVon, summenProKategorieZeitraum, kategorisiereIconTyp, warenwert, kreisdiagrammSegmente, offeneSchulden } from './berechnung.js';
+import { gesamtKontostand, zeitraumVon, summenProKategorieZeitraum, kategorisiereIconTyp, warenwert, kreisdiagrammSegmente, offeneSchulden, schuldenRestbetrag } from './berechnung.js';
 
 const RANGES = [['7T', '7T'], ['30T', '30T'], ['3M', '3M'], ['6M', '6M'], ['1J', '1J']];
 
@@ -99,7 +99,7 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
       </div>
       <div class="kachel" data-ziel="schulden">
         <small>Schulden</small>
-        <span>${offeneSchulden(zustand.schulden, zustand.zahlungen).toFixed(2)} €</span>
+        <span>${offeneSchulden(zustand.schulden, zustand.zahlungen).reduce((s, schuld) => s + schuldenRestbetrag(schuld, zustand.zahlungen), 0).toFixed(2)} €</span>
       </div>
     </div>
     <div class="punkt-liste">
