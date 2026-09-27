@@ -73,8 +73,12 @@ export function erkenneAbos(expenses) {
 const STATUS_PRIORITAET = { fehlt: 0, bestellt: 1, da: 2 };
 const STATUS_ZYKLUS = { fehlt: 'bestellt', bestellt: 'da', da: 'fehlt' };
 
-export function warenwert(teile) {
-  return teile.reduce((s, t) => s + t.bestand * (t.einzelwert ?? 0), 0);
+export function warenwert(teile, reparaturAuftraege = []) {
+  const lager = teile.reduce((s, t) => s + t.bestand * (t.einzelwert ?? 0), 0);
+  const reparaturen = reparaturAuftraege
+    .filter((a) => a.status !== 'verkauft')
+    .reduce((s, a) => s + a.warenwert, 0);
+  return lager + reparaturen;
 }
 
 export function sortiereTeile(teile) {

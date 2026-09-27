@@ -80,6 +80,19 @@ test('warenwert: Summe bestand mal einzelwert, fehlender Wert zaehlt als 0', () 
   assert.equal(warenwert(teile), 2 * 60 + 0 * 25 + 1 * 15 + 5 * 0);
 });
 
+test('warenwert: zweiter Parameter zaehlt offene Reparatur-Auftraege mit, verkaufte nicht', () => {
+  const auftraege = [
+    { status: 'offen', warenwert: 305 },
+    { status: 'fertig', warenwert: 450 },
+    { status: 'verkauft', warenwert: 200 },
+  ];
+  assert.equal(warenwert(teile, auftraege), (2 * 60 + 0 * 25 + 1 * 15 + 5 * 0) + 305 + 450);
+});
+
+test('warenwert: ohne zweiten Parameter unveraendert (Rueckwaertskompatibilitaet)', () => {
+  assert.equal(warenwert(teile), 2 * 60 + 0 * 25 + 1 * 15 + 5 * 0);
+});
+
 test('sortiereTeile: fehlt vor bestellt vor da, sonst alphabetisch', () => {
   const namen = sortiereTeile(teile).map((t) => t.bezeichnung);
   assert.deepEqual(namen, [
