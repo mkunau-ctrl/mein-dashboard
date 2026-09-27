@@ -64,7 +64,7 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
   const einnahmenSumme = zustand.einnahmen.filter(imFenster).reduce((s, e) => s + e.betrag, 0);
   const differenz = einnahmenSumme - ausgabenSumme;
   const kategorien = summenProKategorieZeitraum(zustand.expenses, von, heuteStr).slice(0, 4);
-  const warenwertBetrag = warenwert(zustand.teile);
+  const warenwertBetrag = warenwert(zustand.teile, zustand.handyreparaturAuftraege);
   const segmente = kreisdiagrammSegmente(kategorien);
 
   container.innerHTML = `

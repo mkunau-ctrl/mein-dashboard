@@ -6,7 +6,7 @@ function fehler(kontext, error) {
 }
 
 export async function ladeAlles() {
-  const [expenses, settings, teile, konten, einnahmen, einnahmenVorlagen, schulden, zahlungen, ausgabenVorlagen] = await Promise.all([
+  const [expenses, settings, teile, konten, einnahmen, einnahmenVorlagen, schulden, zahlungen, ausgabenVorlagen, handyreparaturAuftraege] = await Promise.all([
     supabase.from('expenses').select('*').order('datum', { ascending: false }),
     supabase.from('finance_settings').select('key,value'),
     supabase.from('parts').select('*'),
@@ -16,11 +16,13 @@ export async function ladeAlles() {
     supabase.from('schulden').select('*').order('erstellt_am', { ascending: false }),
     supabase.from('schulden_zahlungen').select('*'),
     supabase.from('ausgaben_vorlagen').select('*').eq('aktiv', true),
+    supabase.from('handyreparatur_auftraege').select('status,warenwert'),
   ]);
   for (const [name, r] of Object.entries({
     Ausgaben: expenses, Einstellungen: settings, Teile: teile, Konten: konten,
     Einnahmen: einnahmen, 'Einnahmen-Vorlagen': einnahmenVorlagen, Schulden: schulden,
     'Schulden-Zahlungen': zahlungen, 'Ausgaben-Vorlagen': ausgabenVorlagen,
+    'Handyreparatur-Auftraege': handyreparaturAuftraege,
   })) {
     if (r.error) throw fehler(`${name} laden`, r.error);
   }
@@ -30,6 +32,7 @@ export async function ladeAlles() {
     expenses: expenses.data, settings: settingsObj, teile: teile.data,
     konten: konten.data, einnahmen: einnahmen.data, einnahmenVorlagen: einnahmenVorlagen.data,
     schulden: schulden.data, zahlungen: zahlungen.data, ausgabenVorlagen: ausgabenVorlagen.data,
+    handyreparaturAuftraege: handyreparaturAuftraege.data,
   };
 }
 

@@ -1,7 +1,7 @@
 import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
-import { gesamtKontostand, unechterGesamtKontostand, summeProMonat } from '../finanzen/berechnung.js';
+import { gesamtKontostand, unechterGesamtKontostand, summeProMonat, warenwert } from '../finanzen/berechnung.js';
 import { sortiereOffeneTodos } from '../todos/planung.js';
 import { sortiereSendungen, sortiereTermine } from '../sendungen/berechnung.js';
 
@@ -66,10 +66,13 @@ function abschnitt(titel, ziel, zeilenHtml) {
 }
 
 function renderHome(container) {
-  const { finanzen, todos, sendungen } = zustand;
+  const { finanzen, todos, sendungen, handyreparatur } = zustand;
   const gesetzt = finanzen.konten.length > 0;
   const stand = gesetzt ? gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heute()) : null;
-  const unecht = gesetzt ? unechterGesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, finanzen.teile, heute()) : null;
+  const unecht = gesetzt
+    ? gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heute())
+      + warenwert(finanzen.teile, handyreparatur.auftraege)
+    : null;
   const heuteDatum = new Date();
   const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
 
