@@ -19,7 +19,7 @@ unten für Details.
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
 
-## Aktueller Stand (2026-09-22) / Nächste Schritte
+## Aktueller Stand (2026-09-27) / Nächste Schritte
 
 **Etappe 4 Teil A (Icon-Audit) ist fertig** (Commit `57b623f`). Teil B
 ("Finanzen-Ausbau") ist beim Brainstorming zu einem **deutlich größeren,
@@ -161,33 +161,29 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   machbar, aber eigene Spec/Spike wert, da neue Technologie fürs Projekt.
   Dazu **Notizen**: eigenes Notiz-Feature, auffindbar auch über Suche
   ("auf Notizen klicken → Erinnerungen/Notizen einspeichern").
-- **N) Handyreparatur-Aufträge** — Kunde/Gerät/Problem/Preis/Status
-  (offen/fertig/abgeholt), erzeugt bei "abgeholt" automatisch eine
-  Einnahme (Tabelle `einnahmen`, Item A). Ideen-Ergänzung 2026-09-19:
-  Abholdatum eines Auftrags könnte automatisch einen Kalender-Termin/
-  Erinnerung erzeugen (Verknüpfung mit Item M).
-  **Reale Rohdaten von Mark (Screenshot, 2026-09-22), noch nicht
-  eingetragen (Tabelle existiert noch nicht) — beim Bauen von N direkt
-  verwenden:** iPhone 14 Pro: Kosten 305 €, voraussichtlicher
-  Verkauf/Preis 370 €. iPhone 16 Pro: Kosten 450 €, voraussichtlich
-  550 €. iPhone 13 mini: 200 €. iPhone 14: 130 €. iPhone 14: 160 €,
-  voraussichtlich 220 € (zwei separate iPhone-14-Aufträge). iPhone 15
-  Pro, 2 Rückseiten: 50 €. iPhone 15, Kamera: 30 €. iPhone 14, Kamera:
-  38 €. Kein Kundenname/Status pro Zeile bekannt — beim Umsetzen mit
-  Mark abgleichen, welcher Preis Einkauf/Ersatzteil und welcher
-  Kunden-Verkaufspreis ist, und Kundennamen/Status nachtragen.
-  **Datenmodell-Ergänzung von Mark (2026-09-22):** die erste Zahl
-  (z. B. 305 € beim iPhone 14 Pro) zählt als **Warenwert** — offene
-  Handyreparatur-Aufträge (noch nicht abgeholt/verkauft) sollen in die
-  bestehende `warenwert()`-Berechnung (`finanzen/berechnung.js`)
-  einfließen, wie Teile aus dem Lager. Die zweite Zahl
-  ("voraussichtlich", z. B. 370 €) ist der erwartete Verkaufspreis.
-  Gewünschte neue Kennzahl: **erwarteter Gewinn** = Summe
-  (voraussichtlicher Verkaufspreis − Warenwert) über alle offenen
-  Aufträge — sowie später eine **monatliche Ist-Gewinn-Anzeige**
-  (tatsächlicher Gewinn aus im Monat abgeholten/verkauften Aufträgen,
-  sobald der Status "abgeholt" den Auftrag abschließt). Beides beim
-  Schreiben der Spec für N als eigene Anforderung mit aufnehmen.
+- **N) Handyreparatur-Aufträge** — **fertig (2026-09-27)**. Beim
+  Brainstorming stellte sich anhand der realen Rohdaten heraus: das
+  tatsächliche Geschäftsmodell ist **Ankauf-Reparatur-Weiterverkauf**
+  (kein Kunden-Reparaturservice wie ursprünglich hier notiert, s.
+  Spec Abschnitt 0) — Statusübergänge sind entsprechend
+  **offen→fertig→verkauft**, kein Kundenname-Feld. Erzeugt beim
+  Wechsel zu "verkauft" automatisch eine Einnahme (Tabelle `einnahmen`,
+  Item A). Neues Modul `js/module/handyreparatur/` (s. u. "Aufbau"),
+  Warenwert-Anbindung in Home/Finanzen-Übersicht.
+  **Reale Rohdaten von Mark (Screenshot, 2026-09-22) — eingetragen,
+  s. `docs/PROJEKT-LOG.md` (Eintrag 2026-09-27):** iPhone 14 Pro:
+  Warenwert 305 €, voraussichtlich 370 €. iPhone 16 Pro: 450 €,
+  voraussichtlich 550 €. iPhone 13 mini: 200 €. iPhone 14: 130 €.
+  iPhone 14: 160 €, voraussichtlich 220 € (zwei separate
+  iPhone-14-Aufträge). iPhone 15 Pro, 2 Rückseiten: 50 €. iPhone 15,
+  Kamera: 30 €. iPhone 14, Kamera: 38 €. Kein Kundenname/Status pro
+  Zeile bekannt gewesen — alle acht mit Status `offen` eingetragen.
+  Ideen-Ergänzung 2026-09-19, noch nicht gebaut: Abholdatum eines
+  Auftrags könnte automatisch einen Kalender-Termin/Erinnerung
+  erzeugen (Verknüpfung mit Item M, existiert noch nicht). Details:
+  `docs/superpowers/specs/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege-design.md`,
+  `docs/superpowers/plans/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege.md`,
+  `docs/PROJEKT-LOG.md` (Eintrag 2026-09-27).
 - **O) Teile-Bestellen ↔ Sendungen verknüpfen** — Sendung "zugestellt" →
   Vorschlag, zugehöriges Teil im Lager auf Status "da" zu setzen.
 - **P) Kalender-Export (ICS)** für Termine/Ausbildung, damit sie auch im
@@ -310,9 +306,10 @@ eingeschoben, jetzt ebenfalls **fertig**).
 
 **Danach explizit (Nutzer-Entscheidung 2026-09-22): erst alles bauen,
 was ohne Spike direkt umsetzbar ist — Spikes kommen ganz zuletzt,
-Mark will zuerst, dass alles Bestehende funktioniert.** Also jetzt als
-**nächster Schritt N**, dann **O**, **P**, **Q** (Spec+Plan jeweils
-schon geschrieben, siehe Bullets oben), danach **I** (Wetter-Widget —
+Mark will zuerst, dass alles Bestehende funktioniert.** **N ist jetzt
+fertig (2026-09-27).** Als **nächster Schritt O**, dann **P**, **Q**
+(Spec+Plan jeweils schon geschrieben, siehe Bullets oben), danach **I**
+(Wetter-Widget —
 hat bereits eine Spec, aber noch keinen fertig abgestimmten Plan,
 prüfen ob noch offene Fragen aus dem ursprünglichen Brainstorming
 bestehen). **Ganz zuletzt, in beliebiger Reihenfolge, alles was einen
@@ -329,8 +326,8 @@ danach in einer eigenen, freigegebenen Session gebaut. Für künftige
 Sessions: Umfang lieber explizit nach Tasks/Sub-Etappen begrenzen
 lassen statt nach Zeit/Tokens.
 
-**Nächster Schritt beim Fortsetzen:** Sub-Etappen A, E+F, B, C, D und R
-sind komplett umgesetzt und dokumentiert (A: Spec
+**Nächster Schritt beim Fortsetzen:** Sub-Etappen A, E+F, B, C, D, R, S
+und N sind komplett umgesetzt und dokumentiert (A: Spec
 `docs/superpowers/specs/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden-design.md`,
 Plan `.superpowers/sdd/2026-09-19-etappe-4-sub-a-konten-einnahmen-schulden/`;
 E+F: Spec
@@ -352,14 +349,19 @@ eigenes Spec-Dokument (bounded-Brainstorming im Chat), Plan
 `docs/superpowers/specs/2026-09-22-etappe-4-sub-s-design-perf-verfeinerung-design.md`,
 Plan `docs/superpowers/plans/2026-09-22-etappe-4-sub-s-design-perf-verfeinerung.md`,
 13 Tasks in drei 4er-Batches + einem Doku-Task gebaut, durchgehend ohne
-Zwischenstopp auf Nutzerwunsch). Als Nächstes: **Sub-Etappe N**
-(Handyreparatur-Aufträge) — **Spec bereits geschrieben und vom Nutzer
-noch zu bestätigen**
-(`docs/superpowers/specs/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege-design.md`,
-wichtige Korrektur zur ursprünglichen Backlog-Notiz: Geschäftsmodell
-ist Ankauf-Reparatur-Weiterverkauf, kein Kunden-Reparaturservice),
-**noch kein Implementierungsplan**. Jede weitere Sub-Etappe danach
-ebenso einzeln, nicht alles auf einmal.
+Zwischenstopp auf Nutzerwunsch); N: Spec
+`docs/superpowers/specs/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege-design.md`
+(wichtige Korrektur zur ursprünglichen Backlog-Notiz: Geschäftsmodell
+ist Ankauf-Reparatur-Weiterverkauf, kein Kunden-Reparaturservice), Plan
++ Ledger
+`.superpowers/sdd/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege/`,
+8 Tasks gebaut am 2026-09-27 — Tasks 1-4 mit Nutzer-Freigabe zwischen
+den Blöcken, Tasks 5-8 auf explizite Nutzer-Freigabe hin durchgehend
+ohne weiteren Zwischenstopp, ein Fix-Round (NaN-Validierung
+Verkaufspreis-Prompt, s. `docs/PROJEKT-LOG.md`)). Als Nächstes:
+**Sub-Etappe O** (Teile-Bestellen ↔ Sendungen verknüpfen) — noch keine
+Spec/Plan, Jede weitere Sub-Etappe danach ebenso einzeln, nicht alles
+auf einmal.
 
 **Muster für alle Etappen dieser Session** (bei Fortsetzung beibehalten,
 falls nicht anders gesagt): `superpowers:brainstorming` →
@@ -644,6 +646,33 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   (kommt mit Sub-Etappe M). Details:
   `docs/superpowers/specs/2026-09-21-etappe-4-sub-d-rechnungen-design.md`
   und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-22).
+- `js/module/handyreparatur/` – neues, eigenständiges Modul
+  (Sub-Etappe N, 2026-09-27): Ankauf-Reparatur-Weiterverkauf von
+  Handys. Kein eigener Bottom-Nav-/Finanzen-Tab-Punkt — Einstieg über
+  den Suche-Schnelleinstieg "Handyreparaturen" (`#/handyreparatur`):
+  - `berechnung.js` – `naechsterAuftragStatus` (zyklisch
+    offen→fertig→verkauft→offen), `erwarteterGewinn` (Summe
+    voraussichtlicher Verkaufspreis minus Warenwert über offene
+    Aufträge mit hinterlegtem Preis), `istGewinnImMonat` (Ist-Gewinn
+    aus im Monat verkauften Aufträgen), `sortiereAuftraege` (offen vor
+    fertig vor verkauft, sonst neueste zuerst).
+  - `daten.js` – Supabase-Zugriff auf `handyreparatur_auftraege`:
+    `ladeAlles` (lädt zusätzlich `konten` fürs Hauptkonto),
+    `legeAuftragAn`, `setzeAuftragStatus` (erzeugt beim Wechsel zu
+    "verkauft" automatisch einen `einnahmen`-Eintrag über die
+    bestehende `legeEinnahmeAn`), `entferneAuftrag`.
+  - `index.js` – Filter-Chips (Alle/Offen/Fertig/Verkauft),
+    Summenkarte "Erwarteter Gewinn", Formular, Statuswechsel per
+    Klick (Verkaufspreis-Prompt mit `Number.isFinite`-Validierung
+    gegen Fehleingaben wie Komma-Dezimalzahlen), Entfernen — nach dem
+    Vorbild von `js/module/rechnungen/`.
+  `finanzen/berechnung.js`s `warenwert(teile, reparaturAuftraege)`
+  bezieht offene/fertige (nicht verkaufte) Aufträge automatisch mit
+  ein — genutzt von Home ("Unecht"-Wert) und Finanzen-Übersicht
+  ("Warenwert"). Kein Kundenname-Feld (Geschäftsmodell ist
+  Ankauf/Weiterverkauf, kein Kundenservice). Details:
+  `docs/superpowers/specs/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege-design.md`
+  und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-27).
 - `js/module/berichtsheft/` – fünftes Fachmodul (Ausbildungsnachweis),
   **Anzeigename seit Etappe 8 v2 "Ausbildung"** (interne Modul-ID bleibt
   unverändert `berichtsheft`, keine Routen-/Datenbank-Änderung):
@@ -769,8 +798,13 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   (seit Etappe 3 inkl. `kategorisiereStatus`, seit Sub-Etappe D inkl.
   Typ `rechnung`), `automatisierung-letzter-lauf`, seit Sub-Etappe D
   neu: `rechnungen-berechnung` (`istUeberfaellig`/`sortiereRechnungen`/
-  `summeOffenerRechnungen`)
-  (106 grün; `lager-berechnung.test.js` existiert seit Etappe 8 v2 nicht mehr).
+  `summeOffenerRechnungen`), seit Sub-Etappe N (2026-09-27) zusätzlich
+  `handyreparatur-berechnung` (`naechsterAuftragStatus`/
+  `erwarteterGewinn`/`istGewinnImMonat`/`sortiereAuftraege`) und
+  `finanzen-berechnung` inkl. der um `warenwert()`s zweiten Parameter
+  erweiterten Fälle
+  (117 grün, verifiziert 2026-09-27; `lager-berechnung.test.js`
+  existiert seit Etappe 8 v2 nicht mehr).
 - `.nojekyll` – GitHub Pages soll das Repo unverändert ausliefern.
 - `docs/` – Projekt-Doku.
 
@@ -797,8 +831,8 @@ Einstellungen" im Profil-Screen.
   (`C:\Users\PC\Projekte\mein-dashboard`) einen statischen Server starten,
   `python -m http.server 8000`, dann `http://localhost:8000` öffnen.
   (Datei direkt öffnen geht wegen Supabase-Auth-Redirect nicht zuverlässig.)
-- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 111 grün
-  (verifiziert 2026-09-22, nach Sub-Etappe S).
+- **Tests:** `npm test` (läuft `node --test` über `test/`). Stand: 117 grün
+  (verifiziert 2026-09-27, nach Sub-Etappe N).
 - **Deploy:** Push auf `main` → GitHub Pages veröffentlicht automatisch unter
   `https://mkunau-ctrl.github.io/mein-dashboard/`. Pages ist aktiv (Source:
   Branch `main`, Ordner `/root`). Seit 2026-09-09 live.
@@ -904,5 +938,9 @@ auf Deutsch. Datenschutz beachten.
   (Händler, Betrag, `faellig_am`, `status` `offen`/`bezahlt` mit
   Check-Constraint, `bezahlt_am`, Notiz, Quelle
   `manuell`/`foto`/`email`), komplett getrennt vom
-  `expenses`-Datenmodell. Alle sieben neuen Tabellen mit RLS nach dem
+  `expenses`-Datenmodell, sowie neu seit Sub-Etappe N (2026-09-27):
+  **`handyreparatur_auftraege`** (Gerät, Notiz, `status`
+  `offen`/`fertig`/`verkauft` mit Check-Constraint, Warenwert,
+  voraussichtlicher/tatsächlicher Verkaufspreis, Verkäufer, Käufer,
+  `verkauft_am`). Alle acht neuen Tabellen mit RLS nach dem
   bestehenden Muster (`user_id = auth.uid()`, `for all to authenticated`).

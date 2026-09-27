@@ -4,6 +4,94 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-27 – Sub-Etappe N: Handyreparatur-Aufträge
+
+**Was:** Neues, eigenständiges Modul `js/module/handyreparatur/` für das
+Ankauf-Reparatur-Weiterverkauf-Geschäft mit Handys, alle 8 Tasks aus
+`docs/superpowers/plans/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege.md`
+umgesetzt (Subagent-Driven-Development, direkt auf `main`):
+
+1. Neue Supabase-Tabelle `handyreparatur_auftraege` (RLS nach
+   Projekt-Standard), 11 Spalten inkl. `status`-Check-Constraint
+   (`offen`/`fertig`/`verkauft`).
+2. `warenwert(teile, reparaturAuftraege)` in `finanzen/berechnung.js` um
+   einen optionalen zweiten Parameter erweitert — rückwärtskompatibel,
+   zählt offene/fertige (nicht verkaufte) Reparatur-Aufträge mit.
+3. Reine Berechnungen (`js/module/handyreparatur/berechnung.js`):
+   `naechsterAuftragStatus` (zyklisch offen→fertig→verkauft→offen),
+   `erwarteterGewinn`, `istGewinnImMonat`, `sortiereAuftraege`.
+4. Datenzugriff (`daten.js`): `ladeAlles`, `legeAuftragAn`,
+   `setzeAuftragStatus` (erzeugt beim Wechsel zu "verkauft" automatisch
+   einen Eintrag in `einnahmen` über die bestehende `legeEinnahmeAn`),
+   `entferneAuftrag`.
+5. UI (`index.js`): Filter-Chips, Summenkarte "Erwarteter Gewinn",
+   Formular, Statuswechsel per Klick, Entfernen — nach dem Vorbild von
+   `js/module/rechnungen/`.
+6. Verdrahtung: Import in `js/app.js`, neuer Suche-Schnelleinstieg
+   "Handyreparaturen" (`#/handyreparatur`), kein eigener Bottom-Nav-/
+   Finanzen-Tab-Punkt.
+7. Warenwert-Anbindung: Home-Screen ("Unecht"-Wert) und
+   Finanzen-Übersicht ("Warenwert") beziehen jetzt offene
+   Handyreparatur-Aufträge automatisch mit ein.
+8. Die 8 realen Rohdaten-Zeilen (aus dem Screenshot vom 2026-09-22,
+   in `CLAUDE.md` gesichert) per Supabase-MCP eingetragen, alle mit
+   Status `offen` (kein Status bekannt gewesen).
+
+**Korrektur zum ursprünglichen Backlog-Eintrag (Doku-Rigor):** `CLAUDE.md`s
+ursprüngliche Notiz zu Punkt N ging von einem klassischen
+Kunden-Reparaturservice aus. Beim Brainstorming am 2026-09-22 stellte
+sich anhand der realen Rohdaten (acht Positionen ganz ohne Kundennamen)
+heraus: das tatsächliche Geschäftsmodell ist Ankauf-Reparatur-
+Weiterverkauf. Die Spec
+(`docs/superpowers/specs/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege-design.md`,
+Abschnitt 0) hält das bereits fest — hier nochmal vermerkt, da diese
+Sub-Etappe erst heute (2026-09-27) tatsächlich gebaut wurde, drei Tage
+nach Spec/Plan.
+
+**Entscheidungen/Fehler während der Umsetzung (Doku-Rigor, auch das
+Nicht-Perfekte):**
+- Vor dem Dispatch von Task 5 hat der Controller versehentlich
+  vergessen, den Task-Brief vorab zu extrahieren. Der Implementer hat
+  sich korrekt mit dem identischen Plan-Abschnitt beholfen, keine
+  inhaltliche Abweichung entstanden — reiner Prozess-Fehler, keine
+  Auswirkung auf den Code.
+- **Task-5-Review fand ein echtes Important-Finding:** Der
+  Verkaufspreis-Prompt (`Number(preisText)`) validierte die Eingabe
+  nicht — eine deutsche Komma-Dezimalzahl ("370,00" statt "370.00")
+  hätte `NaN` erzeugt und wäre ungeprüft in die Einnahme-Erzeugung
+  geflossen. In einer Fix-Runde behoben (`Number.isFinite`-Prüfung +
+  Fehlermeldung, Commit `c841f0b`).
+- **Zwei Findings wurden bewusst nicht gefixt, sondern als Randfall
+  geparkt** (Ruling, kein Bug): (a) Task 4 — Status-Update auf
+  "verkauft" und die anschließende Einnahme-Erzeugung laufen nicht
+  in einer Transaktion; schlägt der zweite Schritt fehl, bleibt der
+  Auftrag als "verkauft" markiert ohne zugehörige Einnahme. Betrifft
+  aber ein Muster, das im ganzen Projekt so besteht (keine
+  DB-Transaktionen irgendwo, z. B. auch bei wiederkehrenden Einnahmen
+  oder Schulden-Zahlungen) — kein neuer, Task-N-spezifischer Fehler.
+  (b) Task 5 — `kontoId` könnte `undefined` sein, wenn `zustand.konten`
+  leer ist; in der Praxis legt Sub-Etappe A immer ein Hauptkonto an,
+  daher nicht als aktuell relevant eingestuft.
+
+**Stand danach:** `npm test` 117/117 grün (Testanzahl seit Task 3
+unverändert — Tasks 4-7 sind reine Netzwerk-/UI-/Verdrahtungsdateien
+ohne eigene Tests, nach Projekt-Konvention). Alle 8 Commits auf `main`
+gepusht (`f1813a4`..`9f2d6e0`, siehe `git log`). Die 8 Rohdaten-Zeilen
+sind in `handyreparatur_auftraege` eingetragen und verifiziert (alle
+`status='offen'`).
+
+**Offene Punkte / Nächste Schritte:**
+- **Manueller Testlauf am echten Gerät steht noch aus** (Task 7,
+  Schritt 6, war ohne Browser-Zugriff nicht sinnvoll durchführbar —
+  jetzt, nach dem Eintragen der Rohdaten, prüfen: Home "Unecht" und
+  Finanzen-Übersicht "Warenwert" sollten beide um die Summe der 8
+  offenen Warenwerte (305+450+200+130+160+50+30+38 = 1.363 €) höher
+  liegen als vorher).
+- Nächster Schritt laut Reihenfolge: **Sub-Etappe O** (Teile-Bestellen
+  ↔ Sendungen verknüpfen).
+
+---
+
 ## 2026-09-22 – Sub-Etappe S: Design-/Performance-Verfeinerung
 
 **Was:** Alle zwölf Bau-Tasks aus
