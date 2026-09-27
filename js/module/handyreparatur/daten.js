@@ -6,9 +6,13 @@ function fehler(kontext, error) {
 }
 
 export async function ladeAlles() {
-  const { data, error } = await supabase.from('handyreparatur_auftraege').select('*').order('erstellt_am', { ascending: false });
-  if (error) throw fehler('Handyreparatur-Auftraege laden', error);
-  return { auftraege: data };
+  const [auftraege, konten] = await Promise.all([
+    supabase.from('handyreparatur_auftraege').select('*').order('erstellt_am', { ascending: false }),
+    supabase.from('konten').select('id').order('erstellt_am').limit(1),
+  ]);
+  if (auftraege.error) throw fehler('Handyreparatur-Auftraege laden', auftraege.error);
+  if (konten.error) throw fehler('Konten laden', konten.error);
+  return { auftraege: auftraege.data, konten: konten.data };
 }
 
 export async function legeAuftragAn({ geraet, notiz, warenwert, voraussichtlicher_verkaufspreis }) {
