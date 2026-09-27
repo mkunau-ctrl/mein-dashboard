@@ -71,8 +71,13 @@ function zeichneListe(container, aktualisieren) {
             const vorschlag = a.voraussichtlicher_verkaufspreis ?? a.warenwert;
             const preisText = prompt('Tatsächlicher Verkaufspreis (€):', vorschlag);
             if (preisText === null) return;
+            const preis = Number(preisText);
+            if (!Number.isFinite(preis)) {
+              alert('Ungültiger Verkaufspreis. Bitte eine Zahl mit Punkt statt Komma eingeben (z. B. 370.00).');
+              return;
+            }
             const kontoId = zustand.konten?.[0]?.id;
-            await setzeAuftragStatus(a, 'verkauft', { tatsaechlicherVerkaufspreis: Number(preisText), kontoId });
+            await setzeAuftragStatus(a, 'verkauft', { tatsaechlicherVerkaufspreis: preis, kontoId });
           } else {
             await setzeAuftragStatus(a, neuerStatus);
           }
