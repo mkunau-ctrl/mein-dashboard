@@ -4,6 +4,30 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Sub-Etappe P: Kalender-Export (ICS)
+
+**Was:** Im Sendungen-Tab „Termine" gibt es oben den Knopf „Kalender exportieren (.ics)". Er erzeugt
+eine Datei mit allen Terminen plus allen offenen To-dos mit Fälligkeit (als ganztägige Einträge)
+und lädt sie herunter; iPhone/Google-Kalender können sie importieren. Neu: `sendungen/ics.js`
+(`zuIcsDatei`, reine Logik: RFC-5545-Escaping, Zeilenfaltung, stabile UIDs, Zeittermin +1 h oder
+ganztägig), `ladeOffeneTodosMitFrist()` in `sendungen/daten.js`, 6 Tests (132 grün).
+
+**Warum:** Backlog-Punkt P – interne Termine sollen im normalen Kalender auftauchen.
+
+**Entscheidungen:** Einmaliger Download statt Abo-Feed (ein Feed bräuchte einen öffentlichen
+Endpunkt – Datenschutz). UIDs sind aus Titel+Datum+Uhrzeit abgeleitet, damit ein erneuter Import
+denselben Eintrag aktualisiert statt zu duplizieren. Ungültige Uhrzeit → ganztägig.
+
+**Fehler-Historie:** Beim Schreiben per Bash-Heredoc gingen Backslashes verloren (kaputte Regex in
+`ics.js`, falsche Erwartungswerte in den Tests). Behoben mit Edit-Tool; Regel: Dateien mit
+Backslashes nur mit Write/Edit schreiben.
+
+**Stand danach:** Gebaut, Tests grün, Download nicht am Gerät getestet.
+
+**Offene Punkte / Nächste Schritte:** Sub-Etappe Q (Projekte-Übersicht), dann I (Wetter).
+
+---
+
 ## 2026-09-29 – Sub-Etappe O: Teile-Bestellen ↔ Sendungen
 
 **Was:** Im Finanzen-Tab „Bestellen" erscheint über der Merkliste ein Block „Wahrscheinlich

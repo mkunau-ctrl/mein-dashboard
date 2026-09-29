@@ -197,7 +197,8 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   Bestellen-Tab zeigt „Wahrscheinlich angekommen" (Stichwort-Abgleich Teil ↔
   zugestellte Sendung, `angekommeneTeile` in `finanzen/berechnung.js`), Klick setzt
   Teil auf „da". Details: `docs/PROJEKT-LOG.md`.
-- **P) Kalender-Export (ICS)** für Termine/Ausbildung, damit sie auch im
+- **P) Kalender-Export (ICS)** — **fertig (2026-09-29)**: Knopf im Termine-Tab
+  (`sendungen/ics.js`, Termine + offene To-dos mit Frist → .ics-Download). Ursprüngliche Idee: Termine/Ausbildung, damit sie auch im
   iPhone-/Google-Kalender auftauchen — Gegenrichtung zu Item M (M holt
   externe Termine rein, P schickt interne Termine raus).
 - **Q) Projekte-Übersicht** (neu, 2026-09-19) — eigener Bereich im

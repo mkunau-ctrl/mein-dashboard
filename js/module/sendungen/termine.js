@@ -1,5 +1,16 @@
-import { hakeTerminAb, entferneTermin } from './daten.js';
+import { hakeTerminAb, entferneTermin, ladeOffeneTodosMitFrist } from './daten.js';
 import { sortiereTermine } from './berechnung.js';
+import { zuIcsDatei } from './ics.js';
+
+function ladeIcsDatei(inhalt, dateiname) {
+  const blob = new Blob([inhalt], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = dateiname;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 const KALENDER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
 
@@ -17,6 +28,23 @@ export async function zeigeTermine(container, zustand, aktualisieren, _zeitraum,
       return;
     }
   }
+
+  const export_ = document.createElement('button');
+  export_.type = 'button';
+  export_.textContent = 'Kalender exportieren (.ics)';
+  export_.addEventListener('click', async () => {
+    export_.disabled = true;
+    try {
+      const todos = await ladeOffeneTodosMitFrist();
+      const eintraege = [
+        ...zustand.termine.map((t) => ({ titel: t.titel, datum: t.faellig_am, uhrzeit: t.uhrzeit, ort: t.ort, notiz: t.notiz })),
+        ...todos.map((t) => ({ titel: t.text, datum: t.faellig })),
+      ];
+      ladeIcsDatei(zuIcsDatei(eintraege), `termine-${new Date().toISOString().slice(0, 10)}.ics`);
+    } catch (err) { alert(err.message); }
+    export_.disabled = false;
+  });
+  container.appendChild(export_);
 
   const liste = document.createElement('div');
   liste.className = 'punkt-liste';

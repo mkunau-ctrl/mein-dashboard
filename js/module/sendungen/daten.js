@@ -33,6 +33,13 @@ export async function ladeZugestellteSendungen() {
   return data;
 }
 
+export async function ladeOffeneTodosMitFrist() {
+  const { data, error } = await supabase.from('todos').select('text, faellig')
+    .eq('erledigt', false).not('faellig', 'is', null);
+  if (error) throw fehler('To-dos mit Frist laden', error);
+  return data;
+}
+
 export async function legeSendungAn({ haendler, trackingnummer, beschreibung }) {
   const { error } = await supabase.from('sendungen').insert({
     haendler, trackingnummer: trackingnummer || null, beschreibung: beschreibung || null,
