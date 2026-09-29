@@ -201,7 +201,12 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   (`sendungen/ics.js`, Termine + offene To-dos mit Frist → .ics-Download). Ursprüngliche Idee: Termine/Ausbildung, damit sie auch im
   iPhone-/Google-Kalender auftauchen — Gegenrichtung zu Item M (M holt
   externe Termine rein, P schickt interne Termine raus).
-- **Q) Projekte-Übersicht** (neu, 2026-09-19) — eigener Bereich im
+- **Q) Projekte-Übersicht** — **fertig (2026-09-29)**: Modul `js/module/projekte/`
+  (`#/projekte`, Schnelleinstieg in der Suche; `daten.js`, `index.js`, `markdown.js`),
+  Tabelle `claude_projekte`, Sync-Skript `automatisierung/projekte-sync.mjs`
+  (`node automatisierung/projekte-sync.mjs`, upsert + Aufräumen). **Geplante Aufgabe
+  `MeinDashboard-ProjekteSync` ist NICHT eingerichtet** (Classifier hat abgelehnt) — Nutzer
+  entscheidet, s. `docs/PROJEKT-LOG.md`. Tests: 135 grün. Ursprüngliche Idee: (neu, 2026-09-19) — eigener Bereich im
   Dashboard, der alle Projekte unter `C:\Users\PC\Projekte\<name>`
   auflistet und pro Projekt den Inhalt von dessen `CLAUDE.md` anzeigt
   (damit sowohl Mark als auch Claude jederzeit den Stand jedes Projekts

@@ -20,6 +20,7 @@ const SCHNELLEINSTIEGE = [
   { label: 'Sendungen', icon: BOX_ICON, ziel: '#/sendungen' },
   { label: 'Berichtsheft', icon: DOC_ICON, ziel: '#/berichtsheft' },
   { label: 'Handyreparaturen', icon: HANDY_ICON, ziel: '#/handyreparatur' },
+  { label: 'Projekte', icon: FOLDER_ICON, ziel: '#/projekte' },
   { label: 'Dokumente', icon: FOLDER_ICON, ziel: null },
 ];
 

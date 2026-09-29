@@ -4,6 +4,40 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Sub-Etappe Q: Projekte-Übersicht
+
+**Was:** Neues Modul `js/module/projekte/` (`#/projekte`, Einstieg über den Suche-Schnelleinstieg
+„Projekte"): Liste aller Projekte mit letztem Sync-Zeitpunkt, Klick zeigt die `CLAUDE.md` des
+Projekts als gerendertes Markdown (`markdown.js`, `zuHtml`: Überschriften, Fett, Inline-Code,
+Listenpunkte, alles HTML-escaped). Neu: Supabase-Tabelle `claude_projekte` (RLS
+`claude_projekte_eigene`) und das lokale Skript `automatisierung/projekte-sync.mjs`, das
+`C:\Users\PC\Projekte\*\CLAUDE.md` nach Supabase schreibt. 3 neue Tests (135 grün). Erster
+manueller Lauf: 4 Projekte synchronisiert (energiesparer-modus, mein-dashboard,
+monitor-focus-follow, supabase-server), 0 entfernt.
+
+**Warum:** Backlog-Punkt Q – GitHub Pages kann nicht auf die lokale Festplatte zugreifen, daher der
+Umweg über einen lokalen Sync nach Supabase.
+
+**Entscheidungen:** Abweichung vom Plan: **Upsert** (`onConflict user_id,name`) statt
+„alles löschen, dann neu einfügen" – so bleibt die Tabelle bei einem Fehler mitten im Lauf
+konsistent; verwaiste Projekte werden erst nach erfolgreichem Upsert gelöscht. Nur Lesen in der
+App (kein Bearbeiten). Markdown-Renderer bewusst minimal (keine Tabellen/Links/Code-Blöcke).
+Spec-Vorfall: die Spec-Datei zu Q wurde in einer früheren Session zweimal überschrieben (Spec
+Abschnitt 0 beschreibt das); der Plan wurde deshalb aus dem Backlog-Text rekonstruiert.
+
+**Fehler-Historie:** Der Versuch, die geplante Windows-Aufgabe `MeinDashboard-ProjekteSync`
+per PowerShell (`Register-ScheduledTask`) anzulegen, wurde vom Auto-Mode-Classifier als
+„Unauthorized Persistence" abgelehnt. Nicht umgangen – die Aufgabe ist **nicht eingerichtet**.
+
+**Stand danach:** Modul und Sync-Skript funktionieren, Sync läuft nur, wenn man ihn manuell
+startet (`node automatisierung/projekte-sync.mjs` im Repo-Wurzel). Anzeige am Gerät nicht getestet.
+
+**Offene Punkte / Nächste Schritte:** Geplante Aufgabe durch den Nutzer freigeben/einrichten
+(Vorschlag: Werktags 06:30/13:00/15:30, Sa/So 18:00/21:00; node.exe mit Argument
+`automatisierung\projekte-sync.mjs`, Arbeitsverzeichnis Repo). Danach Sub-Etappe I (Wetter-Widget).
+
+---
+
 ## 2026-09-29 – Sub-Etappe P: Kalender-Export (ICS)
 
 **Was:** Im Sendungen-Tab „Termine" gibt es oben den Knopf „Kalender exportieren (.ics)". Er erzeugt
