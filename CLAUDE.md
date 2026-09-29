@@ -1,5 +1,14 @@
 # Mein Dashboard
 
+> **ZUERST LESEN (jeder neue Chat):** Kompakter Arbeitsstand liegt in der
+> Supabase-Tabelle `projekt_notizen` (Projekt `vogztxoaqbnuciboughd`, per MCP
+> `execute_sql`). Zuerst ausfuehren:
+> `select art, titel, inhalt from projekt_notizen where art in ('regel','stand','offen') and not erledigt order by art, titel;`
+> und `select titel, inhalt, erstellt_am from projekt_notizen where art='log' order by erstellt_am desc limit 10;`
+> **Nach JEDER Aenderung** (Code oder Daten) dort einen `log`-Eintrag anhaengen,
+> betroffene `stand`-Zeilen aktualisieren, `offen`-Punkte pflegen. Der Rest
+> dieser Datei und `docs/PROJEKT-LOG.md` sind fuer Code-Details/Verlauf.
+
 **Ablage:** `C:\Users\PC\Projekte\mein-dashboard` (alle Projekte liegen unter
 `C:\Users\PC\Projekte\<projektname>` – siehe Skill `projekt-workflow`).
 

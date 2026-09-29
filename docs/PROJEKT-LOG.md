@@ -4,6 +4,22 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Arbeitsstand in der Datenbank (`projekt_notizen`)
+
+**Was:** Neue Supabase-Tabelle `projekt_notizen` (art: regel/stand/offen/log,
+RLS wie die anderen Tabellen), befüllt mit Regeln, aktuellem Ist-Zustand
+(Konten, Ausgaben, Schulden, Handyaufträge, App), offenen Punkten und dem Log
+des Tages. `CLAUDE.md` beginnt jetzt mit einem "ZUERST LESEN"-Hinweis; im
+Claude-Memory steht dieselbe Regel.
+
+**Warum:** Nutzerwunsch: ein neuer Chat soll mit möglichst wenig Kontext direkt
+weitermachen können; Claude soll alles Getane dort festhalten.
+
+**Entscheidungen:** `stand` wird überschrieben, `log` nur angehängt, damit die
+Startabfrage klein bleibt. Code-Verlauf bleibt zusätzlich in diesem Log.
+
+---
+
 ## 2026-09-29 – Trade-Republic-Stand 339,93 €, Budget-Buchungen gelöscht (Daten, kein Code)
 
 **Was:** Trade Republic (Hauptkonto) laut Nutzer real 339,93 € – als Startwert
