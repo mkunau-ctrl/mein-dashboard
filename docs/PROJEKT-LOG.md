@@ -4,6 +4,30 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Kontostände neu aufgesetzt, Handyaufträge aktualisiert (Daten, kein Code)
+
+**Was:** Auf Wunsch des Nutzers ("Rechne das auf Null", alte Ausgaben nur noch
+auf dem Papier) wurden die Konten per `kontostand_start` + `stand_datum = heute`
+neu gesetzt, ohne Buchungen zu löschen. Hauptkonto wurde in **Volksbank**
+umbenannt (Start 68,85 = 50 € Ist + 18,85 € Dede-Bon, der heute datiert ist und
+sonst vom Stand abgezogen würde); neues Konto **Bargeld** (110 €). **Trade
+Republic** ist noch alt (232 €, Stand 22.09.) – der Nutzer will den Stand aus
+seinem Kontoauszug-Screenshot berechnen lassen, der Screenshot ist noch nicht
+angekommen. Handyaufträge: iPhone 13 mini als verkauft (200 €, Käufer Michael
+Weser), iPhone 14 (eBay, kommt zurück) 200/220, iPhone 16 Pro voraussichtlich
+500. Alle 6 offenen Sendungen gelöscht (laut Nutzer angekommen).
+
+**Entscheidungen:** Ruling: Hauptkonto = Volksbank angenommen (VISA-Käufe laufen
+darüber) – umkehrbar per Umbenennen. Schulden Daniel 208 / Aaron 145 /
+eBay-Käufer 226 bleiben unverändert (Nutzer bestätigt: "wird mir geschuldet").
+Verkauf des 13 mini erzeugt bewusst keine Einnahme, damit der Reset nicht
+verfälscht wird.
+
+**Offene Punkte:** Trade-Republic-Stand aus Screenshot; "Kameragläser bestellt"
+keinem Auftrag zugeordnet; iPhone 14 mit 130 € (zurück an Besitzer) unverändert.
+
+---
+
 ## 2026-09-29 – Alte Ansicht auf dem Handy, Termine abhaken + Auto-Löschen
 
 **Was:** Der Service Worker (`sw.js`) lieferte App-Dateien nur aus dem Cache
