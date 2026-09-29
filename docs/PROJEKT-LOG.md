@@ -96,6 +96,15 @@ in der Tabelle, sind aber weder im Formular noch in der Liste bedienbar
 Gewinn, nicht zusätzlich die Warenwert-Summe (Spec §6 nennt beides);
 `istGewinnImMonat` wird noch nirgends angezeigt.
 
+**Geparkt nach dem Fix (Re-Review, Ruling):** (a) `finanzen/kontostand.js`
+zeigt den Warenwert ohne Aufträge, wird aber von nirgends importiert
+(toter Code aus Sub-Etappe S) — nichts zu tun. (b) Der Teile-Tab
+(`finanzen/teile.js`) zeigt in seiner Karte "Warenwert" nur den
+Lagerwert, die Finanzen-Übersicht dagegen Lager + Reparaturen; gleiche
+Bezeichnung, unterschiedliche Zahl. Bewusst nicht angefasst, weil es
+eine Gestaltungsentscheidung ist (Karte in "Lagerwert" umbenennen oder
+Aufträge einrechnen) — beim manuellen Test ansehen und entscheiden.
+
 **Offene Punkte / Nächste Schritte:**
 - **Manueller Testlauf am echten Gerät steht noch aus** (Task 7,
   Schritt 6, war ohne Browser-Zugriff nicht sinnvoll durchführbar —
