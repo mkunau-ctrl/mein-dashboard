@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { summeProMonat, summenProKategorie, erkenneAbos,
-  warenwert, sortiereTeile, merkliste, naechsterStatus,
+  warenwert, warenwertPositionen, sortiereTeile, merkliste, naechsterStatus,
   kategorisiereIconTyp, kontostandProKonto, gesamtKontostand,
   unechterGesamtKontostand, schuldenRestbetrag, offeneSchulden,
   sortiereSchulden, nettoVermoegen, zeitraumVon,
@@ -91,6 +91,28 @@ test('warenwert: zweiter Parameter zaehlt offene Reparatur-Auftraege mit, verkau
 
 test('warenwert: ohne zweiten Parameter unveraendert (Rueckwaertskompatibilitaet)', () => {
   assert.equal(warenwert(teile), 2 * 60 + 0 * 25 + 1 * 15 + 5 * 0);
+});
+
+test('warenwertPositionen: Einzelposten ergeben zusammen den Warenwert, absteigend nach Betrag', () => {
+  const auftraege = [
+    { id: 'a1', geraet: 'iPhone 14 Pro', status: 'offen', warenwert: 305, voraussichtlicher_verkaufspreis: 370 },
+    { id: 'a2', geraet: 'iPhone 13 mini', status: 'verkauft', warenwert: 200 },
+    { id: 'a3', geraet: 'iPhone 15', status: 'fertig', warenwert: 30, notiz: 'Kamera' },
+  ];
+  const pos = warenwertPositionen(teile, auftraege);
+  assert.equal(pos.reduce((s, p) => s + p.betrag, 0), warenwert(teile, auftraege));
+  assert.deepEqual(pos.map((p) => p.betrag), [305, 120, 30, 15]);
+  assert.equal(pos[0].typ, 'auftrag');
+  assert.equal(pos[0].name, 'iPhone 14 Pro');
+  assert.equal(pos[0].info, 'offen · voraussichtlich 370.00 €');
+  assert.equal(pos[1].typ, 'teil');
+  assert.equal(pos[2].name, 'iPhone 15 (Kamera)');
+});
+
+test('warenwertPositionen: Teile ohne Wert und verkaufte Auftraege fehlen', () => {
+  const pos = warenwertPositionen(teile, [{ id: 'x', geraet: 'X', status: 'verkauft', warenwert: 99 }]);
+  assert.ok(pos.every((p) => p.betrag > 0));
+  assert.ok(!pos.some((p) => p.name === 'X'));
 });
 
 test('sortiereTeile: fehlt vor bestellt vor da, sonst alphabetisch', () => {

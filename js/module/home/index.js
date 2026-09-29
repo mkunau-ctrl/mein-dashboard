@@ -1,7 +1,7 @@
 import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
-import { gesamtKontostand, unechterGesamtKontostand, summeProMonat, warenwert } from '../finanzen/berechnung.js';
+import { gesamtKontostand, summeProMonat, warenwert } from '../finanzen/berechnung.js';
 import { sortiereOffeneTodos } from '../todos/planung.js';
 import { sortiereSendungen, sortiereTermine } from '../sendungen/berechnung.js';
 import { hakeTerminAb } from '../sendungen/daten.js';
@@ -70,10 +70,8 @@ function renderHome(container) {
   const { finanzen, todos, sendungen, handyreparatur } = zustand;
   const gesetzt = finanzen.konten.length > 0;
   const stand = gesetzt ? gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heute()) : null;
-  const unecht = gesetzt
-    ? gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heute())
-      + warenwert(finanzen.teile, handyreparatur.auftraege)
-    : null;
+  const wert = warenwert(finanzen.teile, handyreparatur.auftraege);
+  const inklWarenwert = gesetzt ? stand + wert : null;
   const heuteDatum = new Date();
   const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
 
@@ -100,15 +98,15 @@ function renderHome(container) {
     <div class="stat-karte gross" id="home-kontostand" style="cursor:pointer;">
       <small>Kontostand</small>
       <span>${gesetzt ? stand.toFixed(2) + ' €' : '–'}</span>
-      ${gesetzt ? `<small>${unecht.toFixed(2)} € inkl. Warenwert</small>` : ''}
+      ${gesetzt ? `<small>${inklWarenwert.toFixed(2)} € inkl. Warenwert</small>` : ''}
     </div>
     <div class="stat-grid">
-      <div class="stat"><div class="icon-badge">${WALLET_ICON}</div>
+      <div class="stat" data-ziel="kontostand" style="cursor:pointer;"><div class="icon-badge">${WALLET_ICON}</div>
         <div class="stat-lbl">Kontostand</div>
         <div class="stat-val">${gesetzt ? stand.toFixed(2) + ' €' : '–'}</div></div>
-      <div class="stat"><div class="icon-badge">${BOX_ICON}</div>
-        <div class="stat-lbl">Unecht</div>
-        <div class="stat-val">${gesetzt ? unecht.toFixed(2) + ' €' : '–'}</div></div>
+      <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${BOX_ICON}</div>
+        <div class="stat-lbl">Warenwert</div>
+        <div class="stat-val">${wert.toFixed(2)} €</div></div>
       <div class="stat"><div class="icon-badge rot">${AUSGABE_ICON}</div>
         <div class="stat-lbl">Ausgaben Monat</div>
         <div class="stat-val">${ausgabenMonat.toFixed(2)} €</div></div>
@@ -133,6 +131,9 @@ function renderHome(container) {
       location.hash = '#/home/kontostand';
     });
   }
+  container.querySelectorAll('.stat[data-ziel]').forEach((el) => {
+    el.addEventListener('click', () => { location.hash = `#/home/${el.dataset.ziel}`; });
+  });
 
   merkeAlsGesehen('termine');
   merkeAlsGesehen('sendungen');
@@ -145,6 +146,10 @@ async function zeigeAktuelleAnsicht() {
     const { zeigeKontostandDetail } = await import('./kontostand.js');
     containerRef.innerHTML = '';
     await zeigeKontostandDetail(containerRef, zustand);
+  } else if (unterseite === 'warenwert') {
+    const { zeigeWarenwertDetail } = await import('./warenwert.js');
+    containerRef.innerHTML = '';
+    await zeigeWarenwertDetail(containerRef, zustand);
   } else {
     renderHome(containerRef);
   }

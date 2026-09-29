@@ -4,6 +4,38 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Home: Kontostand und Warenwert anklickbar, „Unecht" heißt „Warenwert"
+
+**Was:** Auf Home sind jetzt beide Kennzahlen-Kacheln anklickbar. „Kontostand" öffnet
+`#/home/kontostand`, das zusätzlich zur Sparkline eine Liste „Auf welchem Konto?" zeigt
+(je Konto der aktuelle Stand, Antippen klappt die Buchungen des Kontos auf; das Auge
+blendet auch die Kontobeträge aus). Die frühere Kachel „Unecht" heißt „Warenwert" und öffnet die
+neue Detailansicht `#/home/warenwert` (`js/module/home/warenwert.js`) mit allen Posten
+(Lager-Teile und offene Handyaufträge, größter zuerst) und der Rechnung
+„Kontostand + Warenwert = Gesamt". Neue reine Funktion `warenwertPositionen` in
+`finanzen/berechnung.js` (2 Tests, 120 grün), deren Summe immer dem `warenwert` entspricht.
+Zusätzlich sind in der Finanzen-Übersicht die Zahlen „Kontostand" und „Warenwert" klickbar
+und springen zu denselben Detailansichten.
+
+**Warum:** Nutzerwunsch: „Ich möchte alles anklicken können", sehen auf welchem Konto das
+Geld liegt, die Bestandteile des „unechten" Werts sehen, und der Begriff „unecht" soll weg.
+
+**Entscheidungen:** Die Kachel „Warenwert" zeigt jetzt nur den Warenwert selbst (früher
+Kontostand + Warenwert unter dem Namen „Unecht"), damit die Detailansicht dieselbe Zahl in
+Einzelposten zerlegt. Die Summe „Kontostand + Warenwert" bleibt als Zeile „X € inkl. Warenwert"
+in der großen Karte und im Detail sichtbar. In den Funktionsnamen (`unechterGesamtKontostand`)
+und in `finanzen/kontostand.js` (tote Datei, s. o.) steht „unecht" intern noch; nur sichtbare
+Texte wurden umbenannt. Zurück-Button der Detailansichten führt immer nach Home, auch wenn man
+aus Finanzen kam (bewusst einfach gehalten).
+
+**Stand danach:** Umgesetzt und Tests grün, **nicht im Browser/auf dem Gerät geprüft**
+(Login per Magic-Link, kein Browser-Zugriff in dieser Session).
+
+**Offene Punkte / Nächste Schritte:** Handtest am Gerät. Klärung offen: „Friseur / Zehnter"
+(siehe `projekt_notizen`).
+
+---
+
 ## 2026-09-29 – Arbeitsstand in der Datenbank (`projekt_notizen`)
 
 **Was:** Neue Supabase-Tabelle `projekt_notizen` (art: regel/stand/offen/log,

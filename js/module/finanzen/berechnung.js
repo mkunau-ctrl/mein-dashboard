@@ -81,6 +81,28 @@ export function warenwert(teile, reparaturAuftraege = []) {
   return lager + reparaturen;
 }
 
+export function warenwertPositionen(teile, reparaturAuftraege = []) {
+  const lager = teile
+    .map((t) => ({
+      typ: 'teil',
+      name: t.bezeichnung,
+      betrag: t.bestand * (t.einzelwert ?? 0),
+      info: `${t.bestand} Stk${t.einzelwert != null ? ` · ${t.einzelwert.toFixed(2)} € /Stk` : ''}`,
+    }))
+    .filter((p) => p.betrag > 0);
+  const auftraege = reparaturAuftraege
+    .filter((a) => a.status !== 'verkauft')
+    .map((a) => ({
+      typ: 'auftrag',
+      name: a.notiz ? `${a.geraet} (${a.notiz})` : a.geraet,
+      betrag: a.warenwert,
+      info: a.voraussichtlicher_verkaufspreis
+        ? `${a.status} · voraussichtlich ${a.voraussichtlicher_verkaufspreis.toFixed(2)} €`
+        : a.status,
+    }));
+  return [...lager, ...auftraege].sort((a, b) => b.betrag - a.betrag);
+}
+
 export function sortiereTeile(teile) {
   return [...teile].sort((a, b) => {
     const p = STATUS_PRIORITAET[a.status] - STATUS_PRIORITAET[b.status];

@@ -70,8 +70,8 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
   container.innerHTML = `
     <div class="stat-karte gross" id="uebersicht-kontostand">
       <div class="kontostand-zweispaltig">
-        <div><small>Kontostand</small><span>${stand.toFixed(2)} €</span></div>
-        <div><small>Warenwert</small><span>${warenwertBetrag.toFixed(2)} €</span></div>
+        <div data-home-ziel="kontostand" style="cursor:pointer;"><small>Kontostand</small><span>${stand.toFixed(2)} €</span></div>
+        <div data-home-ziel="warenwert" style="cursor:pointer;"><small>Warenwert</small><span>${warenwertBetrag.toFixed(2)} €</span></div>
       </div>
       <div class="range-row">
         ${RANGES.map(([id, txt]) => `<button type="button" data-range="${id}" class="range${id === zeitraum ? ' aktiv' : ''}">${txt}</button>`).join('')}
@@ -136,6 +136,9 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
     el.addEventListener('click', () => {
       location.hash = `#/finanzen/uebersicht/kategorie-${el.dataset.kategorie}`;
     });
+  });
+  container.querySelectorAll('[data-home-ziel]').forEach((el) => {
+    el.addEventListener('click', () => { location.hash = `#/home/${el.dataset.homeZiel}`; });
   });
   container.querySelectorAll('.kachel[data-ziel]').forEach((el) => {
     el.addEventListener('click', () => {
