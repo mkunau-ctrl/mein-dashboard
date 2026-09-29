@@ -4,6 +4,22 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Trade-Republic-Stand 339,93 €, Budget-Buchungen gelöscht (Daten, kein Code)
+
+**Was:** Trade Republic (Hauptkonto) laut Nutzer real 339,93 € – als Startwert
+eingetragen (statt berechneter 334,69 €; Differenz vermutlich Subway o. Ä.,
+Nutzer: "musst du nicht beachten"). Gesamt aller Konten jetzt 499,93 €. Die
+Buchungen "Wochenbudget Essen" (55 €) und "Persönliches Budget" (55 €) vom
+19.09. wurden gelöscht.
+
+**Entscheidungen:** Bleiben: Claude 22, Wispr Flow 15, Spende Zehnter 113,
+Friseur 10 sowie alle Bons ab dem 25.09. "Den 10." war mehrdeutig (Zehnter oder
+Friseur 10 €, der auch als Vorlage in `ausgaben_vorlagen` steht) – beide
+bewusst behalten, bis der Nutzer es klärt. Die Vorlagen (Claude, Wispr Flow,
+Friseur, alle am 19. des Monats) blieben unangetastet.
+
+---
+
 ## 2026-09-29 – Korrektur: Trade Republic ist das Hauptkonto (Daten, kein Code)
 
 **Was:** Der Nutzer hat den Trade-Republic-Screenshot nachgereicht: das ist sein
