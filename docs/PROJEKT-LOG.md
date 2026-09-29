@@ -4,6 +4,28 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Korrektur: Trade Republic ist das Hauptkonto (Daten, kein Code)
+
+**Was:** Der Nutzer hat den Trade-Republic-Screenshot nachgereicht: das ist sein
+**Hauptkonto**, die Volksbank ist ein Nebenkonto. Die Umbenennung Hauptkonto →
+Volksbank vom selben Tag war falsch und ist rückgängig gemacht. Jetzt:
+**Trade Republic (Hauptkonto)** = 334,69 € (Stand 29.09.), **Bargeld** = 110 €,
+**Volksbank** = 50 € (neues Konto). Das doppelte Konto „Trade Republic" (Start
+232) wurde gelöscht, es hatte keine Buchungen.
+
+**Rechnung:** 232 € (Stand 22.09.) + 200 € (Michael Wesner, 25.09.) − 4,99 −
+58,30 (eBay, 25.09.) − 28,23 (Combi) − 5,79 (Subway, beide 26.09.) = 334,69 €.
+Die Buchungen vom 20./21.09. liegen vor dem 22.09. und sind im Startwert
+enthalten. Summe aller Konten: 494,69 €.
+
+**Entscheidungen:** Ruling: Der Dede-Bon (18,85 €, heute datiert, nicht auf dem
+TR-Auszug) wurde auf Bargeld umgebucht; Bargeld-Start 128,85 gleicht die
+Buchung aus, angezeigt werden 110 €. Umkehrbar. Subway (5,79 €) und die
+200 €-Einnahme sind nicht als Buchungen erfasst, nur im Startwert
+berücksichtigt.
+
+---
+
 ## 2026-09-29 – Kontostände neu aufgesetzt, Handyaufträge aktualisiert (Daten, kein Code)
 
 **Was:** Auf Wunsch des Nutzers ("Rechne das auf Null", alte Ausgaben nur noch
