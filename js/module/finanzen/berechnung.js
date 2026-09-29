@@ -290,3 +290,33 @@ export function zuCsvZeilen(transaktionen) {
     [t.datum, t.typ, `"${csvFeldSicher(t.bezeichnung).replace(/"/g, '""')}"`, t.betrag.toFixed(2), t.quelle].join(','));
   return [header, ...zeilen];
 }
+
+const ALLERWELTSWOERTER = new Set(['iphone', 'apple', 'samsung', 'huawei', 'xiaomi', 'pro', 'max', 'mini', 'plus', 'ultra', 'set', 'fuer', 'für', 'und', 'mit', 'original', 'neu']);
+
+function stichwoerter(text) {
+  return String(text ?? '').toLowerCase().split(/[^a-z0-9äöüß]+/)
+    .filter((w) => w.length >= 4 && !ALLERWELTSWOERTER.has(w) && !/^\d+$/.test(w));
+}
+
+function stichwortTreffer(a, b) {
+  return a === b || (Math.min(a.length, b.length) >= 5 && (a.startsWith(b) || b.startsWith(a)));
+}
+
+export function angekommeneTeile(teile, sendungen) {
+  const frei = sendungen.filter((s) => s.status === 'zugestellt');
+  const vergeben = new Set();
+  const treffer = [];
+  for (const teil of teile.filter((t) => t.status === 'bestellt')) {
+    const woerter = stichwoerter(teil.bezeichnung);
+    const sendung = frei.find((s) => {
+      if (vergeben.has(s.id)) return false;
+      const sw = stichwoerter(`${s.haendler} ${s.beschreibung ?? ''}`);
+      return woerter.some((w) => sw.some((x) => stichwortTreffer(w, x)));
+    });
+    if (sendung) {
+      vergeben.add(sendung.id);
+      treffer.push({ teil, sendung });
+    }
+  }
+  return treffer;
+}

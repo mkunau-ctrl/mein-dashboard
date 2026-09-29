@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { summeProMonat, summenProKategorie, erkenneAbos,
-  warenwert, erwarteterWarenwert, schuldenSumme, warenwertPositionen, sortiereTeile, merkliste, naechsterStatus,
+  warenwert, erwarteterWarenwert, schuldenSumme, warenwertPositionen, sortiereTeile, merkliste, naechsterStatus, angekommeneTeile,
   kategorisiereIconTyp, kontostandProKonto, gesamtKontostand,
   unechterGesamtKontostand, schuldenRestbetrag, offeneSchulden,
   sortiereSchulden, nettoVermoegen, zeitraumVon,
@@ -326,4 +326,42 @@ test('schuldenSumme: Forderungen und Verbindlichkeiten getrennt, Teilzahlungen a
   ];
   const zahlungen = [{ schuld_id: 's1', betrag: 50 }];
   assert.deepEqual(schuldenSumme(schulden, zahlungen), { forderungen: 150, verbindlichkeiten: 50 });
+});
+
+test('angekommeneTeile: bestelltes Teil passt zu zugestellter Sendung (Stichwort im Text)', () => {
+  const teile = [
+    { id: 't1', bezeichnung: 'Kameraglas iPhone 13', status: 'bestellt' },
+    { id: 't2', bezeichnung: 'Display iPhone 14', status: 'bestellt' },
+  ];
+  const sendungen = [{ id: 's1', haendler: 'AliExpress', beschreibung: 'Kamera Glas Set iPhone 13', status: 'zugestellt' }];
+  const r = angekommeneTeile(teile, sendungen);
+  assert.equal(r.length, 1);
+  assert.equal(r[0].teil.id, 't1');
+  assert.equal(r[0].sendung.id, 's1');
+});
+
+test('angekommeneTeile: ignoriert Sendungen die nicht zugestellt sind und Teile die nicht bestellt sind', () => {
+  const teile = [
+    { id: 't1', bezeichnung: 'Kameraglas', status: 'bestellt' },
+    { id: 't2', bezeichnung: 'Kameraglas', status: 'fehlt' },
+    { id: 't3', bezeichnung: 'Kameraglas', status: 'da' },
+  ];
+  assert.deepEqual(angekommeneTeile(teile, [{ id: 's', haendler: 'X', beschreibung: 'Kameraglas', status: 'unterwegs' }]), []);
+  const r = angekommeneTeile(teile, [{ id: 's', haendler: 'X', beschreibung: 'Kameraglas', status: 'zugestellt' }]);
+  assert.deepEqual(r.map((v) => v.teil.id), ['t1']);
+});
+
+test('angekommeneTeile: nur Allerweltswoerter (iPhone, Zahlen) reichen nicht fuer einen Treffer', () => {
+  const teile = [{ id: 't1', bezeichnung: 'Display iPhone 14', status: 'bestellt' }];
+  const sendungen = [{ id: 's', haendler: 'Amazon', beschreibung: 'iPhone 14 Huelle', status: 'zugestellt' }];
+  assert.deepEqual(angekommeneTeile(teile, sendungen), []);
+});
+
+test('angekommeneTeile: eine Sendung ordnet ein Teil nur einmal zu, Sendung wird nicht mehrfach vergeben', () => {
+  const teile = [
+    { id: 't1', bezeichnung: 'Kameraglas', status: 'bestellt' },
+    { id: 't2', bezeichnung: 'Kameraglas', status: 'bestellt' },
+  ];
+  const r = angekommeneTeile(teile, [{ id: 's', haendler: 'X', beschreibung: 'Kameraglas', status: 'zugestellt' }]);
+  assert.equal(r.length, 1);
 });

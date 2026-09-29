@@ -193,8 +193,10 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   `docs/superpowers/specs/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege-design.md`,
   `docs/superpowers/plans/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege.md`,
   `docs/PROJEKT-LOG.md` (Eintrag 2026-09-27).
-- **O) Teile-Bestellen ↔ Sendungen verknüpfen** — Sendung "zugestellt" →
-  Vorschlag, zugehöriges Teil im Lager auf Status "da" zu setzen.
+- **O) Teile-Bestellen ↔ Sendungen verknüpfen** — **fertig (2026-09-29)**:
+  Bestellen-Tab zeigt „Wahrscheinlich angekommen" (Stichwort-Abgleich Teil ↔
+  zugestellte Sendung, `angekommeneTeile` in `finanzen/berechnung.js`), Klick setzt
+  Teil auf „da". Details: `docs/PROJEKT-LOG.md`.
 - **P) Kalender-Export (ICS)** für Termine/Ausbildung, damit sie auch im
   iPhone-/Google-Kalender auftauchen — Gegenrichtung zu Item M (M holt
   externe Termine rein, P schickt interne Termine raus).

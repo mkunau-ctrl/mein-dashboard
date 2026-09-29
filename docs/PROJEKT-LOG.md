@@ -4,6 +4,32 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Sub-Etappe O: Teile-Bestellen ↔ Sendungen
+
+**Was:** Im Finanzen-Tab „Bestellen" erscheint über der Merkliste ein Block „Wahrscheinlich
+angekommen": Teile mit Status „bestellt", zu denen es eine Sendung mit Status „zugestellt" gibt,
+deren Händler/Beschreibung ein Stichwort der Teile-Bezeichnung enthält. Ein Klick auf „als da
+markieren" setzt das Teil auf „da". Neu: `angekommeneTeile(teile, sendungen)` in
+`finanzen/berechnung.js` (4 Tests, 126 grün) und `ladeZugestellteSendungen()` in
+`sendungen/daten.js`.
+
+**Warum:** Backlog-Punkt O – zugestellte Pakete sollen den Lagerstatus nicht mehr von Hand
+nachziehen lassen.
+
+**Entscheidungen:** Bewusst nur ein *Vorschlag* mit Bestätigungsklick (kein Automatismus, weil die
+Zuordnung über Textstichwörter unsicher ist) und keine neue Spalte/Verknüpfungstabelle. Allerwelts-
+wörter (iPhone, Pro, Max, Zahlen, Wörter < 4 Zeichen) zählen nicht als Treffer, Präfix-Treffer
+(„Kamera" ↔ „Kameraglas") ab 5 Zeichen. Eine Sendung wird höchstens einem Teil zugeordnet. Der
+Vorschlag steht im Bestellen-Tab statt an der Sendung, damit auch von der E-Mail-Automatisierung
+auf „zugestellt" gesetzte Sendungen erfasst werden. Sendungen werden vom Nutzer nach Ankunft
+teils gelöscht – dann gibt es keinen Vorschlag mehr (bekannte Grenze).
+
+**Stand danach:** Gebaut, Tests grün, nicht am Gerät getestet.
+
+**Offene Punkte / Nächste Schritte:** Sub-Etappe P (ICS-Export), dann Q, dann I.
+
+---
+
 ## 2026-09-29 – Home: Warenwert, erwarteter Warenwert, Schulden, Gesamt; To-dos aus Erinnerungen-App
 
 **Was:** Home zeigt jetzt Kontostand, Warenwert, Erwarteter Warenwert, Schulden (mir geschuldet,

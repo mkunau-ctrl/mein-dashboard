@@ -27,6 +27,12 @@ export async function ladeAlles() {
   };
 }
 
+export async function ladeZugestellteSendungen() {
+  const { data, error } = await supabase.from('sendungen').select('*').eq('status', 'zugestellt');
+  if (error) throw fehler('Zugestellte Sendungen laden', error);
+  return data;
+}
+
 export async function legeSendungAn({ haendler, trackingnummer, beschreibung }) {
   const { error } = await supabase.from('sendungen').insert({
     haendler, trackingnummer: trackingnummer || null, beschreibung: beschreibung || null,
