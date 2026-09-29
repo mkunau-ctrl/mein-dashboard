@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { summeProMonat, summenProKategorie, erkenneAbos,
-  warenwert, warenwertPositionen, sortiereTeile, merkliste, naechsterStatus,
+  warenwert, erwarteterWarenwert, schuldenSumme, warenwertPositionen, sortiereTeile, merkliste, naechsterStatus,
   kategorisiereIconTyp, kontostandProKonto, gesamtKontostand,
   unechterGesamtKontostand, schuldenRestbetrag, offeneSchulden,
   sortiereSchulden, nettoVermoegen, zeitraumVon,
@@ -307,4 +307,23 @@ test('kreisdiagrammSegmente: weist Farben zu und berechnet kumulierten dashOffse
 
 test('kreisdiagrammSegmente: leere Liste ergibt leeres Array', () => {
   assert.deepEqual(kreisdiagrammSegmente([]), []);
+});
+
+test('erwarteterWarenwert: nimmt voraussichtlichen Verkaufspreis, sonst Warenwert; verkaufte zaehlen nicht', () => {
+  const auftraege = [
+    { status: 'offen', warenwert: 305, voraussichtlicher_verkaufspreis: 370 },
+    { status: 'offen', warenwert: 130, voraussichtlicher_verkaufspreis: null },
+    { status: 'verkauft', warenwert: 200, voraussichtlicher_verkaufspreis: null },
+  ];
+  assert.equal(erwarteterWarenwert([], auftraege), 500);
+  assert.equal(erwarteterWarenwert(teile, auftraege), warenwert(teile) + 500);
+});
+
+test('schuldenSumme: Forderungen und Verbindlichkeiten getrennt, Teilzahlungen abgezogen', () => {
+  const schulden = [
+    { id: 's1', richtung: 'mir_wird_geschuldet', gesamtbetrag: 200 },
+    { id: 's2', richtung: 'ich_schulde', gesamtbetrag: 50 },
+  ];
+  const zahlungen = [{ schuld_id: 's1', betrag: 50 }];
+  assert.deepEqual(schuldenSumme(schulden, zahlungen), { forderungen: 150, verbindlichkeiten: 50 });
 });

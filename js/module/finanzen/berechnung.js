@@ -81,6 +81,20 @@ export function warenwert(teile, reparaturAuftraege = []) {
   return lager + reparaturen;
 }
 
+export function erwarteterWarenwert(teile, reparaturAuftraege = []) {
+  const lager = teile.reduce((s, t) => s + t.bestand * (t.einzelwert ?? 0), 0);
+  const reparaturen = reparaturAuftraege
+    .filter((a) => a.status !== 'verkauft')
+    .reduce((s, a) => s + (a.voraussichtlicher_verkaufspreis ?? a.warenwert), 0);
+  return lager + reparaturen;
+}
+
+export function schuldenSumme(schulden, zahlungen) {
+  const summe = (richtung) => schulden.filter((s) => s.richtung === richtung)
+    .reduce((sum, s) => sum + Math.max(0, schuldenRestbetrag(s, zahlungen)), 0);
+  return { forderungen: summe('mir_wird_geschuldet'), verbindlichkeiten: summe('ich_schulde') };
+}
+
 export function warenwertPositionen(teile, reparaturAuftraege = []) {
   const lager = teile
     .map((t) => ({

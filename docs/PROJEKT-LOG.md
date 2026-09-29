@@ -4,6 +4,34 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Home: Warenwert, erwarteter Warenwert, Schulden, Gesamt; To-dos aus Erinnerungen-App
+
+**Was:** Home zeigt jetzt Kontostand, Warenwert, Erwarteter Warenwert, Schulden (mir geschuldet,
+darunter „ich schulde …" falls >0), Gesamt mindestens und Gesamt erwartet sowie Ausgaben Monat.
+Neu in `finanzen/berechnung.js`: `erwarteterWarenwert` (Handyaufträge zählen mit
+`voraussichtlicher_verkaufspreis`, sonst `warenwert`) und `schuldenSumme` (offene Restbeträge je
+Richtung). Zwei neue Tests, 122 grün. Schulden-Kachel führt zu `#/finanzen/uebersicht/schulden`.
+Außerdem 15 To-dos aus Marks Erinnerungen-Screenshots in `todos` eingetragen (Gruppenname als
+Präfix, Diktatfehler bereinigt, Jungschar-Spiele fällig 2026-10-07) und „Fahrschule lernen:
+mindestens 100 Fragen" als tägliche `todo_vorlagen` ab 2026-10-01.
+
+**Warum:** Nutzerwunsch: Warenwert, erwarteter Warenwert, Schulden und Gesamtsumme (mindestens/
+erwartet) auf dem Homebildschirm; To-dos per Chat eintragen.
+
+**Entscheidungen:** Gesamt mindestens = Kontostand + Warenwert + Forderungen − eigene Schulden;
+Gesamt erwartet analog mit erwartetem Warenwert. Schulden gehen als Saldo ein. Das „iPhone 13"
+fehlt im Warenwert, weil das einzige iPhone 13 im System (mini) den Status „verkauft" hat; das
+Reparatur-iPhone-13 existiert noch nicht als Auftrag (Einkaufswert/Verkaufspreis unbekannt).
+
+**Stand danach:** Home-Kacheln und To-dos live nach Push; Detailseite `home/warenwert.js` zeigt
+noch nur Kontostand + Warenwert. Handtest am Gerät offen.
+
+**Offene Punkte / Nächste Schritte:** iPhone 13 (Reparatur) als Auftrag anlegen (Warenwert und
+erwarteter Verkaufspreis erfragen); Warenwert-Detailseite um erwartet/Schulden/Gesamt ergänzen;
+Inhalt der Monatslisten (Mai–Februar) aus den Screenshots war nicht sichtbar.
+
+---
+
 ## 2026-09-29 – Termine mit Uhrzeit/Ort/Infos, Dauerregel für Erinnerungen, Buchungen nachgetragen
 
 **Was:** Die Tabelle `termine` hat drei neue nullable Spalten `uhrzeit`, `ort`, `notiz`

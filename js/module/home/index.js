@@ -1,7 +1,7 @@
 import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
-import { gesamtKontostand, summeProMonat, warenwert } from '../finanzen/berechnung.js';
+import { gesamtKontostand, summeProMonat, warenwert, erwarteterWarenwert, schuldenSumme } from '../finanzen/berechnung.js';
 import { sortiereOffeneTodos } from '../todos/planung.js';
 import { sortiereSendungen, sortiereTermine } from '../sendungen/berechnung.js';
 import { hakeTerminAb } from '../sendungen/daten.js';
@@ -72,6 +72,12 @@ function renderHome(container) {
   const stand = gesetzt ? gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heute()) : null;
   const wert = warenwert(finanzen.teile, handyreparatur.auftraege);
   const inklWarenwert = gesetzt ? stand + wert : null;
+  const wertErwartet = erwarteterWarenwert(finanzen.teile, handyreparatur.auftraege);
+  const { forderungen, verbindlichkeiten } = schuldenSumme(finanzen.schulden, finanzen.zahlungen);
+  const schuldenSaldo = forderungen - verbindlichkeiten;
+  const gesamtMin = gesetzt ? stand + wert + schuldenSaldo : null;
+  const gesamtErw = gesetzt ? stand + wertErwartet + schuldenSaldo : null;
+  const eur = (v) => `${v.toFixed(2)} €`;
   const heuteDatum = new Date();
   const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
 
@@ -107,9 +113,23 @@ function renderHome(container) {
       <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${BOX_ICON}</div>
         <div class="stat-lbl">Warenwert</div>
         <div class="stat-val">${wert.toFixed(2)} €</div></div>
-      <div class="stat"><div class="icon-badge rot">${AUSGABE_ICON}</div>
-        <div class="stat-lbl">Ausgaben Monat</div>
-        <div class="stat-val">${ausgabenMonat.toFixed(2)} €</div></div>
+      <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${BOX_ICON}</div>
+        <div class="stat-lbl">Erwarteter Warenwert</div>
+        <div class="stat-val">${eur(wertErwartet)}</div></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat" data-schulden style="cursor:pointer;"><div class="icon-badge rot">${AUSGABE_ICON}</div>
+        <div class="stat-lbl">Schulden${verbindlichkeiten > 0 ? ' (mir geschuldet)' : ''}</div>
+        <div class="stat-val">${eur(forderungen)}</div>
+        ${verbindlichkeiten > 0 ? `<div class="stat-lbl">ich schulde ${eur(verbindlichkeiten)}</div>` : ''}</div>
+      <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${WALLET_ICON}</div>
+        <div class="stat-lbl">Gesamt mindestens</div>
+        <div class="stat-val">${gesetzt ? eur(gesamtMin) : '–'}</div></div>
+      <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${WALLET_ICON}</div>
+        <div class="stat-lbl">Gesamt erwartet</div>
+        <div class="stat-val">${gesetzt ? eur(gesamtErw) : '–'}</div></div>
+      <div class="stat" style="grid-column:1/-1;"><div class="stat-lbl">Ausgaben Monat</div>
+        <div class="stat-val">${eur(ausgabenMonat)}</div></div>
     </div>
     <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
     <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
@@ -131,6 +151,9 @@ function renderHome(container) {
       location.hash = '#/home/kontostand';
     });
   }
+  container.querySelector('[data-schulden]').addEventListener('click', () => {
+    location.hash = '#/finanzen/uebersicht/schulden';
+  });
   container.querySelectorAll('.stat[data-ziel]').forEach((el) => {
     el.addEventListener('click', () => { location.hash = `#/home/${el.dataset.ziel}`; });
   });
