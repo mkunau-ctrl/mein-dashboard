@@ -12,7 +12,7 @@ Ankauf-Reparatur-Weiterverkauf-Geschäft mit Handys, alle 8 Tasks aus
 umgesetzt (Subagent-Driven-Development, direkt auf `main`):
 
 1. Neue Supabase-Tabelle `handyreparatur_auftraege` (RLS nach
-   Projekt-Standard), 11 Spalten inkl. `status`-Check-Constraint
+   Projekt-Standard), 12 Spalten inkl. `status`-Check-Constraint
    (`offen`/`fertig`/`verkauft`).
 2. `warenwert(teile, reparaturAuftraege)` in `finanzen/berechnung.js` um
    einen optionalen zweiten Parameter erweitert — rückwärtskompatibel,
@@ -79,6 +79,22 @@ ohne eigene Tests, nach Projekt-Konvention). Alle 8 Commits auf `main`
 gepusht (`f1813a4`..`9f2d6e0`, siehe `git log`). Die 8 Rohdaten-Zeilen
 sind in `handyreparatur_auftraege` eingetragen und verifiziert (alle
 `status='offen'`).
+
+**Nachtrag 2026-09-29 (Abschluss-Review):** Das Whole-Branch-Review
+(dritter Anlauf; Anlauf 1 scheiterte am Wochenlimit, Anlauf 2 hing ohne
+Fortschritt) fand einen echten Fehler, den die Task-Reviews nicht sehen
+konnten: der Kontostand-Detail-Screen (`js/module/home/kontostand.js`,
+Klick auf die Home-Karte) rief `warenwert(teile)` weiter ohne die
+Reparatur-Aufträge auf, zeigte also ca. 1.363 € weniger als die
+Home-Karte direkt davor. Behoben: der Screen rechnet jetzt wie
+`home/index.js` (`stand + warenwert(teile, auftraege)`). Fallstrick
+bleibt: `unechterGesamtKontostand` und `nettoVermoegen` kennen die
+Aufträge nicht (siehe `CLAUDE.md`). Außerdem korrigiert: Tabelle hat 12
+Spalten, nicht 11 (mit `id`/`user_id`); `verkaeufer`/`kaeufer` existieren
+in der Tabelle, sind aber weder im Formular noch in der Liste bedienbar
+(Spec verlangt das nicht). Die Summenkarte zeigt nur den erwarteten
+Gewinn, nicht zusätzlich die Warenwert-Summe (Spec §6 nennt beides);
+`istGewinnImMonat` wird noch nirgends angezeigt.
 
 **Offene Punkte / Nächste Schritte:**
 - **Manueller Testlauf am echten Gerät steht noch aus** (Task 7,

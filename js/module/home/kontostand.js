@@ -1,4 +1,4 @@
-import { gesamtKontostand, unechterGesamtKontostand, kontostandVerlauf, warenwert } from '../finanzen/berechnung.js';
+import { gesamtKontostand, kontostandVerlauf, warenwert } from '../finanzen/berechnung.js';
 
 const EYE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_OFF_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.9 10.9 0 0112 5c7 0 11 7 11 7a17.6 17.6 0 01-3.2 4M6.5 6.5C3.6 8.3 1 12 1 12s4 7 11 7c1.4 0 2.7-.2 3.9-.6"/><path d="M9.9 9.9A3 3 0 0014 14"/></svg>';
@@ -28,9 +28,9 @@ export async function zeigeKontostandDetail(container, zustand) {
   const { finanzen } = zustand;
   const heuteStr = heute();
   const stand = gesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, heuteStr);
-  const unecht = unechterGesamtKontostand(finanzen.konten, finanzen.expenses, finanzen.einnahmen, finanzen.teile, heuteStr);
+  const wert = warenwert(finanzen.teile, zustand.handyreparatur.auftraege);
+  const unecht = stand + wert;
   const verlauf = kontostandVerlauf(finanzen.konten, finanzen.expenses, finanzen.einnahmen, 30, heuteStr);
-  const wert = warenwert(finanzen.teile);
 
   function zeichne() {
     const anzeige = ausgeblendet ? '••••••,•• €' : `${stand.toFixed(2)} €`;

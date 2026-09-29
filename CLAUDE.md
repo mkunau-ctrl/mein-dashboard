@@ -668,8 +668,12 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
     Vorbild von `js/module/rechnungen/`.
   `finanzen/berechnung.js`s `warenwert(teile, reparaturAuftraege)`
   bezieht offene/fertige (nicht verkaufte) Aufträge automatisch mit
-  ein — genutzt von Home ("Unecht"-Wert) und Finanzen-Übersicht
-  ("Warenwert"). Kein Kundenname-Feld (Geschäftsmodell ist
+  ein — genutzt von Home ("Unecht"-Wert), dem Kontostand-Detail-Screen
+  (`home/kontostand.js`) und Finanzen-Übersicht ("Warenwert").
+  `unechterGesamtKontostand`/`nettoVermoegen` in `finanzen/berechnung.js`
+  kennen die Aufträge NICHT (Fallstrick: dort `warenwert(teile)` ohne
+  Aufträge — Aufrufer müssen `stand + warenwert(teile, auftraege)`
+  selbst rechnen). Kein Kundenname-Feld (Geschäftsmodell ist
   Ankauf/Weiterverkauf, kein Kundenservice). Details:
   `docs/superpowers/specs/2026-09-22-etappe-4-sub-n-handyreparatur-auftraege-design.md`
   und `docs/PROJEKT-LOG.md` (Eintrag 2026-09-27).
