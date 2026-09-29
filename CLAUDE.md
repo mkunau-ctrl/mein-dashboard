@@ -888,6 +888,11 @@ auf Deutsch. Datenschutz beachten.
   mitgeben (in der Regel das "Hauptkonto", `konten`-Tabelle), sonst
   schlägt der Insert fehl. Siehe auch offener Punkt „automatisches
   Beleg-Tracking" im Log.
+- **Erinnerungen per Chat (Dauerregel seit 2026-09-29):** Spricht Mark im Chat
+  Erinnerungen an sich selbst ein, trägt Claude sie automatisch ein — mit Datum
+  in `termine` (`titel`, `faellig_am`, optional `uhrzeit`/`ort`/`notiz`, `quelle`
+  `manuell`), ohne Datum in `todos`; `user_id` explizit. Vergangene Termine löscht
+  die App beim Laden selbst.
 - **Berichtsheft – Diktat per Chat:** Erzählt Mark Arbeitstage, fehlende
   Pflichtfelder (Datum, Stunden, Tätigkeiten) aktiv erfragen, dann in
   `berichtsheft_eintraege` schreiben (ein Eintrag pro Tag, `unique

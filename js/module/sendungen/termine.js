@@ -30,7 +30,7 @@ export async function zeigeTermine(container, zustand, aktualisieren, _zeitraum,
       <div class="icon-badge">${KALENDER_ICON}</div>
       <div class="punkt-info">
         <strong>${esc(t.titel)}</strong>
-        <small>fällig am ${t.faellig_am}</small>
+        <small>fällig am ${t.faellig_am}${t.uhrzeit ? ` · ${esc(t.uhrzeit)} Uhr` : ''}${t.ort ? ` · ${esc(t.ort)}` : ''}</small>
       </div>
       <div class="punkt-aktionen">
         <button data-a="ab">✓</button>

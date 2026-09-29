@@ -80,7 +80,7 @@ function renderHome(container) {
   const todosListe = sortiereOffeneTodos(todos.offen, heute()).slice(0, 3);
 
   const termineHtml = termineListe
-    .map((t) => `<div class="punkt-zeile"><div class="icon-badge">${KALENDER_ICON}</div><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div>${istNeu(t, 'termine') ? '<span class="dot"></span>' : ''}<div class="punkt-aktionen"><button type="button" data-termin-ab="${t.id}" title="Abhaken">✓</button></div></div>`)
+    .map((t) => `<div class="punkt-zeile"><div class="icon-badge">${KALENDER_ICON}</div><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}${t.uhrzeit ? ` · ${esc(t.uhrzeit)} Uhr` : ''}${t.ort ? ` · ${esc(t.ort)}` : ''}</small></div>${istNeu(t, 'termine') ? '<span class="dot"></span>' : ''}<div class="punkt-aktionen"><button type="button" data-termin-ab="${t.id}" title="Abhaken">✓</button></div></div>`)
     .join('');
   const sendungenHtml = sendungenListe
     .map((s) => `<div class="punkt-zeile"><div class="icon-badge">${BOX_ICON}</div><div class="punkt-info"><strong>${esc(s.haendler)}</strong><small>${esc(s.status)}</small></div>${istNeu(s, 'sendungen') ? '<span class="dot"></span>' : ''}</div>`)

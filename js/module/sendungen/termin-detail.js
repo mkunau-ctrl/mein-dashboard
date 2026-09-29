@@ -13,7 +13,11 @@ export function zeigeTerminDetail(container, termin, zurueck) {
     </div>
     <div class="punkt-liste">
       <div class="punkt-zeile"><div class="icon-badge">${KALENDER_ICON}</div>
-        <div class="punkt-info"><strong>Fällig am</strong><small>${termin.faellig_am}</small></div></div>
+        <div class="punkt-info"><strong>Fällig am</strong><small>${termin.faellig_am}${termin.uhrzeit ? ` · ${esc(termin.uhrzeit)} Uhr` : ''}</small></div></div>
+      ${termin.ort ? `<div class="punkt-zeile"><div class="punkt-info"><strong>Ort / Adresse</strong>
+        <small>${esc(termin.ort)}</small></div></div>` : ''}
+      ${termin.notiz ? `<div class="punkt-zeile"><div class="punkt-info"><strong>Infos</strong>
+        <small style="white-space:pre-wrap;">${esc(termin.notiz)}</small></div></div>` : ''}
       <div class="punkt-zeile"><div class="punkt-info"><strong>Quelle</strong>
         <small>${termin.quelle === 'email' ? 'E-Mail-Automatisierung' : 'manuell'}</small></div></div>
       <div class="punkt-zeile"><div class="punkt-info"><strong>Status</strong>

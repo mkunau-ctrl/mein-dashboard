@@ -4,6 +4,36 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Termine mit Uhrzeit/Ort/Infos, Dauerregel für Erinnerungen, Buchungen nachgetragen
+
+**Was:** Die Tabelle `termine` hat drei neue nullable Spalten `uhrzeit`, `ort`, `notiz`
+(Migration `termine_uhrzeit_ort_notiz`). Termin-Detail zeigt Uhrzeit, Ort/Adresse und Infos;
+Terminliste und Home-Abschnitt „Nächste Termine" zeigen Uhrzeit und Ort in der Unterzeile.
+Daten nachgetragen: Subway 5,79 € (Essen, 26.09.), Einnahmen 200 € (iPhone 13 mini, von
+Michael Wesner, 25.09.) und 101 € (eBay-Auszahlung, 20.09., aus der E-Mail), Teil
+„Kameraglas iPhone 13" (Lager, 4,99 €). Kontostände blieben unverändert (Buchungen vor dem
+Stand-Datum 2026-09-29). Friseur/Zehnter bleiben als regelmäßige Ausgaben bestehen.
+
+**Warum:** Nutzerwunsch: Termine „mit Infos, vielleicht sogar Adresse", Einnahmen mit
+Absender im Dashboard, und Erinnerungen, die Mark im Chat diktiert, sollen automatisch ins
+Dashboard.
+
+**Entscheidungen:** Dauerregel: Erinnert sich Mark im Chat selbst an etwas, trägt Claude es
+direkt ein — mit Datum als Termin (`termine`, Uhrzeit/Ort/Infos falls genannt), ohne Datum
+als To-do (`todos`), `user_id` explizit. Kalenderquelle offen: Der Google-Calendar-Connector
+muss von Mark per `/mcp` verbunden werden (Claude kann das nicht selbst); ob es überhaupt der
+Google- oder der Apple-Kalender ist, ist ungeklärt. Bewusst nicht gebaut: Formularfelder für
+Uhrzeit/Ort in der App (Eintrag läuft per Diktat/Automatisierung). Die eBay-Auszahlung ist
+auf das Trade-Republic-Hauptkonto gebucht (geraten; Sparkasse …7380 ist kein Konto im Dashboard).
+
+**Stand danach:** 120 Tests grün. Anzeige noch nicht am Gerät getestet.
+
+**Offene Punkte / Nächste Schritte:** Kalender verbinden und nächste Termine eintragen;
+Postfach-Scan erkennt keine Einnahmen-Mails (Idee); weitere Einnahmen/Absender bei Mark
+erfragen.
+
+---
+
 ## 2026-09-29 – Home: Kontostand und Warenwert anklickbar, „Unecht" heißt „Warenwert"
 
 **Was:** Auf Home sind jetzt beide Kennzahlen-Kacheln anklickbar. „Kontostand" öffnet
