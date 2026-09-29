@@ -4,6 +4,29 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Sub-Etappe I: Wetter-Widget
+
+**Was:** Ganz unten auf Home erscheint „Wetter Lemgo": heute + 2 Tage mit Symbol, Max-/Min-Temperatur
+und Kurztext (Open-Meteo, feste Koordinaten 52.0333/8.9, kein API-Key). Neu:
+`home/wetter-logik.js` (reine Funktionen `wetterUrl`, `wettercodeZuText`, `istCacheGueltig`,
+`tageAusAntwort`), `home/wetter.js` (`zeigeWetter`: fetch + localStorage-Cache 30 min), 4 neue Tests
+(139 grün). Realer API-Aufruf einmal gegen Open-Meteo geprüft (HTTP 200, Struktur passt).
+
+**Warum:** Backlog-Punkt I, Spec `2026-09-21-etappe-4-sub-i-wetter-widget-design.md`.
+
+**Entscheidungen:** Abweichung von der Spec: die reinen Funktionen liegen in eigener Datei
+`wetter-logik.js`, weil `wetter.js` per `localStorage`/DOM nicht in Node importierbar/testbar
+sein soll (gleiches Muster wie `ics.js`). `tageAusAntwort` als vierte testbare Funktion ergänzt
+(rundet Temperaturen, gibt bei kaputter Antwort `null`). Fehlerfall zeigt still „Wetter gerade
+nicht verfügbar". Keine Geolocation, keine Warnungen, nur Lemgo.
+
+**Stand danach:** Gebaut, Tests grün, gepusht; Anzeige am Gerät/Browser nicht visuell geprüft.
+
+**Offene Punkte / Nächste Schritte:** Spikes (M CalDAV, H, G, J, K+L) – nur soweit ohne
+Nutzerinput machbar. Geplante Sync-Aufgabe aus Q wartet auf Nutzerentscheidung.
+
+---
+
 ## 2026-09-29 – Sub-Etappe Q: Projekte-Übersicht
 
 **Was:** Neues Modul `js/module/projekte/` (`#/projekte`, Einstieg über den Suche-Schnelleinstieg

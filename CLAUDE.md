@@ -142,8 +142,9 @@ nochmal umsortiert — s. u. „Reihenfolge ab jetzt"):
   schnell beheben, (2) erkennen, wenn eine **Cloud-Claude-Session**
   (claude.ai/code) hängt/abbricht, kurzen Status-Text schreiben und die
   Session fortsetzen. Erst eigener Spike nötig, bevor Design.
-- **I) Wetter-Widget** — öffentliche Wetter-API (kein Konto nötig),
-  einfach, auf Home.
+- **I) Wetter-Widget** — **fertig (2026-09-29)**: `js/module/home/wetter.js`
+  (UI, fetch + 30-min-localStorage-Cache) + `wetter-logik.js` (reine, getestete
+  Funktionen), Open-Meteo, Lemgo, 3 Tage, ganz unten auf Home. Tests: 139 grün.
 - **J) eBay-Nachrichten sehen + beantworten** — braucht eBay-
   Entwicklerkonto + OAuth + Messaging-API, eigener Spike wie bei G.
 - **K) Geräte-übergreifender Datei-Austausch via Supabase Storage** —

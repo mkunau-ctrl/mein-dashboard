@@ -5,6 +5,7 @@ import { gesamtKontostand, summeProMonat, warenwert, erwarteterWarenwert, schuld
 import { sortiereOffeneTodos } from '../todos/planung.js';
 import { sortiereSendungen, sortiereTermine } from '../sendungen/berechnung.js';
 import { hakeTerminAb } from '../sendungen/daten.js';
+import { zeigeWetter } from './wetter.js';
 
 const HOME_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>';
 const WALLET_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg>';
@@ -133,7 +134,10 @@ function renderHome(container) {
     </div>
     <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
     <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
-    <section>${abschnitt('Offene To-dos', '#/todos', todosHtml)}</section>`;
+    <section>${abschnitt('Offene To-dos', '#/todos', todosHtml)}</section>
+    <section><div class="section-head"><h2>Wetter Lemgo</h2></div><div id="home-wetter"><p class="lade">Lade Wetter …</p></div></section>`;
+
+  zeigeWetter(container.querySelector('#home-wetter'));
 
   container.querySelectorAll('[data-termin-ab]').forEach((b) => {
     b.addEventListener('click', async () => {
