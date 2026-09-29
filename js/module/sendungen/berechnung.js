@@ -30,6 +30,10 @@ export function sortiereTermine(termine) {
     .sort((a, b) => a.faellig_am.localeCompare(b.faellig_am));
 }
 
+export function abgelaufeneTermine(termine, heute) {
+  return termine.filter((t) => t.faellig_am < heute);
+}
+
 export function naechsterSendungStatus(status) {
   return STATUS_ZYKLUS[status];
 }

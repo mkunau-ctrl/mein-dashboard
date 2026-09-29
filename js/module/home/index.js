@@ -4,6 +4,7 @@ import { ladeAlles } from './daten.js';
 import { gesamtKontostand, unechterGesamtKontostand, summeProMonat, warenwert } from '../finanzen/berechnung.js';
 import { sortiereOffeneTodos } from '../todos/planung.js';
 import { sortiereSendungen, sortiereTermine } from '../sendungen/berechnung.js';
+import { hakeTerminAb } from '../sendungen/daten.js';
 
 const HOME_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>';
 const WALLET_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"/></svg>';
@@ -81,7 +82,7 @@ function renderHome(container) {
   const todosListe = sortiereOffeneTodos(todos.offen, heute()).slice(0, 3);
 
   const termineHtml = termineListe
-    .map((t) => `<div class="punkt-zeile"><div class="icon-badge">${KALENDER_ICON}</div><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div>${istNeu(t, 'termine') ? '<span class="dot"></span>' : ''}</div>`)
+    .map((t) => `<div class="punkt-zeile"><div class="icon-badge">${KALENDER_ICON}</div><div class="punkt-info"><strong>${esc(t.titel)}</strong><small>fällig ${t.faellig_am}</small></div>${istNeu(t, 'termine') ? '<span class="dot"></span>' : ''}<div class="punkt-aktionen"><button type="button" data-termin-ab="${t.id}" title="Abhaken">✓</button></div></div>`)
     .join('');
   const sendungenHtml = sendungenListe
     .map((s) => `<div class="punkt-zeile"><div class="icon-badge">${BOX_ICON}</div><div class="punkt-info"><strong>${esc(s.haendler)}</strong><small>${esc(s.status)}</small></div>${istNeu(s, 'sendungen') ? '<span class="dot"></span>' : ''}</div>`)
@@ -115,6 +116,17 @@ function renderHome(container) {
     <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
     <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
     <section>${abschnitt('Offene To-dos', '#/todos', todosHtml)}</section>`;
+
+  container.querySelectorAll('[data-termin-ab]').forEach((b) => {
+    b.addEventListener('click', async () => {
+      b.disabled = true;
+      try {
+        await hakeTerminAb(b.dataset.terminAb);
+        await ladeZustand();
+        if (containerRef === container && container.isConnected) renderHome(container);
+      } catch (err) { alert(err.message); b.disabled = false; }
+    });
+  });
 
   if (gesetzt) {
     container.querySelector('#home-kontostand').addEventListener('click', () => {

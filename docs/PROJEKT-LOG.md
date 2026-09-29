@@ -4,6 +4,31 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-29 – Alte Ansicht auf dem Handy, Termine abhaken + Auto-Löschen
+
+**Was:** Der Service Worker (`sw.js`) lieferte App-Dateien nur aus dem Cache
+(`mein-dashboard-v1`) und lud sie nie neu. Dadurch zeigte das Handy alten Code:
+den schon behobenen Schulden-Fehler (`offeneSchulden(...).toFixed`, Fix
+`4e4ede9`) und Termine ohne ✓-Button. Jetzt: Netzwerk zuerst, Cache nur als
+Offline-Rückfall, Cache-Name `v2`. Termine lassen sich zusätzlich direkt auf
+Home mit ✓ abhaken. Beim Laden der Sendungen-Daten werden Termine mit
+`faellig_am < heute` automatisch gelöscht (Test in
+`test/sendungen-berechnung.test.js`, 118 Tests grün).
+
+**Entscheidungen:** Ruling: gelöscht wird erst *nach* dem Fälligkeitstag, damit
+ein Termin am Tag selbst sichtbar bleibt. Das Löschen läuft clientseitig beim
+Laden (kein Cron), reicht für eine Ein-Personen-App.
+
+**Stand danach:** Nach dem nächsten Öffnen holt die App neue Dateien (ggf. einmal
+neu laden bzw. die PWA schließen und öffnen, damit der neue Service Worker
+aktiv wird). Die 3 Sendungen stehen noch auf „unterwegs" – Status-Änderung per
+SQL wurde blockiert; im Pakete-Tab mit „›" auf zugestellt schalten.
+
+**Offene Punkte:** Kontostände zurücksetzen (Bargeld 110, Volksbank 50, Trade
+Republic 432) und Handyaufträge anpassen – Rückfragen an den Nutzer offen.
+
+---
+
 ## 2026-09-27 – Sub-Etappe N: Handyreparatur-Aufträge
 
 **Was:** Neues, eigenständiges Modul `js/module/handyreparatur/` für das

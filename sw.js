@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mein-dashboard-v1';
+const CACHE_NAME = 'mein-dashboard-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -27,13 +27,12 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then((treffer) => {
-      if (treffer) return treffer;
-      return fetch(event.request).then((antwort) => {
+    fetch(event.request).then((antwort) => {
+      if (antwort.ok) {
         const kopie = antwort.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, kopie));
-        return antwort;
-      });
-    })
+      }
+      return antwort;
+    }).catch(() => caches.match(event.request))
   );
 });

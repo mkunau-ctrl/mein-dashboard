@@ -1,4 +1,5 @@
 import { supabase } from '../../supabase.js';
+import { abgelaufeneTermine } from './berechnung.js';
 
 function fehler(kontext, error) {
   return new Error(`${kontext}: ${error?.message ?? 'unbekannter Fehler'}`);
@@ -13,7 +14,17 @@ export async function ladeAlles() {
   if (sendungen.error) throw fehler('Sendungen laden', sendungen.error);
   if (termine.error) throw fehler('Termine laden', termine.error);
   if (ereignisse.error) throw fehler('Sendungs-Ereignisse laden', ereignisse.error);
-  return { sendungen: sendungen.data, termine: termine.data, ereignisse: ereignisse.data };
+  const heute = new Date().toISOString().slice(0, 10);
+  const weg = abgelaufeneTermine(termine.data, heute).map((t) => t.id);
+  if (weg.length > 0) {
+    const { error } = await supabase.from('termine').delete().in('id', weg);
+    if (error) throw fehler('Abgelaufene Termine löschen', error);
+  }
+  return {
+    sendungen: sendungen.data,
+    termine: termine.data.filter((t) => !weg.includes(t.id)),
+    ereignisse: ereignisse.data,
+  };
 }
 
 export async function legeSendungAn({ haendler, trackingnummer, beschreibung }) {

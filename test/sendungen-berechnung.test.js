@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sortiereSendungen, offeneSendungen, sortiereTermine, naechsterSendungStatus, STATUS_PRIORITAET, istStatusFortschritt, kategorisiereSendungIcon }
+import { abgelaufeneTermine, sortiereSendungen, offeneSendungen, sortiereTermine, naechsterSendungStatus, STATUS_PRIORITAET, istStatusFortschritt, kategorisiereSendungIcon }
   from '../js/module/sendungen/berechnung.js';
 
 const sendungen = [
@@ -69,4 +69,9 @@ test('kategorisiereSendungIcon: erkennt Handy/Kopfhoerer/Kleidung/Elektronik, so
   assert.equal(kategorisiereSendungIcon('Grafikkarte'), 'elektronik');
   assert.equal(kategorisiereSendungIcon('Irgendwas Unbekanntes'), 'box');
   assert.equal(kategorisiereSendungIcon(''), 'box');
+});
+
+test('abgelaufeneTermine: nur Termine vor heute, heute selbst bleibt', () => {
+  const termine = [{ id: 1, faellig_am: '2026-09-28' }, { id: 2, faellig_am: '2026-09-29' }, { id: 3, faellig_am: '2026-10-01' }];
+  assert.deepEqual(abgelaufeneTermine(termine, '2026-09-29').map((t) => t.id), [1]);
 });
