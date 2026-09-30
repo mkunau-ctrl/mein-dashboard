@@ -271,3 +271,5 @@ button:disabled { opacity: .6; cursor: default; }
   .druck-ansicht .bh-tabelle th, .druck-ansicht .bh-tabelle td { border-color: #000; }
   .druck-ansicht .bh-unterschriften div { border-color: #000; }
 }
+.stat-val.gruen { color: var(--hm-gruen); }
+.stat-val.rot { color: var(--hm-rot); }

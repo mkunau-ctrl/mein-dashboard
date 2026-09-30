@@ -81,6 +81,8 @@ function renderHome(container) {
   const eur = (v) => `${v.toFixed(2)} €`;
   const heuteDatum = new Date();
   const ausgabenMonat = summeProMonat(finanzen.expenses, heuteDatum.getFullYear(), heuteDatum.getMonth() + 1);
+  const monatPraefix = heute().slice(0, 7);
+  const einnahmenMonat = finanzen.einnahmen.filter((e) => String(e.datum).startsWith(monatPraefix)).reduce((sum, e) => sum + e.betrag, 0);
 
   const termineListe = sortiereTermine(sendungen.termine).slice(0, 3);
   const sendungenListe = sortiereSendungen(sendungen.sendungen).filter((s) => s.status !== 'zugestellt').slice(0, 3);
@@ -108,29 +110,23 @@ function renderHome(container) {
       ${gesetzt ? `<small>${inklWarenwert.toFixed(2)} € inkl. Warenwert</small>` : ''}
     </div>
     <div class="stat-grid">
-      <div class="stat" data-ziel="kontostand" style="cursor:pointer;"><div class="icon-badge">${WALLET_ICON}</div>
-        <div class="stat-lbl">Kontostand</div>
-        <div class="stat-val">${gesetzt ? stand.toFixed(2) + ' €' : '–'}</div></div>
-      <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${BOX_ICON}</div>
+      <div class="stat" data-ziel="warenwert" style="cursor:pointer;">
         <div class="stat-lbl">Warenwert</div>
-        <div class="stat-val">${wert.toFixed(2)} €</div></div>
-      <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${BOX_ICON}</div>
-        <div class="stat-lbl">Erwarteter Warenwert</div>
-        <div class="stat-val">${eur(wertErwartet)}</div></div>
+        <div class="stat-val gruen">${eur(wertErwartet)}</div>
+        <div class="stat-val rot">${eur(wert)}</div></div>
+      <div class="stat" data-schulden style="cursor:pointer;">
+        <div class="stat-lbl">Schulden</div>
+        <div class="stat-val gruen">${eur(forderungen)}</div>
+        <div class="stat-val rot">${eur(verbindlichkeiten)}</div></div>
+      <div class="stat" data-ziel="gesamt" style="cursor:pointer;">
+        <div class="stat-lbl">Gesamt</div>
+        <div class="stat-val gruen">${gesetzt ? eur(gesamtErw) : '–'}</div>
+        <div class="stat-val rot">${gesetzt ? eur(gesamtMin) : '–'}</div></div>
     </div>
     <div class="stat-grid">
-      <div class="stat" data-schulden style="cursor:pointer;"><div class="icon-badge rot">${AUSGABE_ICON}</div>
-        <div class="stat-lbl">Schulden${verbindlichkeiten > 0 ? ' (mir geschuldet)' : ''}</div>
-        <div class="stat-val">${eur(forderungen)}</div>
-        ${verbindlichkeiten > 0 ? `<div class="stat-lbl">ich schulde ${eur(verbindlichkeiten)}</div>` : ''}</div>
-      <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${WALLET_ICON}</div>
-        <div class="stat-lbl">Gesamt mindestens</div>
-        <div class="stat-val">${gesetzt ? eur(gesamtMin) : '–'}</div></div>
-      <div class="stat" data-ziel="warenwert" style="cursor:pointer;"><div class="icon-badge">${WALLET_ICON}</div>
-        <div class="stat-lbl">Gesamt erwartet</div>
-        <div class="stat-val">${gesetzt ? eur(gesamtErw) : '–'}</div></div>
-      <div class="stat" style="grid-column:1/-1;"><div class="stat-lbl">Ausgaben Monat</div>
-        <div class="stat-val">${eur(ausgabenMonat)}</div></div>
+      <div class="stat" data-einaus style="grid-column:1/-1;cursor:pointer;"><div class="stat-lbl">Einnahmen und Ausgaben ${heuteDatum.toLocaleDateString('de-DE', { month: 'long' })}</div>
+        <div class="stat-val gruen">+${eur(einnahmenMonat)}</div>
+        <div class="stat-val rot">−${eur(ausgabenMonat)}</div></div>
     </div>
     <section>${abschnitt('Nächste Termine', '#/sendungen/termine', termineHtml)}</section>
     <section>${abschnitt('Aktuelle Sendungen', '#/sendungen/pakete', sendungenHtml)}</section>
@@ -158,6 +154,9 @@ function renderHome(container) {
   container.querySelector('[data-schulden]').addEventListener('click', () => {
     location.hash = '#/finanzen/uebersicht/schulden';
   });
+  container.querySelector('[data-einaus]').addEventListener('click', () => {
+    location.hash = '#/finanzen/uebersicht/einnahmen-ausgaben';
+  });
   container.querySelectorAll('.stat[data-ziel]').forEach((el) => {
     el.addEventListener('click', () => { location.hash = `#/home/${el.dataset.ziel}`; });
   });
@@ -173,6 +172,10 @@ async function zeigeAktuelleAnsicht() {
     const { zeigeKontostandDetail } = await import('./kontostand.js');
     containerRef.innerHTML = '';
     await zeigeKontostandDetail(containerRef, zustand);
+  } else if (unterseite === 'gesamt') {
+    const { zeigeGesamtDetail } = await import('./gesamt.js');
+    containerRef.innerHTML = '';
+    await zeigeGesamtDetail(containerRef, zustand);
   } else if (unterseite === 'warenwert') {
     const { zeigeWarenwertDetail } = await import('./warenwert.js');
     containerRef.innerHTML = '';

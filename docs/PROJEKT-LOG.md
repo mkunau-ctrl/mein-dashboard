@@ -4,6 +4,20 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-09-30 – Home-Kacheln zusammengelegt (3 schmale Paar-Kacheln)
+
+**Was:** Die 6 Kacheln auf Home sind jetzt 3 schmale in einer Reihe: Warenwert (oben grün = erwartet, unten rot = mindestens), Schulden (grün = mir geschuldet, rot = ich schulde), Gesamt (grün = erwartet, rot = mindestens). Die Kachel „Kontostand" ist weg (steht groß oben). Darunter eine klickbare Kachel „Einnahmen und Ausgaben <Monat>" (grün/rot) → `#/finanzen/uebersicht/einnahmen-ausgaben`. Neu: `home/gesamt.js` (Route `#/home/gesamt`) zeigt, wie sich Gesamt aus Kontostand + Warenwert + Schulden-Saldo zusammensetzt (beide Varianten). Warenwert-Klick → bestehendes Detail, Schulden-Klick → Schulden-Liste.
+
+**Warum:** Wunsch von Mark: schmalere, farbcodierte, klickbare Kacheln mit sichtbarer Zusammensetzung der Summen.
+
+**Entscheidungen:** Zuordnung „oben grün / unten rot" von mir gewählt ( Ausausgeht: grün = das Bessere/Zufließende). Gesamt: erwartet = grün, mindestens = rot. Einnahmen des Monats aus `finanzen.einnahmen` nach Datumspräfix summiert.
+
+**Stand danach:** 139 Tests grün, Syntax geprüft; im Browser/Handy noch nicht angesehen.
+
+**Offene Punkte:** Handtest der Kacheln (Breite bei großen Beträgen); ggf. Zuordnung der Farben anpassen.
+
+---
+
 ## 2026-09-29 – Sub-Etappe I: Wetter-Widget
 
 **Was:** Ganz unten auf Home erscheint „Wetter Lemgo": heute + 2 Tage mit Symbol, Max-/Min-Temperatur
