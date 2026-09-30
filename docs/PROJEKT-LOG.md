@@ -10,7 +10,7 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 **Warum:** Wunsch von Mark: schmalere, farbcodierte, klickbare Kacheln mit sichtbarer Zusammensetzung der Summen.
 
-**Entscheidungen:** Zuordnung „oben grün / unten rot" von mir gewählt ( Ausausgeht: grün = das Bessere/Zufließende). Gesamt: erwartet = grün, mindestens = rot. Einnahmen des Monats aus `finanzen.einnahmen` nach Datumspräfix summiert.
+**Entscheidungen:** Zuordnung „oben grün / unten rot" von mir gewählt (grün = das Bessere). Gesamt: erwartet = grün, mindestens = rot. Einnahmen des Monats aus `finanzen.einnahmen` nach Datumspräfix summiert.
 
 **Stand danach:** 139 Tests grün, Syntax geprüft; im Browser/Handy noch nicht angesehen.
 
