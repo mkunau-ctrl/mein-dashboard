@@ -10,14 +10,25 @@ function esc(s) {
 }
 
 export async function zeigeFunde(container, zustand, aktualisieren) {
-  const liste = document.createElement('div');
-  liste.className = 'punkt-liste';
-  container.appendChild(liste);
   if (zustand.funde.length === 0) {
-    liste.innerHTML = '<p class="lade">Noch keine Funde. Claude trägt hier geprüfte Angebote mit guter Verkäufer-Bewertung ein.</p>';
+    container.innerHTML = '<p class="lade">Noch keine Funde. Claude trägt hier geprüfte Angebote ein.</p>';
     return;
   }
-  for (const f of sortiereFunde(zustand.funde)) {
+  for (const [kat, titel] of [['heil', 'Heile iPhones (weit unter Marktwert)'], ['defekt', 'Defekte iPhones']]) {
+    const funde = sortiereFunde(zustand.funde.filter((f) => (f.kategorie || 'heil') === kat));
+    const h = document.createElement('h3');
+    h.textContent = `${titel} (${funde.length})`;
+    container.appendChild(h);
+    const liste = document.createElement('div');
+    liste.className = 'punkt-liste';
+    container.appendChild(liste);
+    if (funde.length === 0) liste.innerHTML = '<p class="lade">Noch nichts.</p>';
+    zeichne(liste, funde, aktualisieren);
+  }
+}
+
+function zeichne(liste, funde, aktualisieren) {
+  for (const f of funde) {
     const preis = f.preis != null ? `${Number(f.preis).toFixed(2)} €${f.preis_vb ? ' VB' : ''}` : 'ohne Preis';
     const zeile = document.createElement('div');
     zeile.className = 'punkt-zeile';
@@ -25,6 +36,8 @@ export async function zeigeFunde(container, zustand, aktualisieren) {
       <div class="punkt-info">
         <strong>${esc(f.titel)}</strong>
         <small>${preis}${f.ort ? ` · ${esc(f.ort)}` : ''}${f.bewertung ? ` · ${esc(f.bewertung)}` : ''}</small>
+        ${f.marktwert != null && f.preis != null ? `<small>Marktwert ca. ${Number(f.marktwert).toFixed(0)} € · Marge ca. ${(f.marktwert - f.preis).toFixed(0)} €</small>` : ''}
+        ${f.zustand ? `<small>Zustand: ${esc(f.zustand)}</small>` : ''}
         <small>${esc(f.zusammenfassung)}</small>
         <small><a href="${esc(sicherHttp(f.url))}" target="_blank" rel="noopener noreferrer">Anzeige öffnen</a></small>
       </div>
