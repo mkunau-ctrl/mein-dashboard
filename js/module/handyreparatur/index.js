@@ -94,37 +94,41 @@ function zeichneListe(container, aktualisieren) {
   }
 }
 
+export async function zeigeAuftraege(container, mitZurueck = true) {
+  if (!zustand) await ladeZustand();
+  const aktualisieren = async () => { await ladeZustand(); render(); };
+
+  function render() {
+    container.innerHTML = `
+      ${mitZurueck ? `<div class="modul-kopf">
+        <button id="hr-zurueck" type="button">‹ Zurück</button>
+      </div>` : ''}
+      <div class="stat-karte gross">
+        <small>Erwarteter Gewinn</small>
+        <span>${erwarteterGewinn(zustand.auftraege).toFixed(2)} €</span>
+      </div>
+      <div class="chips">
+        ${FILTER.map((f) => `<button type="button" class="chip${f === filter ? ' aktiv' : ''}" data-f="${f}">${FILTER_TEXT[f]}</button>`).join('')}
+      </div>
+      <div class="punkt-liste" id="hr-liste"></div>`;
+    container.querySelector('#hr-zurueck')?.addEventListener('click', () => { history.back(); });
+    baueFormular(container, aktualisieren);
+    container.querySelectorAll('[data-f]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filter = btn.dataset.f;
+        container.querySelectorAll('[data-f]').forEach((b) => b.classList.toggle('aktiv', b.dataset.f === filter));
+        zeichneListe(container, aktualisieren);
+      });
+    });
+    zeichneListe(container, aktualisieren);
+  }
+  render();
+}
+
 registriere({
   id: 'handyreparatur',
   titel: 'Handyreparaturen',
   async init(container) {
-    if (!zustand) await ladeZustand();
-    const aktualisieren = async () => { await ladeZustand(); render(); };
-
-    function render() {
-      container.innerHTML = `
-        <div class="modul-kopf">
-          <button id="hr-zurueck" type="button">‹ Zurück</button>
-        </div>
-        <div class="stat-karte gross">
-          <small>Erwarteter Gewinn</small>
-          <span>${erwarteterGewinn(zustand.auftraege).toFixed(2)} €</span>
-        </div>
-        <div class="chips">
-          ${FILTER.map((f) => `<button type="button" class="chip${f === filter ? ' aktiv' : ''}" data-f="${f}">${FILTER_TEXT[f]}</button>`).join('')}
-        </div>
-        <div class="punkt-liste" id="hr-liste"></div>`;
-      container.querySelector('#hr-zurueck').addEventListener('click', () => { history.back(); });
-      baueFormular(container, aktualisieren);
-      container.querySelectorAll('[data-f]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          filter = btn.dataset.f;
-          container.querySelectorAll('[data-f]').forEach((b) => b.classList.toggle('aktiv', b.dataset.f === filter));
-          zeichneListe(container, aktualisieren);
-        });
-      });
-      zeichneListe(container, aktualisieren);
-    }
-    render();
+    await zeigeAuftraege(container, true);
   },
 });

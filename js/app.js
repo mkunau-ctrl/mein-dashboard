@@ -17,8 +17,9 @@ import './module/einstellungen/index.js';
 import './module/rechnungen/index.js';
 import './module/projekte/index.js';
 import './module/handyreparatur/index.js';
+import './module/flipping/index.js';
 
-const NAV_MODULE = ['home', 'finanzen', 'berichtsheft', 'suche', 'profil'];
+const NAV_MODULE = ['home', 'finanzen', 'flipping', 'suche', 'profil'];
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');
