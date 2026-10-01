@@ -22,6 +22,18 @@ oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
 Suche/Profil statt einem Icon pro Modul – siehe Abschnitt "Aufbau" und "Nav"
 unten für Details.
 
+## Flipping-Suche und Verkäufer-Nachrichten (Prototyp, 2026-10-01)
+
+Funde stehen in `flipping_funde` (Kategorie heil/defekt, Status
+neu/angeschrieben/gekauft/verworfen). Der stündliche Suchlauf ist ein
+session-only CronCreate-Job (7 Tage Laufzeit) und sucht NUR per WebFetch,
+nie über Marks Account oder Chrome, ohne IP-Tricks. Nachrichten an Verkäufer
+schreibt Claude nur auf Marks Wunsch: höflich, menschlich, schrittweise,
+zuerst Ladekabel/Hülle/Panzerglas, Preis begründet verhandeln, Ziel
+Überweisung. Nie kaufen oder überweisen ohne Marks ausdrückliches OK. Details
+im Eintrag "Flipping-Funde: Kategorien, Suchlauf, Verkäufer-Nachrichten" in
+`docs/PROJEKT-LOG.md`.
+
 ## Wo weiterlesen
 
 - **Verlauf / warum was so ist:** `docs/PROJEKT-LOG.md` (neueste Einträge oben).

@@ -4,6 +4,38 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-10-01 – Flipping-Funde: Kategorien, Suchlauf, Verkäufer-Nachrichten (Prototyp)
+
+**Was:** `flipping_funde` um `kategorie` (heil/defekt), `marktwert`,
+`zustand` erweitert; Funde-Ansicht in Kategorien gegliedert, Titel ist ein
+Link (`.fund-link`) plus Button `.fund-oeffnen`; Status-Zyklus
+neu→angeschrieben→gekauft→verworfen. Service-Worker-Cache auf
+`mein-dashboard-v3` gehoben, weil die Links sonst nicht klickbar erschienen.
+Stündlicher Suchlauf per CronCreate (Job `b6a33dd8`, :07, session-only, läuft
+nach 7 Tagen ab; ersetzt den früheren Job `017f0936`): Claude sucht per
+WebFetch, nur heile iPhones ab 12, Marge ab 30 € (gern 50+), erweiterte
+Suchbegriffe und Verkäufer-Signale, Sortierung nach neu.
+
+**Verkäufer-Nachrichten (Claude schreibt für Mark per Chrome):** 14 Pro
+Hannover (280 €, erste Nachricht zu aufdringlich, danach Entschuldigung plus
+Annahme von 280 €), 15 Pro Langwedel, 15 Marburg angeschrieben. Regeln, in
+Memory `feedback_verkaeufer-nachrichten` gespeichert: höflich, menschlich,
+keine Fragenliste, Schritt für Schritt; Ladekabel/Hülle/Panzerglas zuerst
+erfragen; Preis immer begründet runterhandeln; Ziel Banküberweisung (Risiko
+ohne Käuferschutz nennen). Nie kaufen oder überweisen ohne Marks OK.
+
+**Entscheidungen / Fehler:** Suche bewusst NICHT über Marks Account oder
+Chrome (Sperrgefahr), nur WebFetch; keine IP-Rotation oder Umgehung von
+Limits. Kein automatisches Anschreiben bei Schnäppchen, solange Mark testet
+(er erwägt es später). Fraud-Warnung beim Senden muss weggeklickt werden;
+`projekt_notizen.titel` ist NOT NULL. Erster Testlauf: 14 Pro Max 256GB 299 €
+Linden als Betrugsverdacht (Konto von heute, keine Bewertungen) verworfen.
+
+**Stand danach:** Prototyp. Offen: Antworten der 3 Verkäufer, Kalender,
+Einstellen eigener Artikel, Passkey, PNG-Icons.
+
+---
+
 ## 2026-10-01 – Flipping: neuer Tab "Verkauf" für Kleinanzeigen-Käufernachrichten
 
 **Was:** Neuer Flipping-Tab `verkauf` (`js/module/flipping/verkauf.js` +
