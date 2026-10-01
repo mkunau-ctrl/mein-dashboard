@@ -273,3 +273,10 @@ button:disabled { opacity: .6; cursor: default; }
 }
 .stat-val.gruen { color: var(--hm-gruen); }
 .stat-val.rot { color: var(--hm-rot); }
+
+.fund-link { color: inherit; text-decoration: underline; }
+.fund-oeffnen {
+  display: inline-block; margin-top: 6px; padding: 10px 14px; border-radius: 10px;
+  background: var(--akzent, #3b82f6); color: #fff; font-weight: 600; text-decoration: none;
+  min-height: 44px; box-sizing: border-box;
+}

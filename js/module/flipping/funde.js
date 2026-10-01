@@ -34,12 +34,12 @@ function zeichne(liste, funde, aktualisieren) {
     zeile.className = 'punkt-zeile';
     zeile.innerHTML = `
       <div class="punkt-info">
-        <strong>${esc(f.titel)}</strong>
+        <strong><a href="${esc(sicherHttp(f.url))}" target="_blank" rel="noopener noreferrer" class="fund-link">${esc(f.titel)} ↗</a></strong>
         <small>${preis}${f.ort ? ` · ${esc(f.ort)}` : ''}${f.bewertung ? ` · ${esc(f.bewertung)}` : ''}</small>
         ${f.marktwert != null && f.preis != null ? `<small>Marktwert ca. ${Number(f.marktwert).toFixed(0)} € · Marge ca. ${(f.marktwert - f.preis).toFixed(0)} €</small>` : ''}
         ${f.zustand ? `<small>Zustand: ${esc(f.zustand)}</small>` : ''}
         <small>${esc(f.zusammenfassung)}</small>
-        <small><a href="${esc(sicherHttp(f.url))}" target="_blank" rel="noopener noreferrer">Anzeige öffnen</a></small>
+        <a href="${esc(sicherHttp(f.url))}" target="_blank" rel="noopener noreferrer" class="fund-oeffnen">Anzeige auf Kleinanzeigen öffnen ↗</a>
       </div>
       <button data-a="status" class="status-badge ${STATUS_KLASSE[f.status]}">${STATUS_TEXT[f.status]}</button>
       <div class="punkt-aktionen"><button data-a="weg">✕</button></div>`;
