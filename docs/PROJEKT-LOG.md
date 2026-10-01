@@ -4,6 +4,46 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-10-01 – Flipping: neuer Tab "Verkauf" für Kleinanzeigen-Käufernachrichten
+
+**Was:** Neuer Flipping-Tab `verkauf` (`js/module/flipping/verkauf.js` +
+`verkauf-berechnung.js`), zeigt Käufer-Nachrichten zu eigenen
+Kleinanzeigen-Verkaufsanzeigen aus der neuen Tabelle `verkaufs_nachrichten`
+(RLS, unique user_id+conversation_key, Status
+beantwortet/eskaliert_offen/kaufinteresse/erledigt, Feld `kaufinteresse`
+boolean). Einträge sind nach `anzeige_kategorie` gruppiert (aktuell nur
+"Matratzenschoner"); Einträge mit `kaufinteresse=true` erscheinen zusätzlich
+ganz oben hervorgehoben ("🔥 Kaufinteresse jetzt", `.badge-ueberfaellig`-Stil)
+statt im normalen Status-Badge. `daten.js` um `verkaufsNachrichten` im
+`ladeAlles()` und `setzeNachrichtErledigt()` erweitert. 2 neue Tests
+(`flipping-verkauf-berechnung.test.js`), 147 Tests grün.
+
+**Warum:** Gehört zum separaten, lokalen Projekt
+`C:\Users\PC\Projekte\kleinanzeigen-waechter` (eigene Session, eigenes
+`CLAUDE.md`/`PROJEKT-LOG.md` dort) — ein Live-Loop, der stündlich
+Kleinanzeigen-Käufernachrichten zu den zwei Matratzenschoner-Anzeigen prüft
+und automatisch beantwortet. Mark wollte die Ergebnisse zusätzlich hier im
+Dashboard sehen, mit eigenem Bereich für akutes Kaufinteresse.
+
+**Entscheidungen:** Eigene, generische Tabelle `verkaufs_nachrichten`
+(nicht an `flipping_funde` angehängt, da andere Richtung: eigene
+Verkaufsanzeigen statt Kaufgelegenheiten). `anzeige_kategorie` als freies
+Textfeld statt Enum, damit künftige verkaufte Artikel (z. B. Handyteile)
+ohne Migration eigene Gruppen bekommen. `kaufinteresse` als eigenes
+Boolean-Feld statt nur als Status-Wert, weil ein Kaufinteressent gleichzeitig
+automatisch beantwortet ODER eskaliert sein kann.
+
+**Stand danach:** 147 Tests grün, noch nicht gepusht (macht Mark bzw.
+nächster Schritt), nicht am Gerät getestet. Eine abgeschlossene
+Alt-Konversation (Julita Smolen, 180x200, bereits vor Wächter-Start erledigt)
+ist als Beispieldatensatz eingetragen.
+
+**Offen:** Der Kleinanzeigen-Wächter selbst (das schreibende Ende) läuft nur,
+solange die betreffende Claude-Code-Session offen ist — siehe
+`C:\Users\PC\Projekte\kleinanzeigen-waechter\CLAUDE.md`.
+
+---
+
 ## 2026-10-01 – Flipping-Modul ersetzt Ausbildung in der Bottom-Nav
 
 **Was:** Neues Modul `js/module/flipping/` (Tabs: Übersicht, Ersatzteile, Bestellen, Aufträge, Funde). Teile/Bestellen wurden aus den Finanzen-Tabs hierher verschoben; `handyreparatur/index.js` exportiert `zeigeAuftraege(container, mitZurueck)` zur Wiederverwendung. Neue Tabelle `flipping_funde` (RLS, unique user_id+url, Status neu/angeschrieben/gekauft/verworfen). Funde = nur Kleinanzeigen-Angebote mit TOP-Zufriedenheit, je ein Satz Zusammenfassung + Link. 4 Funde eingetragen. Nav: `home, finanzen, flipping, suche, profil`. Berichtsheft bleibt über Suche/Profil erreichbar (reversibel). 143 Tests grün, Commit 32ac094, gepusht. **Nicht am Gerät getestet.**

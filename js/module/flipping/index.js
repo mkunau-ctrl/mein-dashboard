@@ -4,7 +4,7 @@ import { ladeAlles } from './daten.js';
 
 const TABS = [
   ['uebersicht', 'Übersicht'], ['teile', 'Ersatzteile'], ['bestellen', 'Bestellen'],
-  ['auftraege', 'Aufträge'], ['funde', 'Funde'],
+  ['auftraege', 'Aufträge'], ['funde', 'Funde'], ['verkauf', 'Verkauf'],
 ];
 
 let zustand = null;
@@ -31,6 +31,7 @@ const LADER = {
   bestellen: () => import('../finanzen/bestellen.js').then((m) => m.zeigeBestellen),
   auftraege: () => import('../handyreparatur/index.js').then((m) => (inhalt) => m.zeigeAuftraege(inhalt, false)),
   funde: () => import('./funde.js').then((m) => m.zeigeFunde),
+  verkauf: () => import('./verkauf.js').then((m) => m.zeigeVerkauf),
 };
 
 async function zeigeAktuellenTab() {

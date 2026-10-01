@@ -7,13 +7,25 @@ function fehler(kontext, error) {
 }
 
 export async function ladeAlles() {
-  const [finanzen, auftraege, funde] = await Promise.all([
+  const [finanzen, auftraege, funde, nachrichten] = await Promise.all([
     ladeFinanzen(),
     ladeAuftraege(),
     supabase.from('flipping_funde').select('*').order('erstellt_am', { ascending: false }),
+    supabase.from('verkaufs_nachrichten').select('*').order('erstellt_am', { ascending: false }),
   ]);
   if (funde.error) throw fehler('Funde laden', funde.error);
-  return { ...finanzen, handyreparaturAuftraege: auftraege.auftraege, funde: funde.data };
+  if (nachrichten.error) throw fehler('Verkaufs-Nachrichten laden', nachrichten.error);
+  return {
+    ...finanzen,
+    handyreparaturAuftraege: auftraege.auftraege,
+    funde: funde.data,
+    verkaufsNachrichten: nachrichten.data,
+  };
+}
+
+export async function setzeNachrichtErledigt(id) {
+  const { error } = await supabase.from('verkaufs_nachrichten').update({ status: 'erledigt' }).eq('id', id);
+  if (error) throw fehler('Nachricht als erledigt markieren', error);
 }
 
 export async function setzeFundStatus(id, status) {
