@@ -18,7 +18,7 @@ Private Web-App für Mark, aufrufbar auf jedem Gerät im Browser (iPhone: "Zum
 Home-Bildschirm"). Bündelt Lebensbereiche als Module: Ernährung (zuerst), dann
 To-dos, Finanzen, Lager/Ersatzteile. Daten in Supabase. Mark trägt selbst ein
 oder bittet Claude, Einträge in Supabase zu machen; das Dashboard zeigt sie an.
-**Navigation seit Etappe 8 v2:** feste Bottom-Nav Home/Finanzen/Ausbildung/
+**Navigation seit Etappe 8 v2:** feste Bottom-Nav Home/Finanzen/Flipping/
 Suche/Profil statt einem Icon pro Modul – siehe Abschnitt "Aufbau" und "Nav"
 unten für Details.
 

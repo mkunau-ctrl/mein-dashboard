@@ -4,6 +4,18 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-10-01 – Flipping-Modul ersetzt Ausbildung in der Bottom-Nav
+
+**Was:** Neues Modul `js/module/flipping/` (Tabs: Übersicht, Ersatzteile, Bestellen, Aufträge, Funde). Teile/Bestellen wurden aus den Finanzen-Tabs hierher verschoben; `handyreparatur/index.js` exportiert `zeigeAuftraege(container, mitZurueck)` zur Wiederverwendung. Neue Tabelle `flipping_funde` (RLS, unique user_id+url, Status neu/angeschrieben/gekauft/verworfen). Funde = nur Kleinanzeigen-Angebote mit TOP-Zufriedenheit, je ein Satz Zusammenfassung + Link. 4 Funde eingetragen. Nav: `home, finanzen, flipping, suche, profil`. Berichtsheft bleibt über Suche/Profil erreichbar (reversibel). 143 Tests grün, Commit 32ac094, gepusht. **Nicht am Gerät getestet.**
+
+**Warum:** Wunsch von Mark: Flipping-Bereich statt Ausbildung, mit Warenwert, Teilen, Aufträgen und Claudes Suchfunden.
+
+**Regel (Anti-Sperre):** Keine Bot-Aktivität auf Kleinanzeigen/eBay: keine automatisierten Massenabrufe, wenige einzelne Seitenaufrufe mit Pausen, keine Massen-Nachrichten, Käufe/Angebote nur nach Marks OK. Keine Garantie gegen Sperren möglich. Ein früherer Lauf (~10 Suchen + ~16 Anzeigen) war schon zu viel.
+
+**Offen:** Ankaufsgrenzen pro Modell, Umkreis, Einstell-Plan, Kalender.
+
+---
+
 ## 2026-09-30 – Home-Kacheln zusammengelegt (3 schmale Paar-Kacheln)
 
 **Was:** Die 6 Kacheln auf Home sind jetzt 3 schmale in einer Reihe: Warenwert (oben grün = erwartet, unten rot = mindestens), Schulden (grün = mir geschuldet, rot = ich schulde), Gesamt (grün = erwartet, rot = mindestens). Die Kachel „Kontostand" ist weg (steht groß oben). Darunter eine klickbare Kachel „Einnahmen und Ausgaben <Monat>" (grün/rot) → `#/finanzen/uebersicht/einnahmen-ausgaben`. Neu: `home/gesamt.js` (Route `#/home/gesamt`) zeigt, wie sich Gesamt aus Kontostand + Warenwert + Schulden-Saldo zusammensetzt (beide Varianten). Warenwert-Klick → bestehendes Detail, Schulden-Klick → Schulden-Liste.
