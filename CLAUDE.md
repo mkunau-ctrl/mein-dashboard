@@ -34,6 +34,17 @@ zuerst Ladekabel/Hülle/Panzerglas, Preis begründet verhandeln, Ziel
 im Eintrag "Flipping-Funde: Kategorien, Suchlauf, Verkäufer-Nachrichten" in
 `docs/PROJEKT-LOG.md`.
 
+## Push-Benachrichtigungen (2026-10-03, Prototyp)
+
+Web-Push aufs iPhone (nur als Home-Bildschirm-App). Tabellen `push_abos`/
+`push_gesendet`/`push_konfig` (VAPID privat + Cron-Secret nur dort). Edge
+Function `push-senden` (`supabase/functions/push-senden/`, Logik in
+`logik.js`, Tests `test/push-logik.test.js`), `pg_cron`-Job alle 15 Min.
+Einstellungen → Benachrichtigungen (`js/module/einstellungen/push.js`). Neue
+Auslöser: in `logik.js` ergänzen + Test, Funktion neu deployen. Testpush:
+`net.http_post` auf die Funktion mit Header `x-cron-secret` und Body
+`{"test":true}`. Details: `docs/PROJEKT-LOG.md` (2026-10-03).
+
 ## Wo weiterlesen
 
 - **Verlauf / warum was so ist:** `docs/PROJEKT-LOG.md` (neueste Einträge oben).

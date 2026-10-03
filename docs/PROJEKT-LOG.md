@@ -4,6 +4,49 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-10-03 – Push-Benachrichtigungen aufs iPhone (Prototyp)
+
+**Was:** Web-Push für die als PWA installierte App. Datenbank: `push_abos`
+(Endpoint/Schlüssel je Gerät plus Schalter je Kategorie und Ruhezeit),
+`push_gesendet` (Dedup), `push_konfig` (VAPID-Schlüssel, Cron-Secret; nur
+Service-Role, keine Policy). Edge Function `push-senden`
+(`supabase/functions/push-senden/`, `index.ts` + reine Logik `logik.js`),
+`verify_jwt=false`, schützt sich mit Header `x-cron-secret`. Der `pg_cron`-Job
+`push-senden` ruft sie alle 15 Minuten per `pg_net` auf. Auslöser: Termine
+(mit Uhrzeit bis 60 Min vorher, ohne Uhrzeit ab 08:00 am Tag), To-dos (heute
+fällig/überfällig, ab 08:00), Rechnungen (0–2 Tage vor Fälligkeit, überfällig),
+Sendungen (zugestellt in den letzten 24 h, mit Abholcode), Flipping-Funde
+(neu in den letzten 3 h, mehrere gebündelt). App: `sw.js` (Cache v4) mit
+`push`-/`notificationclick`-Handler und App-Icon-Kennzeichen,
+`js/module/einstellungen/push.js` und neuer Abschnitt „Benachrichtigungen“ in
+den Einstellungen (Hauptschalter, vier Kategorie-Schalter, Ruhezeit).
+
+**Warum:** Wunsch von Mark, Benachrichtigungen aufs iPhone zu bekommen,
+einstellbar wie bei normalen Apps.
+
+**Entscheidungen:** Sender in der Cloud (Edge Function + pg_cron) statt
+lokalem Skript, damit es auch bei ausgeschaltetem Laptop läuft. Push für alle
+vier Kategorien; weitere Auslöser baut Claude auf Zuruf nach. Die
+VAPID-Secrets liegen in der Tabelle `push_konfig`, weil sich per MCP keine
+Edge-Function-Secrets setzen lassen; nur der öffentliche Schlüssel steht im
+Code. Ton/Banner/Sperrbildschirm/Zusammenfassung stellt iOS selbst unter
+Einstellungen → Mitteilungen ein; Kategorien-Schalter gibt es dort für
+Web-Apps nicht, deshalb in der App. Bewusst nicht gebaut: Test-Knopf in der
+App (Testpush per SQL: `net.http_post` mit Body `{"test":true}`).
+
+**Stand danach:** Backend live und per Testaufruf geprüft (HTTP 200, noch
+keine Abos). 155 Unit-Tests grün (neu: `push-logik`, `push-client`). **Echte
+Zustellung aufs iPhone noch NICHT getestet** – dafür muss die App neu vom
+Home-Bildschirm geöffnet, in Einstellungen → Benachrichtigungen eingeschaltet
+und die Erlaubnis gegeben werden.
+
+**Offene Punkte / Nächste Schritte:** Handtest am iPhone; echte PNG-Icons
+(`apple-touch-icon`, 192/512) fehlen weiter – das Benachrichtigungs-Icon ist
+vorerst `icon.svg`; weitere Auslöser nach Marks Wunsch; danach Backlog K
+und M.
+
+---
+
 ## 2026-10-01 – Flipping-Funde: Kategorien, Suchlauf, Verkäufer-Nachrichten (Prototyp)
 
 **Was:** `flipping_funde` um `kategorie` (heil/defekt), `marktwert`,
