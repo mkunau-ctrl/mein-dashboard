@@ -34,6 +34,13 @@ zuerst Ladekabel/Hülle/Panzerglas, Preis begründet verhandeln, Ziel
 im Eintrag "Flipping-Funde: Kategorien, Suchlauf, Verkäufer-Nachrichten" in
 `docs/PROJEKT-LOG.md`.
 
+## Datei-Austausch (Sub-Etappe K, 2026-10-03, Prototyp)
+
+Modul `js/module/dateien/` (`#/dateien`, Schnelleinstieg „Dateien“ in der
+Suche). Privater Bucket `austausch` (50 MB/Datei, Pfad `<user_id>/<id>-<name>`),
+Tabelle `dateien`. Logik in `berechnung.js` (Test `test/dateien-berechnung.test.js`).
+Noch nicht am echten Gerät getestet. Details: `docs/PROJEKT-LOG.md`.
+
 ## Push-Benachrichtigungen (2026-10-03, Prototyp)
 
 Web-Push aufs iPhone (nur als Home-Bildschirm-App). Tabellen `push_abos`/

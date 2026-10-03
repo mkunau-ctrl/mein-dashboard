@@ -18,6 +18,7 @@ import './module/rechnungen/index.js';
 import './module/projekte/index.js';
 import './module/handyreparatur/index.js';
 import './module/flipping/index.js';
+import './module/dateien/index.js';
 
 const NAV_MODULE = ['home', 'finanzen', 'flipping', 'suche', 'profil'];
 

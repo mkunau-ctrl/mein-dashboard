@@ -4,6 +4,37 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-10-03 – Sub-Etappe K: Datei-Austausch über Supabase Storage (Prototyp)
+
+**Was:** Neues Modul `js/module/dateien/` (`#/dateien`): Dateien hochladen
+(mehrere auf einmal), Liste (neueste zuerst, Größe, Zeitpunkt), „Öffnen“ per
+signiertem Link (5 Minuten gültig), „Löschen“ mit Rückfrage. Speicher: privater
+Storage-Bucket `austausch` (50 MB pro Datei), Policies nur für den eigenen
+Ordner `<user_id>/…`; Metadaten in Tabelle `dateien` (RLS auf `user_id`).
+`berechnung.js` (getestet): `formatiereGroesse`, `sichererPfad` (entfernt
+Pfadanteile, Umlaute, Sonderzeichen), `sortiereDateien`. In der Suche führt
+der bisherige Deko-Schnelleinstieg „Dokumente“ jetzt als „Dateien“ zum Modul.
+
+**Warum:** Backlog-Punkt K – auf einem Gerät hochladen, auf dem anderen
+abrufen.
+
+**Entscheidungen:** Nur Supabase Storage, kein Bluetooth/Offline (Web
+Bluetooth fehlt in iOS Safari; für Offline bleibt AirDrop). Beim Fehler im
+Metadaten-Insert wird die hochgeladene Datei wieder entfernt, damit keine
+Waise im Speicher bleibt. Bewusst nicht gebaut: Ordner, Umbenennen,
+Vorschau, Teilen-Links für andere Personen, Aufräumen alter Dateien.
+
+**Stand danach:** Gebaut und die reine Logik per Unit-Tests geprüft (158
+Tests grün). **Hochladen/Öffnen/Löschen im echten Browser/iPhone noch NICHT
+getestet**, ebenso nicht, ob die Storage-Policies im Zusammenspiel mit dem
+eingeloggten Nutzer greifen.
+
+**Offene Punkte / Nächste Schritte:** Handtest (hochladen auf dem Handy,
+öffnen am PC); Speicherplatz-Limit des Supabase-Plans im Blick behalten;
+danach Sub-Etappe M (Kalender & Notizen ohne CalDAV).
+
+---
+
 ## 2026-10-03 – Push-Benachrichtigungen aufs iPhone (Prototyp)
 
 **Was:** Web-Push für die als PWA installierte App. Datenbank: `push_abos`

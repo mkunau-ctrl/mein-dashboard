@@ -22,7 +22,7 @@ const SCHNELLEINSTIEGE = [
   { label: 'Flipping', icon: HANDY_ICON, ziel: '#/flipping' },
   { label: 'Handyreparaturen', icon: HANDY_ICON, ziel: '#/handyreparatur' },
   { label: 'Projekte', icon: FOLDER_ICON, ziel: '#/projekte' },
-  { label: 'Dokumente', icon: FOLDER_ICON, ziel: null },
+  { label: 'Dateien', icon: FOLDER_ICON, ziel: '#/dateien' },
 ];
 
 const LETZTE_SUCHEN_SCHLUESSEL = 'letzteSuchen';
