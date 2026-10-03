@@ -39,3 +39,11 @@ test('sucheAlles: Treffer zeigen auf Detailrouten mit ID', () => {
   assert.equal(todo.ziel, '#/todos/erledigt/t2');
   assert.equal(sendung.ziel, '#/sendungen/pakete/s1');
 });
+
+test('sucheAlles: findet Notizen in Titel und Text, ohne notizen im Zustand kein Fehler', () => {
+  const mitNotizen = { ...zustand, notizen: [{ id: 'n1', titel: 'Ideen', text: 'Kamera-Glas bestellen' }, { id: 'n2', titel: 'Kamera', text: '' }] };
+  const t = sucheAlles(mitNotizen, 'kamera');
+  assert.deepEqual(t.map((x) => x.typ), ['notiz', 'notiz']);
+  assert.equal(t[0].ziel, '#/notizen/n1');
+  assert.doesNotThrow(() => sucheAlles(zustand, 'netflix'));
+});

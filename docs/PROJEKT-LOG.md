@@ -4,6 +4,44 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-10-03 – Sub-Etappe M (Teil 1): Kalender & Notizen ohne CalDAV (Prototyp)
+
+**Was:** Zwei neue Module. **Kalender** (`js/module/kalender/`, `#/kalender`):
+Monatsansicht (Wochen ab Montag, Punkte je Tag, Monatswechsel), Tagesliste
+mit Terminen (nach Uhrzeit sortiert), offenen To-dos mit Frist und offenen
+Rechnungen am Fälligkeitstag; Termin mit Titel, optionaler Uhrzeit und Ort
+anlegen und löschen. `berechnung.js` (getestet): `monatsRaster`,
+`eintraegeProTag`, `verschiebeMonat`, `monatsName`. **Notizen**
+(`js/module/notizen/`, `#/notizen`, `#/notizen/<id>`, `#/notizen/neu`): Liste,
+Editor (Titel + Text), Löschen; Tabelle `notizen` (RLS auf `user_id`). Die
+Suche findet Notizen jetzt in Titel und Text (`typ: 'notiz'`), beide Module
+haben Schnelleinstiege in der Suche. `legeTerminAn` nimmt zusätzlich optional
+`uhrzeit`/`ort`/`notiz` (Spalten gab es schon).
+
+**Warum:** Backlog-Punkt M, soweit er ohne Spike machbar ist.
+
+**Entscheidungen:** Bottom-Nav bleibt unverändert (Kalender/Notizen per
+Suche erreichbar); ob Kalender die Nav-Position von Flipping/Berichtsheft
+bekommt, entscheidet Mark. **CalDAV/Apple-Kalender/-Erinnerungen bewusst
+noch nicht** – eigener Spike, bleibt am Ende des Backlogs. Notizen als reiner
+Text, kein Markdown/Anhänge. Das Löschen abgelaufener Termine beim Laden
+(bestehendes Verhalten in `sendungen/daten.js`) gilt weiter, daher zeigt der
+Kalender keine vergangenen Termine und verbietet das Anlegen in der
+Vergangenheit mit Hinweis. Notizen-Modul registriert wegen `oeffneModul`
+(ruft `init` nur beim Modulwechsel) einen eigenen `hashchange`-Listener für
+Liste ↔ Editor.
+
+**Stand danach:** Gebaut, Logik per Unit-Tests geprüft (164 Tests grün).
+**Oberfläche im Browser/iPhone noch NICHT getestet.** Aufgefallen, nicht
+geändert: `sendungen/daten.js` berechnet „heute“ per `toISOString()` (UTC), um
+Mitternacht kann das einen Tag abweichen.
+
+**Offene Punkte / Nächste Schritte:** Handtest; Erinnerungen im Home-Bereich
+und Termin-Push existieren schon über die Push-Funktion; Kalender-Position in
+der Nav klären; CalDAV-Spike später.
+
+---
+
 ## 2026-10-03 – Sub-Etappe K: Datei-Austausch über Supabase Storage (Prototyp)
 
 **Was:** Neues Modul `js/module/dateien/` (`#/dateien`): Dateien hochladen

@@ -59,8 +59,8 @@ export async function entferneSendung(id) {
   if (error) throw fehler('Sendung entfernen', error);
 }
 
-export async function legeTerminAn({ titel, faellig_am }) {
-  const { error } = await supabase.from('termine').insert({ titel, faellig_am, quelle: 'manuell' });
+export async function legeTerminAn({ titel, faellig_am, uhrzeit = null, ort = null, notiz = null }) {
+  const { error } = await supabase.from('termine').insert({ titel, faellig_am, uhrzeit, ort, notiz, quelle: 'manuell' });
   if (error) throw fehler('Termin anlegen', error);
 }
 

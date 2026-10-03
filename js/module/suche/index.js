@@ -12,7 +12,7 @@ const TODO_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const KALENDER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
 const HANDY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>';
 const CHEVRON_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
-const TYP_ICON = { expense: RECEIPT_ICON, todo: TODO_ICON, sendung: BOX_ICON, termin: KALENDER_ICON };
+const TYP_ICON = { expense: RECEIPT_ICON, todo: TODO_ICON, sendung: BOX_ICON, termin: KALENDER_ICON, notiz: DOC_ICON };
 
 const SCHNELLEINSTIEGE = [
   { label: 'Kontostand', icon: CASH_ICON, ziel: '#/finanzen' },
@@ -23,6 +23,8 @@ const SCHNELLEINSTIEGE = [
   { label: 'Handyreparaturen', icon: HANDY_ICON, ziel: '#/handyreparatur' },
   { label: 'Projekte', icon: FOLDER_ICON, ziel: '#/projekte' },
   { label: 'Dateien', icon: FOLDER_ICON, ziel: '#/dateien' },
+  { label: 'Kalender', icon: KALENDER_ICON, ziel: '#/kalender' },
+  { label: 'Notizen', icon: DOC_ICON, ziel: '#/notizen' },
 ];
 
 const LETZTE_SUCHEN_SCHLUESSEL = 'letzteSuchen';

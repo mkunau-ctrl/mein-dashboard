@@ -35,5 +35,10 @@ export function sucheAlles(zustand, suchtextRoh) {
       ergebnisse.push({ typ: 'termin', titel: t.titel, info: '', ziel: `#/sendungen/termine/${t.id}` });
     }
   }
+  for (const n of zustand.notizen ?? []) {
+    if (treffer(n.titel, suchtext) || treffer(n.text, suchtext)) {
+      ergebnisse.push({ typ: 'notiz', titel: n.titel || 'Notiz', info: String(n.text ?? '').slice(0, 60), ziel: `#/notizen/${n.id}` });
+    }
+  }
   return ergebnisse;
 }

@@ -34,6 +34,14 @@ zuerst Ladekabel/Hülle/Panzerglas, Preis begründet verhandeln, Ziel
 im Eintrag "Flipping-Funde: Kategorien, Suchlauf, Verkäufer-Nachrichten" in
 `docs/PROJEKT-LOG.md`.
 
+## Kalender & Notizen (Sub-Etappe M Teil 1, 2026-10-03, Prototyp)
+
+`js/module/kalender/` (`#/kalender`, Monatsraster aus Termine + To-do-Fristen +
+Rechnungen, Termin anlegen) und `js/module/notizen/` (`#/notizen[/id|neu]`,
+Tabelle `notizen`, in der Suche auffindbar). Nicht in der Bottom-Nav, nur per
+Suche-Schnelleinstieg. CalDAV/Apple bewusst noch offen. Tests:
+`test/kalender-berechnung.test.js`. Noch nicht am Gerät getestet.
+
 ## Datei-Austausch (Sub-Etappe K, 2026-10-03, Prototyp)
 
 Modul `js/module/dateien/` (`#/dateien`, Schnelleinstieg „Dateien“ in der
