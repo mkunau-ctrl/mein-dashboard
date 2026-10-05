@@ -51,6 +51,25 @@ export async function deaktiviere() {
   await abo.unsubscribe();
 }
 
+// Schalter je Ausloeser: {art: bool}; fehlender Eintrag = an
+export async function ladeSchalter() {
+  const { data } = await supabase.from('benachrichtigung_einst').select('schalter').maybeSingle();
+  return data?.schalter ?? {};
+}
+
+export async function speichereSchalter(schalter) {
+  const { error } = await supabase.from('benachrichtigung_einst')
+    .upsert({ schalter, aktualisiert_am: new Date().toISOString() }, { onConflict: 'user_id' });
+  if (error) throw new Error(error.message);
+}
+
+// Testpush ueber den echten Server-Weg (Edge Function schickt an alle Geraete dieses Kontos)
+export async function sendeTestPush() {
+  const { data, error } = await supabase.functions.invoke('push-senden', { body: { test: true } });
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 export async function speichereFeld(endpoint, feld) {
   const { error } = await supabase.from('push_abos').update(feld).eq('endpoint', endpoint);
   if (error) throw new Error(error.message);

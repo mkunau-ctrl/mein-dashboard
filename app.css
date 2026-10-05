@@ -280,3 +280,17 @@ button:disabled { opacity: .6; cursor: default; }
   background: var(--akzent, #3b82f6); color: #fff; font-weight: 600; text-decoration: none;
   min-height: 44px; box-sizing: border-box;
 }
+
+/* Glocke (Meldungsliste) */
+.glocke-knopf { position: relative; }
+.glocke-badge { position: absolute; top: -2px; right: -2px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #E5484D; color: #fff; font-size: 10px; line-height: 16px; text-align: center; }
+.glocke-badge[hidden] { display: none; }
+.glocke-panel { position: fixed; top: 56px; left: 12px; right: 12px; z-index: 20; max-height: 70vh; overflow-y: auto; background: var(--karte); border: 1px solid var(--rand); border-radius: var(--radius); box-shadow: var(--schatten); }
+.glocke-panel[hidden] { display: none; }
+.glocke-kopf { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--rand); position: sticky; top: 0; background: var(--karte); }
+.glocke-alle { background: transparent; color: var(--gedaempft); border: none; padding: 4px 6px; }
+.glocke-leer { padding: 16px 14px; margin: 0; color: var(--gedaempft); }
+.glocke-zeile { display: grid; width: 100%; text-align: left; gap: 2px; padding: 11px 14px; border-radius: 0; background: transparent; color: var(--text); border: none; border-bottom: 1px solid var(--rand); }
+.glocke-zeile.neu { background: var(--karte-getoent); }
+.glocke-zeile.neu .glocke-titel { font-weight: 700; }
+.glocke-text, .glocke-zeit { color: var(--gedaempft); font-size: .85em; }

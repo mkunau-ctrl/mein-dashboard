@@ -1,8 +1,9 @@
-// Edge Function: prueft Ausloeser und verschickt Web-Push an alle Geraete (pg_cron alle 15 Min).
+// Edge Function: prueft Ausloeser, schreibt die Glocken-Liste (meldungen) und verschickt Web-Push (pg_cron alle 15 Min).
 // Konfiguration (VAPID, Cron-Secret) liegt in Tabelle push_konfig (nur Service-Role).
+// Zwei Zugaenge: Cron mit Header x-cron-secret (alles) ODER eingeloggter Nutzer (JWT) nur fuer {"test":true}.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import webpush from 'npm:web-push@3.6.7';
-import { baueMeldungen, inRuhezeit, zaehleOffen } from './logik.js';
+import { baueMeldungen, inRuhezeit, schalterErlaubt, zaehleOffen } from './logik.js';
 
 const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
@@ -18,36 +19,69 @@ function berlinJetzt() {
 Deno.serve(async (req) => {
   const { data: konf } = await db.from('push_konfig').select('key,wert');
   const k = Object.fromEntries((konf ?? []).map((r) => [r.key, r.wert]));
-  if (!k.cron_secret || req.headers.get('x-cron-secret') !== k.cron_secret) {
-    return new Response('forbidden', { status: 403 });
-  }
-  webpush.setVapidDetails(k.vapid_subject, k.vapid_public, k.vapid_private);
   const body = await req.json().catch(() => ({}));
 
-  const { data: abos } = await db.from('push_abos').select('*');
+  let nurUser: string | null = null; // gesetzt = Aufruf aus der App, nur Testpush an dieses Konto
+  if (!k.cron_secret || req.headers.get('x-cron-secret') !== k.cron_secret) {
+    const token = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '');
+    const { data: u } = token ? await db.auth.getUser(token) : { data: null };
+    if (!u?.user || !body.test) return new Response('forbidden', { status: 403 });
+    nurUser = u.user.id;
+  }
+  webpush.setVapidDetails(k.vapid_subject, k.vapid_public, k.vapid_private);
+
+  const [{ data: abos }, { data: einstellungen }] = await Promise.all([
+    db.from('push_abos').select('*'),
+    db.from('benachrichtigung_einst').select('user_id,schalter'),
+  ]);
   const nachUser = new Map<string, any[]>();
   for (const a of abos ?? []) nachUser.set(a.user_id, [...(nachUser.get(a.user_id) ?? []), a]);
+  // Auch Nutzer ohne Geraet bekommen die Glocken-Liste
+  for (const e of einstellungen ?? []) if (!nachUser.has(e.user_id)) nachUser.set(e.user_id, []);
+  const schalterVon = new Map((einstellungen ?? []).map((e) => [e.user_id, e.schalter ?? {}]));
 
   const { heute, minuten } = berlinJetzt();
   const jetztMs = Date.now();
-  let gesendet = 0, entfernt = 0;
+  let gesendet = 0, entfernt = 0, gespeichert = 0;
 
   for (const [userId, geraete] of nachUser) {
+    if (nurUser && userId !== nurUser) continue;
+    const schalter = schalterVon.get(userId) ?? {};
     let meldungen: any[];
     let badge = 0;
     if (body.test) {
-      meldungen = [{ kategorie: 'test', schluessel: `test:${jetztMs}`, titel: 'Mein Dashboard', text: 'Test-Benachrichtigung funktioniert.', url: '#/home' }];
+      meldungen = [{ art: 'test', schluessel: `test:${jetztMs}`, titel: 'Mein Dashboard', text: 'Test-Benachrichtigung funktioniert.', url: '#/home' }];
     } else {
-      const [termine, todos, rechnungen, sendungen, funde] = await Promise.all([
+      const seit = new Date(jetztMs - 48 * 3600e3).toISOString();
+      const [termine, todos, rechnungen, sendungen, funde, verkaeufe, vorlagenAus, vorlagenEin, schulden, zahlungen, mails] = await Promise.all([
         db.from('termine').select('*').eq('user_id', userId).eq('erledigt', false),
         db.from('todos').select('*').eq('user_id', userId).eq('erledigt', false),
         db.from('rechnungen').select('*').eq('user_id', userId).neq('status', 'bezahlt'),
         db.from('sendungen').select('*').eq('user_id', userId),
         db.from('flipping_funde').select('*').eq('user_id', userId).eq('status', 'neu'),
+        db.from('verkaufs_nachrichten').select('*').eq('user_id', userId).gte('erstellt_am', seit),
+        db.from('ausgaben_vorlagen').select('*').eq('user_id', userId).eq('aktiv', true),
+        db.from('einnahmen_vorlagen').select('*').eq('user_id', userId).eq('aktiv', true),
+        db.from('schulden').select('*').eq('user_id', userId),
+        db.from('schulden_zahlungen').select('schuld_id,betrag').eq('user_id', userId),
+        db.from('meldungen').select('*').eq('user_id', userId).eq('art', 'email').gte('erstellt_am', seit),
       ]);
-      const daten = { termine: termine.data ?? [], todos: todos.data ?? [], rechnungen: rechnungen.data ?? [], sendungen: sendungen.data ?? [], funde: funde.data ?? [] };
-      meldungen = baueMeldungen({ ...daten, heute, minuten, jetztMs });
+      const daten = {
+        termine: termine.data ?? [], todos: todos.data ?? [], rechnungen: rechnungen.data ?? [],
+        sendungen: sendungen.data ?? [], funde: funde.data ?? [], verkaeufe: verkaeufe.data ?? [],
+        vorlagenAus: vorlagenAus.data ?? [], vorlagenEin: vorlagenEin.data ?? [],
+        schulden: schulden.data ?? [], schuldenZahlungen: zahlungen.data ?? [], mails: mails.data ?? [],
+      };
+      meldungen = baueMeldungen({ ...daten, heute, minuten, jetztMs }).filter((m) => schalterErlaubt(schalter, m.art));
       badge = zaehleOffen({ ...daten, heute });
+
+      // Glocken-Liste: jede neue Meldung genau einmal (E-Mails stehen schon drin)
+      const neu = meldungen.filter((m) => !m.schonGespeichert).map((m) => ({ user_id: userId, schluessel: m.schluessel, art: m.art, titel: m.titel, text: m.text, url: m.url }));
+      if (neu.length) {
+        const { data: ein } = await db.from('meldungen').upsert(neu, { onConflict: 'user_id,schluessel', ignoreDuplicates: true }).select('id');
+        gespeichert += ein?.length ?? 0;
+      }
+
       const { data: schon } = await db.from('push_gesendet').select('schluessel').eq('user_id', userId).in('schluessel', meldungen.map((m) => m.schluessel));
       const bekannt = new Set((schon ?? []).map((r) => r.schluessel));
       meldungen = meldungen.filter((m) => !bekannt.has(m.schluessel));
@@ -56,10 +90,7 @@ Deno.serve(async (req) => {
     for (const m of meldungen) {
       let ok = false;
       for (const a of geraete) {
-        if (m.kategorie !== 'test') {
-          if (!a[`kat_${m.kategorie}`]) continue;
-          if (a.ruhe_aktiv && inRuhezeit(minuten, a.ruhe_von, a.ruhe_bis)) continue;
-        }
+        if (m.art !== 'test' && a.ruhe_aktiv && inRuhezeit(minuten, a.ruhe_von, a.ruhe_bis)) continue;
         try {
           await webpush.sendNotification(
             { endpoint: a.endpoint, keys: { p256dh: a.p256dh, auth: a.auth } },
@@ -73,8 +104,9 @@ Deno.serve(async (req) => {
           } else console.error('push fehler', e.statusCode, e.body);
         }
       }
-      if (ok && m.kategorie !== 'test') await db.from('push_gesendet').upsert({ user_id: userId, schluessel: m.schluessel });
+      // Ohne Geraet (nur Glocke) oder erfolgreich gesendet: nicht erneut versuchen
+      if ((ok || geraete.length === 0) && m.art !== 'test') await db.from('push_gesendet').upsert({ user_id: userId, schluessel: m.schluessel });
     }
   }
-  return Response.json({ gesendet, entfernt, heute, minuten });
+  return Response.json({ gesendet, entfernt, gespeichert, heute, minuten });
 });

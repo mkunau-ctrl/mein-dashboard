@@ -4,6 +4,89 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-10-05 – Benachrichtigungen ausbauen: Schalter je Auslöser, Glocke, neue Auslöser
+
+**Was:** Ausbau des Push-Systems vom 03.10. `supabase/functions/push-senden/logik.js`
+kennt jetzt 13 einzeln schaltbare Auslöser (`ARTEN`, auch von der Einstellungen-UI
+genutzt) statt vier Kategorien. Neu: Verkaufs-Anfrage/Kauf-Chat
+(`verkaufs_nachrichten`), fällige Daueraufträge (`ausgaben_vorlagen`/
+`einnahmen_vorlagen`), Schulden-Sammelmeldung montags, wichtige E-Mail (liest
+Zeilen mit `art='email'` aus der neuen Tabelle `meldungen`) und Morgen-Zusammenfassung
+(8–12 Uhr, nur wenn etwas ansteht, zusätzlich zu den Einzelmeldungen). `index.ts`
+schreibt jede neue Meldung in `meldungen` (Glocken-Liste, auch ohne Gerät/Push) und
+filtert per `benachrichtigung_einst.schalter`; Aufruf mit Nutzer-JWT und
+`{"test":true}` schickt einen Testpush an die eigenen Geräte. App: Glocke im Header
+(`js/glocke.js`, `glocke-berechnung.js`, Badge + Liste), Einstellungen →
+Benachrichtigungen mit Schalter je Auslöser nach Gruppen, Test-Knopf; SW-Cache v5.
+174 Tests grün (neu: 9 in `push-logik`, 3 in `glocke-berechnung`).
+
+**Warum:** Mark will wichtige Erinnerungen als Benachrichtigung und in den
+Einstellungen alles einzeln an/aus schalten können.
+
+**Entscheidungen:** Schalter pro Auslöser statt pro Bereich; Glocke mit Meldungsliste
+ja; Morgen-Zusammenfassung zusätzlich (nicht ersetzend); Schulden nur wöchentlich
+(montags), sonst zu nervig; Schalter liegen pro Nutzer (`benachrichtigung_einst`,
+jsonb, fehlend = an), die alten Spalten `push_abos.kat_*` entfallen. E-Mail: nur die
+Schnittstelle, echte Mail-Meldungen erst nach Freigabe des GMX-Checks (nur lesen).
+Test-Knopf geht über den echten Serverweg statt lokal.
+
+**Fehler-/Ablauf-Historie:** Der erste Versuch, die Migrationsdatei per Bash-Heredoc
+anzulegen, wurde vom Auto-Mode-Classifier abgelehnt („Modify Shared Resources“). Mark
+hat danach ausdrücklich freigegeben, Migration/Deploy/Push selbst auszuführen; Datei
+dann per Write-Tool angelegt. Ein späterer Rauchtest per `execute_sql`
+(`benachrichtigung_einst`-Zeile anlegen + `net.http_post` auf die Funktion) wurde
+erneut abgelehnt und deshalb NICHT ausgeführt. Ein erster Bash-Versuch mit mehreren
+Heredocs scheiterte außerdem an einem Quoting-Fehler (nichts wurde geschrieben);
+danach alle Dateien per Write/Edit angelegt.
+
+**Stand danach:** Migration `2026-10-05-benachrichtigungen-ausbau.sql` ist in
+Supabase angewendet (Tabellen `meldungen`, `benachrichtigung_einst` mit RLS;
+`push_abos.kat_*` entfernt – per Abfrage bestätigt). Edge Function `push-senden`
+als Version 2 deployt (`verify_jwt=false`, eigene Prüfung). Code committet und
+gepusht. **Die neue Funktion wurde noch nie real ausgeführt** (kein Rauchtest, es
+gibt weiterhin kein Push-Abo, und die Zeile in `benachrichtigung_einst` entsteht erst,
+wenn Mark die App öffnet).
+
+**Offene Punkte / Nächste Schritte:** Handtest am iPhone: App vom
+Home-Bildschirm neu öffnen (legt die Schalter-Zeile an, Glocke füllt sich nach dem
+nächsten 15-Min-Lauf), Einstellungen → Benachrichtigungen einschalten, Test-Knopf
+drücken; prüfen, ob der Cron-Lauf fehlerfrei durchgeht (Edge-Function-Logs);
+E-Mail-Check freigeben, damit `art='email'`-Meldungen entstehen; PNG-Icons fehlen
+weiter.
+
+## 2026-10-05 – Flipping-Suchlauf (20 Uhr): Fund iPhone 12 Pro 256 GB Recklinghausen
+
+Stündlicher Lauf: 1 neuer Fund in `flipping_funde`, iPhone 12 Pro 256 GB für
+215 € VB in Recklinghausen, Marktwert 250 €, Marge ca. 35 € (bei günstigen
+iPhones ausreichend), Privatverkäufer seit 2020 mit guten Bewertungen, Akku laut
+Verkäufer etwas schwächer, Status neu, keine Push. Verworfen: 15 Fröndenberg
+300 € VB (viele Macken, Marge fehlt), 15 Pro Herford (Backcover defekt), übrige
+ohne ausreichende Marge.
+
+---
+
+## 2026-10-05 – Flipping-Suchlauf (Abend): Fund iPhone 12 Pro 512 GB Ganderkesee
+
+Stündlicher Lauf: 1 neuer Fund in `flipping_funde`, iPhone 12 Pro 512 GB für
+220 € VB in Ganderkesee, Marktwert 255 € (Akku 80 %, Vergleichsangebote
+200–260 €), Marge ca. 35 € (bei günstigen iPhones ausreichend), Privatverkäufer
+seit 2024 mit TOP-Badges, Status neu, keine Push. Verworfen: 15 Soest 240 €
+(Kamera defekt), 15 Pro Max Derne 400 € (gewerblicher Verkäufer, nur Abholung),
+übrige ohne ausreichende Marge.
+
+---
+
+## 2026-10-05 – Flipping-Suchlauf: Fund iPhone 15 Hamburg-Bramfeld
+
+Stündlicher Lauf (WebFetch, Kleinanzeigen): 1 neuer Fund in `flipping_funde`,
+iPhone 15 schwarz für 280 € in Hamburg-Bramfeld, Marktwert 330 € (Akku nur
+78 %, Vergleichsangebote 220–330 €), Marge ca. 50 € am unteren Limit,
+Privatverkäufer seit 2019, Speichergröße unbekannt, Status neu. Keine Push
+(Marge unter 100 €). Verworfen: 12 Pro Herten (Akku 73 %, Marge unter 30 €)
+sowie alle Angebote ohne ausreichende Marge.
+
+---
+
 ## 2026-10-03 – Sub-Etappe M (Teil 1): Kalender & Notizen ohne CalDAV (Prototyp)
 
 **Was:** Zwei neue Module. **Kalender** (`js/module/kalender/`, `#/kalender`):

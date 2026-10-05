@@ -60,6 +60,16 @@ Auslöser: in `logik.js` ergänzen + Test, Funktion neu deployen. Testpush:
 `net.http_post` auf die Funktion mit Header `x-cron-secret` und Body
 `{"test":true}`. Details: `docs/PROJEKT-LOG.md` (2026-10-03).
 
+**Ausbau 2026-10-05:** 13 einzeln schaltbare Auslöser (`ARTEN` in `logik.js`, wird
+auch von `einstellungen/index.js` importiert; neuer Auslöser = Eintrag in `ARTEN` +
+Logik + Test). Schalter pro Nutzer in `benachrichtigung_einst.schalter` (jsonb,
+fehlend = an), Glocke im Header (`js/glocke.js`) liest die Tabelle `meldungen`, in die
+die Edge Function jede neue Meldung schreibt. Externe Quellen (z. B. der geplante
+E-Mail-Check) legen einfach eine `meldungen`-Zeile mit `art='email'` an → wird als
+Push verschickt. Test-Knopf in den Einstellungen ruft die Funktion mit Nutzer-JWT und
+`{"test":true}` auf. **Noch nie real gelaufen/auf dem iPhone getestet.** Details:
+`docs/PROJEKT-LOG.md` (2026-10-05).
+
 ## Wo weiterlesen
 
 - **Verlauf / warum was so ist:** `docs/PROJEKT-LOG.md` (neueste Einträge oben).

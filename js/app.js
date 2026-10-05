@@ -5,6 +5,7 @@ import { holeSession, sendeMagicLink, beiAuthWechsel,
 import { holeModul } from './registry.js';
 import { wendeThemeAn, wechsleTheme } from './theme.js';
 import { wendeSchriftgroesseAn } from './module/einstellungen/schriftgroesse.js';
+import { starteGlocke } from './glocke.js';
 import './module/ernaehrung/index.js';
 import './module/todos/index.js';
 import './module/finanzen/index.js';
@@ -94,6 +95,7 @@ async function route() {
   const session = await holeSession();
   zeige(entscheideAnsicht(session));
   if (!session) return;
+  starteGlocke().catch(() => { /* Glocke ist optional, die App läuft ohne sie weiter */ });
   const { modul } = parseHash(location.hash);
   const gewaehlt = (modul ? holeModul(modul) : null) || holeModul('home');
   if (gewaehlt) await oeffneModul(gewaehlt);

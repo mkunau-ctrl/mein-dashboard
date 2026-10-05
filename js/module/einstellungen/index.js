@@ -3,7 +3,8 @@ import { registrierePasskey } from '../../auth.js';
 import { aufgeloestesTheme, wechsleTheme } from '../../theme.js';
 import { aktuelleSchriftgroesse, setzeSchriftgroesse } from './schriftgroesse.js';
 import { sammleAlleDaten, ladeAlsDatei } from './export.js';
-import { pushUnterstuetzt, alsAppInstalliert, ladeEinstellung, aktiviere, deaktiviere, speichereFeld } from './push.js';
+import { pushUnterstuetzt, alsAppInstalliert, ladeEinstellung, aktiviere, deaktiviere, speichereFeld, ladeSchalter, speichereSchalter, sendeTestPush } from './push.js';
+import { ARTEN, schalterErlaubt } from '../../../supabase/functions/push-senden/logik.js';
 
 function baueAbschnitt(titel) {
   const h = document.createElement('div');
@@ -11,13 +12,6 @@ function baueAbschnitt(titel) {
   h.textContent = titel;
   return h;
 }
-
-const KATEGORIEN = [
-  ['kat_termine', 'Termine & To-dos'],
-  ['kat_rechnungen', 'Rechnungen'],
-  ['kat_sendungen', 'Sendungen'],
-  ['kat_flipping', 'Flipping-Funde'],
-];
 
 function schalterZeile(titel, an, beiKlick) {
   const row = document.createElement('div');
@@ -44,7 +38,9 @@ async function zeigePush(box) {
     return;
   }
   let zeile = null;
+  let schalter = {};
   try { zeile = await ladeEinstellung(); } catch { /* offline: als aus anzeigen */ }
+  try { schalter = await ladeSchalter(); } catch { /* offline: alle als an anzeigen */ }
 
   const speichere = async (el, feld, wert) => {
     try {
@@ -67,9 +63,35 @@ async function zeigePush(box) {
       rendere();
     }));
     if (!zeile) return;
-    for (const [feld, name] of KATEGORIEN) {
-      box.appendChild(schalterZeile(name, zeile[feld], (el) => speichere(el, feld, !zeile[feld])));
+    let gruppe = null;
+    for (const art of ARTEN) {
+      if (art.gruppe !== gruppe) {
+        gruppe = art.gruppe;
+        const kopf = document.createElement('div');
+        kopf.className = 'settings-label';
+        kopf.textContent = gruppe;
+        box.appendChild(kopf);
+      }
+      box.appendChild(schalterZeile(art.name, schalterErlaubt(schalter, art.key), async (el) => {
+        const neu = { ...schalter, [art.key]: !schalterErlaubt(schalter, art.key) };
+        try {
+          await speichereSchalter(neu);
+          schalter = neu;
+          el.classList.toggle('on', schalterErlaubt(schalter, art.key));
+        } catch (err) { alert(err.message); }
+      }));
     }
+    const test = document.createElement('div');
+    test.className = 'settings-row';
+    test.innerHTML = '<span class="row-title">Test-Benachrichtigung</span><button type="button" class="knopf-neutral" style="width:auto;">Senden</button>';
+    test.querySelector('button').addEventListener('click', async (e) => {
+      const b = e.currentTarget;
+      b.disabled = true;
+      b.textContent = 'Sende …';
+      try { await sendeTestPush(); b.textContent = 'Gesendet'; } catch (err) { b.textContent = 'Senden'; alert(err.message); }
+      setTimeout(() => { b.disabled = false; b.textContent = 'Senden'; }, 3000);
+    });
+    box.appendChild(test);
     box.appendChild(schalterZeile('Ruhezeit', zeile.ruhe_aktiv, (el) => speichere(el, 'ruhe_aktiv', !zeile.ruhe_aktiv)));
     const zeiten = document.createElement('div');
     zeiten.className = 'settings-row';
