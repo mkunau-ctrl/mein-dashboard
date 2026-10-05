@@ -25,6 +25,7 @@ const SCHNELLEINSTIEGE = [
   { label: 'Dateien', icon: FOLDER_ICON, ziel: '#/dateien' },
   { label: 'Kalender', icon: KALENDER_ICON, ziel: '#/kalender' },
   { label: 'Notizen', icon: DOC_ICON, ziel: '#/notizen' },
+  { label: 'Woche', icon: KALENDER_ICON, ziel: '#/woche' },
 ];
 
 const LETZTE_SUCHEN_SCHLUESSEL = 'letzteSuchen';

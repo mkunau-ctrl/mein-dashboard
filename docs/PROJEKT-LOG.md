@@ -4,6 +4,49 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-10-05 – Tagesbriefing, Wochenplan, Wochenaufgaben, „Zu klären“ (Prototyp)
+
+**Was:** Neue reine Logik `supabase/functions/push-senden/wochenplan.js` (+ Daten
+`wochenplan-grundwoche.js` als Quelle der Seed-Daten, Tests `test/wochenplan.test.js`):
+Tagesplan aus Grundwoche + Ausnahmen + einmaligen Terminen, flexible Zeit pro Tag/Woche
+(berechnet, nicht hart codiert; Testfall 3,5/4/5/2/4,5/11/3,5 = 33,5 h bzw. 37,5 h ohne
+Lemgo-Gottesdienst ab Anker 18.10.2026 alle 2 Wochen), Wochenaufgaben mit Wochenstatus
+(`erledigt_woche` = Montag der Woche → Reset ohne Cron), Warnungen, Wetter-Parser
+(Open-Meteo Lemgo, Wege 6:45/16:15), Briefing-Text im Handy-Format. Migration
+`wochenplan_briefing`: Tabellen `wochenplan_bloecke` (71 Zeilen Seed), `wochenplan_ausnahmen`,
+`wochenaufgaben` (11), `zu_klaeren` (7), `termine.bis_uhrzeit`, `benachrichtigung_einst.briefing_zeiten`
+(Mo–Fr 06:00, Sa 09:30, So 08:30); Seed auch einmalige Termine (Dennis 7.10., Handys
+Bielefeld 9.10., Jungschar XXL 9./10.10.) und Ausnahme „Jugend Lemgo“ am 9.10. Edge Function
+`push-senden` v3: neue Meldungsart `briefing` (eigener Schalter), sendet einmal pro Tag im
+2-Stunden-Fenster ab Sendezeit; Wetter-Ausfall → „Wetter gerade nicht verfügbar“. App: neue
+Seite `#/woche` (`js/module/woche/`, Heute-Überblick, Wochenaufgaben und „Zu klären“
+abhakbar, Rest-Zeit/Warnung, Morgen), Einstieg über Suche-Schnelleinstieg „Woche“; Glocke
+zeigt Zeilenumbrüche. SW-Cache v6. 197 Tests grün.
+
+**Warum:** Mark will morgens eine Nachricht aufs Handy (Datum, Wetter, Termine, Essen,
+flexible Zeit, offene Aufgaben, Zu klären, Vorschau, Schlafenszeit) und im Dashboard die
+Wochenaufgaben/Offenen Punkte abhaken.
+
+**Entscheidungen:** Kanal = bestehendes Web-Push (keine neue Technik; ntfy/Telegram
+verworfen). Daten in Supabase statt JSON-Datei (änderbar ohne Deploy). Briefing kommt
+zusätzlich zur Morgen-Zusammenfassung. Jugendband-Probe bleibt nur Punkt in „Zu klären“,
+nicht in der Wochenstruktur (Mark muss erst klären). Gespräch Frau Wiethaupt: 1 h
+angenommen, im Briefing ohne Endzeit (`ende_offen`). Termine ohne Endzeit dauern 1 h.
+Fenster 2 h statt exakter Minute, weil der Cron nur alle 15 Min läuft; Dedup über
+`briefing:<Datum>`. Zeilenbreite ≤ 60 Zeichen. Jungschar XXL als ganztägiger Termin, weil
+Uhrzeiten offen sind. Bewusst nicht gebaut (YAGNI): Aufgaben-Vorschlag pro Tag, Bearbeiten
+der Grundwoche in der App (Änderungen vorerst per Chat/SQL), Anpassen der Sendezeiten in der UI.
+
+**Stand danach:** Migration angewendet, Edge Function v3 deployt, Code committet/gepusht.
+Briefing-Text mit echten Daten lokal gegen die Beispiele geprüft. **Noch nie real gesendet**
+(kein Push-Abo, Rauchtest per SQL wurde vom Classifier abgelehnt). Fr 9.10.: Snack 18:30
+bleibt im Briefing, obwohl Jugend entfällt.
+
+**Offene Punkte / Nächste Schritte:** iPhone-Handtest (Briefing kommt ab nächster Sendezeit);
+Sendezeiten/Grundwoche per UI editierbar machen, falls gewünscht; Do-Heimweg und die
+weiteren „Zu klären“-Punkte mit Mark klären; Auto-Weiter (Windows-Aufgabe) nicht
+eingerichtet (Registrieren muss Mark selbst tun).
+
 ## 2026-10-05 – Benachrichtigungen ausbauen: Schalter je Auslöser, Glocke, neue Auslöser
 
 **Was:** Ausbau des Push-Systems vom 03.10. `supabase/functions/push-senden/logik.js`

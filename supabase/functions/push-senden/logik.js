@@ -19,6 +19,7 @@ export const ARTEN = [
   { key: 'verkauf_anfrage', gruppe: 'Flipping', name: 'Verkaufs-Anfrage / Kauf-Chat' },
   { key: 'email', gruppe: 'Sonstiges', name: 'Wichtige E-Mail' },
   { key: 'morgen', gruppe: 'Sonstiges', name: 'Morgen-Zusammenfassung (8 Uhr)' },
+  { key: 'briefing', gruppe: 'Sonstiges', name: 'Tagesbriefing (Wochenplan, Wetter, offene Aufgaben)' },
 ];
 
 // Fehlender Eintrag = an; nur ein ausdruecklich gesetztes false schaltet aus

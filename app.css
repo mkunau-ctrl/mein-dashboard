@@ -294,3 +294,4 @@ button:disabled { opacity: .6; cursor: default; }
 .glocke-zeile.neu { background: var(--karte-getoent); }
 .glocke-zeile.neu .glocke-titel { font-weight: 700; }
 .glocke-text, .glocke-zeit { color: var(--gedaempft); font-size: .85em; }
+.glocke-text { white-space: pre-line; }

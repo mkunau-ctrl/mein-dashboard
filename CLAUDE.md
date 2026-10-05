@@ -70,6 +70,16 @@ Push verschickt. Test-Knopf in den Einstellungen ruft die Funktion mit Nutzer-JW
 `{"test":true}` auf. **Noch nie real gelaufen/auf dem iPhone getestet.** Details:
 `docs/PROJEKT-LOG.md` (2026-10-05).
 
+**Tagesbriefing / Wochenplan (2026-10-05):** Meldungsart `briefing` in `push-senden`
+(Logik `wochenplan.js`, Grundwoche-Seed `wochenplan-grundwoche.js`). Daten in Supabase:
+`wochenplan_bloecke` (Grundwoche, `rhythmus` für den 2-Wochen-Gottesdienst Lemgo, Anker
+18.10.2026), `wochenplan_ausnahmen` (Block an einem Datum aussetzen), `wochenaufgaben`
+(Status pro Woche via `erledigt_woche`), `zu_klaeren`; einmalige Termine = normale
+`termine` (neu: `bis_uhrzeit`). Sendezeiten: `benachrichtigung_einst.briefing_zeiten`
+(Wochentag 1–7 → 'HH:MM', 2-h-Fenster). Dashboard-Seite `#/woche` (`js/module/woche/`).
+Grundwoche ändern = Zeilen in `wochenplan_bloecke` ändern (flexible Zeit rechnet sich
+selbst); neuer Einmaltermin = Zeile in `termine`. Wetter: Open-Meteo, bei Fehler Hinweis.
+
 **Für geplante Aufgaben / andere Claude-Sessions (E-Mail-Check, Flipping, Nachrichten):**
 Eine Push-Meldung entsteht automatisch (alle 15 Min), wenn die Aufgabe ihre Ergebnisse
 in die bestehenden Tabellen schreibt: neue Funde → `flipping_funde` (status `neu`),

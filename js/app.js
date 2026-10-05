@@ -22,6 +22,7 @@ import './module/flipping/index.js';
 import './module/dateien/index.js';
 import './module/notizen/index.js';
 import './module/kalender/index.js';
+import './module/woche/index.js';
 
 const NAV_MODULE = ['home', 'finanzen', 'flipping', 'suche', 'profil'];
 
