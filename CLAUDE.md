@@ -70,6 +70,16 @@ Push verschickt. Test-Knopf in den Einstellungen ruft die Funktion mit Nutzer-JW
 `{"test":true}` auf. **Noch nie real gelaufen/auf dem iPhone getestet.** Details:
 `docs/PROJEKT-LOG.md` (2026-10-05).
 
+**Für geplante Aufgaben / andere Claude-Sessions (E-Mail-Check, Flipping, Nachrichten):**
+Eine Push-Meldung entsteht automatisch (alle 15 Min), wenn die Aufgabe ihre Ergebnisse
+in die bestehenden Tabellen schreibt: neue Funde → `flipping_funde` (status `neu`),
+Verkaufs-Anfragen/Kauf-Chats → `verkaufs_nachrichten` (status nicht `erledigt`), Termine
+→ `termine`. **Wichtige Mails** → eine Zeile in `meldungen` mit `art='email'`,
+`schluessel='mail:<eindeutige Message-ID>'` (verhindert Doppel), `titel`, `text`
+(kurz, ohne sensible Details), `url` (z. B. `#/rechnungen`) und explizitem
+`user_id` (`df0b24a6-6a74-4830-995c-84015161dcc3`). Mehr braucht es nicht; Schalter pro
+Auslöser und Ruhezeit stellt Mark in der App ein.
+
 ## Wo weiterlesen
 
 - **Verlauf / warum was so ist:** `docs/PROJEKT-LOG.md` (neueste Einträge oben).
