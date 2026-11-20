@@ -169,7 +169,7 @@ export function kategorisiereTransaktionIcon(text) {
   return 'sonstiges';
 }
 
-const KREISDIAGRAMM_FARBEN = ['var(--hm-rot)', 'var(--hm-gelb)', 'var(--hm-gruen)', 'var(--akzent)', 'var(--gedaempft)'];
+const KREISDIAGRAMM_FARBEN = ['var(--serie-1)', 'var(--serie-2)', 'var(--serie-3)', 'var(--serie-4)', 'var(--serie-5)'];
 
 export function kreisdiagrammSegmente(kategorien) {
   let kumuliert = 0;

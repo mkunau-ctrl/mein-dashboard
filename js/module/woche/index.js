@@ -75,7 +75,7 @@ function baueHtml(z, { heute, minuten }) {
 
     <div class="settings-label">Flexible Zeit heute: ${tagMin ? stunden(tagMin) : 'keine'}</div>
     <div class="punkt-liste">${fenster.length ? fenster.map((f) => zeile(`<div class="punkt-info"><strong>${uhr(f.von)} – ${uhr(f.bis)}</strong></div>`)).join('') : zeile('<span class="row-sub">Kein freies Fenster mehr.</span>')}</div>
-    ${warn.map((w) => `<p class="lade" style="text-align:left;margin:8px 4px;color:#E5484D;">${esc(w)}</p>`).join('')}
+    ${warn.map((w) => `<p class="lade" style="text-align:left;margin:8px 4px;color:var(--text);font-weight:650;">${esc(w)}</p>`).join('')}
     <p class="lade" style="text-align:left;margin:8px 4px;">Woche noch ${stunden(restMin)} flexibel, Pflichten ca. ${stunden(pflichtenMin)} offen,
       Rest für Projekte und Handys: ${stunden(Math.max(0, restMin - pflichtenMin))}.</p>
 

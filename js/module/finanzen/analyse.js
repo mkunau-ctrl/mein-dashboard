@@ -71,8 +71,8 @@ export async function zeigeAnalyse(container, zustand, aktualisieren, zeitraum, 
         ${monatsDaten.map((m) => `
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
             <div style="display:flex;gap:2px;align-items:flex-end;height:90px;">
-              <div style="width:8px;background:var(--hm-gruen);border-radius:3px 3px 0 0;height:${Math.max(2, (m.einnahmen / maxWert) * 90)}px;"></div>
-              <div style="width:8px;background:var(--hm-rot);border-radius:3px 3px 0 0;height:${Math.max(2, (m.ausgaben / maxWert) * 90)}px;"></div>
+              <div style="width:8px;background:var(--serie-1);border-radius:4px 4px 0 0;height:${Math.max(2, (m.einnahmen / maxWert) * 90)}px;"></div>
+              <div style="width:8px;background:var(--serie-4);border-radius:4px 4px 0 0;height:${Math.max(2, (m.ausgaben / maxWert) * 90)}px;"></div>
             </div>
             <span style="font-size:.7rem;color:var(--gedaempft);">${m.label}</span>
           </div>`).join('')}
