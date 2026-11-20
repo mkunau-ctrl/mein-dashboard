@@ -30,21 +30,46 @@
 
     <!-- Dashboard -->
     <section id="dashboard-ansicht" hidden>
-      <header>
-        <h1 id="modul-titel">Mein Dashboard</h1>
-        <div class="kopf-aktionen">
-          <button id="glocke" type="button" class="theme-toggle glocke-knopf" title="Meldungen" aria-label="Meldungen">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-            <span id="glocke-badge" class="glocke-badge" hidden></span>
-          </button>
-          <button id="neu-laden-global" type="button" title="Aktualisieren">⟳</button>
-          <button id="theme-toggle-dashboard" type="button" class="theme-toggle" title="Hell/Dunkel wechseln"></button>
-        </div>
-      </header>
-      <div id="glocke-panel" class="glocke-panel" hidden></div>
-      <section id="modul-detail"></section>
-      <nav id="tab-leiste-unten"></nav>
+      <aside id="seitenleiste" aria-label="Hauptnavigation"></aside>
+      <div id="haupt">
+        <header>
+          <div class="kopf-titel">
+            <span id="kopf-pfad"></span>
+            <h1 id="modul-titel">Mein Dashboard</h1>
+          </div>
+          <div class="kopf-aktionen">
+            <button id="palette-oeffnen" type="button" class="palette-trigger" aria-label="Suchen und Befehle öffnen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+              <span>Suchen oder springen</span><kbd>Strg K</kbd>
+            </button>
+            <button id="palette-oeffnen-icon" type="button" class="palette-trigger-icon" aria-label="Suchen und Befehle öffnen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            </button>
+            <button id="glocke" type="button" class="theme-toggle glocke-knopf" title="Meldungen" aria-label="Meldungen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span id="glocke-badge" class="glocke-badge" hidden></span>
+            </button>
+            <button id="neu-laden-global" type="button" title="Aktualisieren" aria-label="Aktualisieren">⟳</button>
+            <button id="theme-toggle-dashboard" type="button" class="theme-toggle" title="Hell/Dunkel wechseln" aria-label="Hell oder Dunkel wechseln"></button>
+          </div>
+        </header>
+        <div id="glocke-panel" class="glocke-panel" hidden></div>
+        <section id="modul-detail"></section>
+      </div>
+      <nav id="tab-leiste-unten" aria-label="Navigation"></nav>
     </section>
+    <!-- Befehlsleiste -->
+    <div id="palette" hidden role="dialog" aria-modal="true" aria-label="Suchen und Befehle">
+      <div class="palette-box">
+        <div class="palette-kopf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <input id="palette-eingabe" type="text" placeholder="Seite oder Befehl suchen" autocomplete="off" spellcheck="false" />
+          <kbd>Esc</kbd>
+        </div>
+        <div id="palette-liste" class="palette-liste" role="listbox"></div>
+        <div class="palette-fuss"><span><kbd>↑</kbd> <kbd>↓</kbd> wählen</span><span><kbd>↵</kbd> öffnen</span></div>
+      </div>
+    </div>
   </main>
   <script type="module" src="js/app.js"></script>
 </body>

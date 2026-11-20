@@ -1,8 +1,10 @@
-const CACHE_NAME = 'mein-dashboard-v7';
+const CACHE_NAME = 'mein-dashboard-v8';
 const APP_SHELL = [
   './',
   './index.html',
   './app.css',
+  './fonts/geist-latin-wght-normal.woff2',
+  './fonts/geist-latin-ext-wght-normal.woff2',
   './manifest.webmanifest',
   './icon.svg',
 ];
