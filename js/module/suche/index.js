@@ -58,14 +58,14 @@ async function ladeZustand() {
   zustand = await ladeAlles();
 }
 
-function render(container) {
+function render(container, kompakt = false) {
   container.innerHTML = `
     <div class="searchbar" style="margin:16px 0;">
       ${SUCHE_ICON}
       <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …">
     </div>
     <div id="suche-treffer" class="punkt-liste" hidden></div>
-    <div id="suche-standard">
+    <div id="suche-standard" ${kompakt ? 'hidden' : ''}>
       <div class="section-head"><h2>Schnelleinstiege</h2></div>
       <div class="punkt-liste" id="suche-schnell"></div>
       <div class="section-head"><h2>Letzte Suchen</h2></div>
@@ -108,7 +108,7 @@ function render(container) {
     const wert = eingabe.value;
     if (!wert.trim()) {
       trefferListe.hidden = true;
-      standardBox.hidden = false;
+      standardBox.hidden = kompakt;
       return;
     }
     standardBox.hidden = true;
@@ -130,6 +130,12 @@ function render(container) {
       speichereLetzteSuche(wert);
     }
   });
+}
+
+// Suchfeld eingebettet (z. B. auf Home): nur Eingabe und Treffer, ohne Schnelleinstiege.
+export function zeigeSucheIn(container) {
+  render(container, true);
+  if (!zustand) ladeZustand();
 }
 
 registriere({

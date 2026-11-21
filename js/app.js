@@ -27,8 +27,8 @@ import './module/kalender/index.js';
 import './module/woche/index.js';
 import './module/ki/index.js';
 
-// Untere Leiste am Handy: vier feste Seiten plus "Mehr" (öffnet die Befehlsleiste mit allen Seiten).
-const NAV_MODULE = ['home', 'finanzen', 'flipping', 'todos'];
+// Untere Leiste am Handy: vier feste Seiten (Home in der Mitte) plus "Mehr" (öffnet die Befehlsleiste mit allen Seiten).
+const NAV_MODULE = ['ki', 'finanzen', 'home', 'todos'];
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');
