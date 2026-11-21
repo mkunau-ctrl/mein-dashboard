@@ -14,6 +14,7 @@ let renderVersion = 0;
 let listenerAktiv = false;
 let offen = new Set();
 let letzteEreignisse = new Set();
+let meldung = null;
 const entwuerfe = { chat: '', auftragZiel: '', auftragKriterium: '', auftragAgent: 'orchestrator' };
 const ansichtModule = new Map();
 
@@ -58,7 +59,24 @@ const aktionen = {
   markiereGesehen: (ids) => {
     for (const id of ids) letzteEreignisse.add(id);
   },
+  setzeMeldung: (text, art = 'info') => {
+    meldung = text ? { text, art } : null;
+    zeigeMeldungAn();
+  },
 };
+
+function zeigeMeldungAn() {
+  if (!containerRef) return;
+  const bereich = containerRef.querySelector('#ki-meldung');
+  if (!bereich) return;
+  bereich.innerHTML = '';
+  if (!meldung) { bereich.hidden = true; return; }
+  bereich.hidden = false;
+  const p = document.createElement('p');
+  p.className = `ki-meldung ki-meldung-${meldung.art}`;
+  p.textContent = meldung.text;
+  bereich.appendChild(p);
+}
 
 function zeigeFehler(text) {
   if (!containerRef) return;
@@ -141,6 +159,7 @@ function beiHashwechsel() {
   if (modul !== 'ki') {
     beende();
     containerRef = null;
+    meldung = null;
     return;
   }
   if (containerRef && containerRef.isConnected) void zeichne();
@@ -151,6 +170,9 @@ function baueRahmen(container) {
   const fehler = document.createElement('div');
   fehler.id = 'ki-fehler';
   fehler.hidden = true;
+  const meldungsBereich = document.createElement('div');
+  meldungsBereich.id = 'ki-meldung';
+  meldungsBereich.hidden = true;
   const inhalt = document.createElement('div');
   inhalt.id = 'ki-inhalt';
   const lade = document.createElement('p');
@@ -158,6 +180,7 @@ function baueRahmen(container) {
   lade.textContent = 'Lädt …';
   inhalt.appendChild(lade);
   container.appendChild(fehler);
+  container.appendChild(meldungsBereich);
   container.appendChild(inhalt);
 }
 

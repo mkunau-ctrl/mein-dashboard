@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KI-Modul – Mock-Harness</title>
+  <link rel="stylesheet" href="../app.css" />
+  <style>
+    .harness-leiste { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .harness-leiste a, .harness-leiste button { min-height: 44px; display: inline-flex;
+      align-items: center; padding: 8px 12px; border-radius: 10px; }
+    .harness-hinweis { color: var(--gedaempft); font-size: .82rem; }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <nav class="harness-leiste">
+      <a href="#/ki">Übersicht</a>
+      <a href="#/ki/verteilung">Verteilung</a>
+      <a href="#/ki/agent/orchestrator">Orchestrator</a>
+      <a href="#/ki/agent/monitor">Monitor</a>
+      <button type="button" id="h-ereignis">Live: Ereignis</button>
+      <button type="button" id="h-aufgabe">Live: Aufgabe</button>
+      <button type="button" id="h-status">Live: Statuswechsel</button>
+      <button type="button" id="h-offline">Live: offline</button>
+    </nav>
+    <p class="harness-hinweis">Nur Mock-Daten, kein Netz, keine echten Schlüssel.</p>
+    <section id="modul-detail"></section>
+  </main>
+
+  <script type="module">
+    import { setzeClient } from '../js/module/ki/daten.js';
+    import '../js/module/ki/index.js';
+    import { holeModul } from '../js/registry.js';
+
+    const jetzt = () => new Date().toISOString();
+    const vorMinuten = (m) => new Date(Date.now() - m * 60_000).toISOString();
+    const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : `id-${Math.random().toString(16).slice(2)}`);
+
+    const A1 = '11111111-1111-4111-8111-111111111111';
+    const A2 = '22222222-2222-4222-8222-222222222222';
+    const A3 = '33333333-3333-4333-8333-333333333333';
+    const A4 = '44444444-4444-4444-8444-444444444444';
+
+    const daten = {
+      aurora_status: [{
+        budget_limit_eur: 25, budget_verbraucht_eur: 6.42, budget_reserviert_eur: 1.5,
+        budget_stufe: 'OK', kill_switch: false,
+        gesundheit: { worker: 'ok', sandbox: 'ok', modell: 'ok' },
+        agenten_aktiv: true, aktualisiert_am: jetzt(),
+      }],
+      aurora_agenten: [
+        { agent: 'ceo', titel: 'Leitung', beschreibung: 'Entscheidet', status: 'bereit',
+          offene_aufgaben: 0, heute_aufrufe: 1, heute_kosten_eur: 0.01, zuletzt_aktiv: vorMinuten(9), aktualisiert_am: jetzt() },
+        { agent: 'orchestrator', titel: 'Verteilt Aufgaben', beschreibung: 'Zerlegt Ziele', status: 'arbeitet',
+          aktuelle_aufgabe: 'Wochenplan für nächste Woche erstellen', offene_aufgaben: 3,
+          heute_aufrufe: 12, heute_kosten_eur: 0.28, zuletzt_aktiv: vorMinuten(1), aktualisiert_am: jetzt() },
+        { agent: 'research', titel: 'Recherche', beschreibung: 'Sucht Informationen', status: 'arbeitet',
+          aktuelle_aufgabe: 'Wetterdaten für Lemgo sammeln', offene_aufgaben: 2,
+          heute_aufrufe: 8, heute_kosten_eur: 0.19, zuletzt_aktiv: vorMinuten(2), aktualisiert_am: jetzt() },
+        { agent: 'developer', titel: 'Entwickler', beschreibung: 'Schreibt Code', status: 'wartet',
+          aktuelle_aufgabe: 'Wochenplan-Seite prüfen', offene_aufgaben: 1,
+          heute_aufrufe: 5, heute_kosten_eur: 0.44, zuletzt_aktiv: vorMinuten(4), aktualisiert_am: jetzt() },
+        { agent: 'qa', titel: 'Qualität', beschreibung: 'Testet', status: 'bereit',
+          offene_aufgaben: 1, heute_aufrufe: 4, heute_kosten_eur: 0.08, zuletzt_aktiv: vorMinuten(7), aktualisiert_am: jetzt() },
+        { agent: 'visual', titel: 'Gestaltung', beschreibung: 'Bilder und Layout', status: 'aus',
+          offene_aufgaben: 0, heute_aufrufe: 0, heute_kosten_eur: 0, aktualisiert_am: jetzt() },
+        { agent: 'memory', titel: 'Gedächtnis', beschreibung: 'Merkt sich Dinge', status: 'bereit',
+          offene_aufgaben: 0, heute_aufrufe: 2, heute_kosten_eur: 0.03, zuletzt_aktiv: vorMinuten(20), aktualisiert_am: jetzt() },
+        { agent: 'security', titel: 'Sicherheit', beschreibung: 'Prüft Regeln', status: 'bereit',
+          offene_aufgaben: 0, heute_aufrufe: 1, heute_kosten_eur: 0.02, zuletzt_aktiv: vorMinuten(30), aktualisiert_am: jetzt() },
+        { agent: 'monitor', titel: 'Beobachter', beschreibung: 'Nur ansehen', status: 'bereit',
+          offene_aufgaben: 0, heute_aufrufe: 0, heute_kosten_eur: 0, aktualisiert_am: jetzt() },
+      ],
+      aurora_aufgaben: [
+        { id: A1, eltern_id: null, agent: 'orchestrator', status: 'RUNNING', quelle: 'api',
+          eingabe: 'Wochenplan für nächste Woche erstellen', erfolgskriterium: 'Alle Blöcke gefüllt',
+          ergebnis: null, kosten_eur: 0.04, erstellt_am: vorMinuten(12), aktualisiert_am: vorMinuten(1) },
+        { id: A2, eltern_id: A1, agent: 'research', status: 'QUEUED', quelle: 'plan',
+          eingabe: 'Wetterdaten für Lemgo sammeln', erfolgskriterium: '3 Tage Vorhersage',
+          ergebnis: null, kosten_eur: 0.01, erstellt_am: vorMinuten(11), aktualisiert_am: vorMinuten(9) },
+        { id: A3, eltern_id: A1, agent: 'developer', status: 'ASSIGNED', quelle: 'plan',
+          eingabe: 'Wochenplan-Seite auf dem Handy prüfen', erfolgskriterium: '',
+          ergebnis: null, kosten_eur: 0.02, erstellt_am: vorMinuten(10), aktualisiert_am: vorMinuten(8) },
+        { id: A4, eltern_id: A1, agent: 'qa', status: 'COMPLETED', quelle: 'plan',
+          eingabe: 'Berichtsheft-Druck testen', erfolgskriterium: 'Druckansicht ohne Fehler',
+          ergebnis: 'Druckansicht geprüft.\nAlle Wochen sichtbar.\nKeine Überläufe.', kosten_eur: 0.03,
+          erstellt_am: vorMinuten(20), aktualisiert_am: vorMinuten(5) },
+        { id: uuid(), eltern_id: null, agent: 'ceo', status: 'FAILED', quelle: 'api',
+          eingabe: 'Budget-Auswertung für den Monat', erfolgskriterium: 'Summe stimmt',
+          ergebnis: 'Quelle antwortete nicht.', kosten_eur: 0.07,
+          erstellt_am: vorMinuten(45), aktualisiert_am: vorMinuten(30) },
+      ],
+      aurora_ereignisse: [
+        { aurora_id: 6, aufgabe_id: A1, zeitpunkt: vorMinuten(1), akteur: 'orchestrator',
+          art: 'status', von_status: 'ASSIGNED', nach_status: 'RUNNING', detail: '' },
+        { aurora_id: 5, aufgabe_id: A4, zeitpunkt: vorMinuten(5), akteur: 'qa',
+          art: 'status', von_status: 'RUNNING', nach_status: 'COMPLETED', detail: 'Druckansicht geprüft' },
+        { aurora_id: 4, aufgabe_id: A2, zeitpunkt: vorMinuten(9), akteur: 'orchestrator',
+          art: 'plan', von_status: null, nach_status: 'QUEUED', detail: 'Recherche als Schritt eingeplant' },
+        { aurora_id: 3, aufgabe_id: A3, zeitpunkt: vorMinuten(8), akteur: 'developer',
+          art: 'antwort', von_status: null, nach_status: null, detail: 'Beginne mit der Prüfung' },
+      ],
+      aurora_chat: [
+        { id: 'c1', agent: 'orchestrator', rolle: 'system', text: 'AURORA verbunden.', status: 'fertig', erstellt_am: vorMinuten(60) },
+        { id: 'c2', agent: 'orchestrator', rolle: 'nutzer', text: 'Wie ist der Stand beim Wochenplan?', status: 'fertig', erstellt_am: vorMinuten(6) },
+        { id: 'c3', agent: 'orchestrator', rolle: 'agent', text: 'Der Wochenplan läuft. Recherche ist eingeplant, QA hat den Drucktest abgeschlossen.', status: 'fertig', erstellt_am: vorMinuten(5) },
+        { id: 'c4', agent: 'orchestrator', rolle: 'nutzer', text: 'Bitte prüfe danach noch den Sonntag.', status: 'neu', erstellt_am: vorMinuten(1) },
+      ],
+      aurora_auftraege: [
+        { id: 'o1', agent: 'orchestrator', ziel: 'Wochenplan prüfen', erfolgskriterium: 'Keine Lücken', status: 'neu', erstellt_am: vorMinuten(2) },
+      ],
+    };
+
+    const aufrufe = [];
+    const kanaele = [];
+
+    function ergebnis(tabelle, eingefuegt) {
+      if (eingefuegt) return { data: eingefuegt, error: null };
+      return { data: (daten[tabelle] || []).slice(), error: null };
+    }
+
+    const client = {
+      from(tabelle) {
+        let eingefuegt = null;
+        const abfrage = {
+          select() { return abfrage; },
+          order() { return abfrage; },
+          limit() { return abfrage; },
+          insert(zeile) {
+            const neu = { id: uuid(), ...zeile, erstellt_am: jetzt() };
+            daten[tabelle] = daten[tabelle] || [];
+            daten[tabelle].unshift(neu);
+            eingefuegt = neu;
+            aufrufe.push({ art: 'insert', tabelle, zeile });
+            return abfrage;
+          },
+          single() { return ergebnis(tabelle, eingefuegt); },
+          then(resolve, reject) { return Promise.resolve(ergebnis(tabelle, eingefuegt)).then(resolve, reject); },
+        };
+        return abfrage;
+      },
+      channel(name) {
+        const kanal = { name, handlers: [], on(art, filter, cb) { kanal.handlers.push({ filter, cb }); return kanal; },
+          subscribe() { return kanal; } };
+        kanaele.push(kanal);
+        return kanal;
+      },
+      removeChannel(kanal) {
+        const i = kanaele.indexOf(kanal);
+        if (i >= 0) kanaele.splice(i, 1);
+      },
+    };
+
+    function meldeLive() {
+      for (const kanal of kanaele) for (const h of kanal.handlers) h.cb();
+    }
+
+    setzeClient(client);
+
+    if (!location.hash.startsWith('#/ki')) location.hash = '#/ki';
+
+    const modul = holeModul('ki');
+    await modul.init(document.getElementById('modul-detail'));
+
+    document.getElementById('h-ereignis').addEventListener('click', () => {
+      daten.aurora_ereignisse.unshift({
+        aurora_id: Math.floor(Date.now() / 1000), aufgabe_id: A1, zeitpunkt: jetzt(),
+        akteur: 'orchestrator', art: 'status', von_status: 'RUNNING', nach_status: 'REVIEW',
+        detail: 'Wochenplan zur Prüfung gegeben',
+      });
+      meldeLive();
+    });
+
+    document.getElementById('h-aufgabe').addEventListener('click', () => {
+      const id = uuid();
+      daten.aurora_aufgaben.unshift({
+        id, eltern_id: A1, agent: 'memory', status: 'QUEUED', quelle: 'plan',
+        eingabe: 'Ergebnis im Gedächtnis ablegen', erfolgskriterium: '', ergebnis: null,
+        kosten_eur: 0, erstellt_am: jetzt(), aktualisiert_am: jetzt(),
+      });
+      daten.aurora_ereignisse.unshift({
+        aurora_id: Math.floor(Date.now() / 1000) + 1, aufgabe_id: id, zeitpunkt: jetzt(),
+        akteur: 'orchestrator', art: 'plan', von_status: null, nach_status: 'QUEUED', detail: 'Neuer Schritt',
+      });
+      meldeLive();
+    });
+
+    document.getElementById('h-status').addEventListener('click', () => {
+      const ceo = daten.aurora_agenten.find((a) => a.agent === 'ceo');
+      ceo.status = ceo.status === 'arbeitet' ? 'bereit' : 'arbeitet';
+      ceo.aktuelle_aufgabe = ceo.status === 'arbeitet' ? 'Budget prüfen' : null;
+      ceo.aktualisiert_am = jetzt();
+      daten.aurora_status[0].aktualisiert_am = jetzt();
+      meldeLive();
+    });
+
+    document.getElementById('h-offline').addEventListener('click', () => {
+      daten.aurora_status[0].aktualisiert_am = vorMinuten(3);
+      meldeLive();
+    });
+
+    window.kiHarness = { daten, aufrufe };
+  </script>
+</body>
+</html>
