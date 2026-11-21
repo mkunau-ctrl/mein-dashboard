@@ -33,8 +33,8 @@ export function ereignisText(ereignis, aufgaben) {
   if (label) teile.push(`Aufgabe „${label}“`);
 
   if (e.von_status || e.nach_status) {
-    const von = e.von_status ? aufgabenStatusInfo(e.von_status).text : '?';
-    const nach = e.nach_status ? aufgabenStatusInfo(e.nach_status).text : '?';
+    const von = e.von_status ? aufgabenStatusInfo(e.von_status).text : 'neu';
+    const nach = e.nach_status ? aufgabenStatusInfo(e.nach_status).text : 'offen';
     teile.push(`${von} → ${nach}`);
   } else if (e.art) {
     teile.push(e.art);
