@@ -40,10 +40,10 @@ Grenzen: Branch `aurora-modul` (Worktree `mein-dashboard-aurora`) – **nicht** 
 Jede Datei mindestens 5 Tests inkl. Randfälle (leere Listen, `null`-Felder, Zyklen, extrem lange Texte, `<script>`-Text bleibt Text).
 
 ## Tasks
-- [ ] **T1 Logik + Tests:** die fünf reinen Logikdateien samt Tests. Commit `KI-Modul: Logik`.
-- [ ] **T2 Daten + Rahmen:** `daten.js` (alle Ladefunktionen, `sendeChat`, `sendeAuftrag`, `abonniere(onAenderung)` mit Realtime + Polling-Fallback, `beende()`), `index.js` (Registrierung, Rahmen, Router für die drei Ansichten, `aktualisieren`), Eintrag in `js/app.js` (Import + `NAV_MODULE`) und Icon. Test mit Mock-Supabase-Client (Einspritzung statt echtem Import: `daten.js` nimmt den Client über eine Funktion `setzeClient(c)` für Tests entgegen, Standard ist der echte). Commit `KI-Modul: Rahmen`.
-- [ ] **T3 Ansichten + Stil:** `uebersicht.js`, `agent.js`, `verteilung.js`, CSS. Mock-Harness `test/ki-harness.html` oder `scripts/ki-harness.mjs` (statische Seite, die das Modul mit Beispieldaten und einem Fake-Client lädt, damit der Chef es im Browser/Playwright ansehen kann; **darf kein Netz/keine echten Schlüssel nutzen**). Commit `KI-Modul: Ansichten`.
-- [ ] **T4 Doku:** `docs/PROJEKT-LOG.md` (Eintrag, Fehler inklusive), kurzer Abschnitt in `CLAUDE.md` des Dashboards (Modul-Liste), `js/module/README.md` falls nötig. Abschlussbericht in `docs/F1-BERICHT.md` mit Testzahlen und offenen Punkten.
+- [x] **T1 Logik + Tests:** die fünf reinen Logikdateien samt Tests. Commit `KI-Modul: Logik`.
+- [x] **T2 Daten + Rahmen:** `daten.js` (alle Ladefunktionen, `sendeChat`, `sendeAuftrag`, `abonniere(onAenderung)` mit Realtime + Polling-Fallback, `beende()`), `index.js` (Registrierung, Rahmen, Router für die drei Ansichten, `aktualisieren`), Eintrag in `js/app.js` (Import + `NAV_MODULE`) und Icon. Test mit Mock-Supabase-Client (Einspritzung statt echtem Import: `daten.js` nimmt den Client über eine Funktion `setzeClient(c)` für Tests entgegen, Standard ist der echte). Commit `KI-Modul: Rahmen`.
+- [x] **T3 Ansichten + Stil:** `uebersicht.js`, `agent.js`, `verteilung.js`, CSS. Mock-Harness `test/ki-harness.html` oder `scripts/ki-harness.mjs` (statische Seite, die das Modul mit Beispieldaten und einem Fake-Client lädt, damit der Chef es im Browser/Playwright ansehen kann; **darf kein Netz/keine echten Schlüssel nutzen**). Commit `KI-Modul: Ansichten`.
+- [x] **T4 Doku:** `docs/PROJEKT-LOG.md` (Eintrag, Fehler inklusive), kurzer Abschnitt in `CLAUDE.md` des Dashboards (Modul-Liste), `js/module/README.md` falls nötig. Abschlussbericht in `docs/F1-BERICHT.md` mit Testzahlen und offenen Punkten.
 
 ## Abnahme (macht der Chef)
 `npm test`; Mock-Harness im Browser bei 390 px und 820 px (iPad) Breite ansehen; Realtime-Test gegen echte Supabase mit AURORA-Sync; dann `main` mergen und pushen.
