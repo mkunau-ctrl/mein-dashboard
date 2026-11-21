@@ -108,6 +108,7 @@ Auslöser und Ruhezeit stellt Mark in der App ein.
 
 ## Wo weiterlesen
 
+- **Design (seit 2026-11-20 Liquid Glass):** `docs/DESIGN-SYSTEM.md` und `app.css`. Neue Oberflächen nur mit den dortigen Tokens, keine Ampelfarben.
 - **Verlauf / warum was so ist:** `docs/PROJEKT-LOG.md` (neueste Einträge oben).
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.

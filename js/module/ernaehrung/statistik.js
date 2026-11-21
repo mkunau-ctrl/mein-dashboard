@@ -4,8 +4,8 @@ import {
 } from './berechnung.js';
 
 const STATUS_FARBE = {
-  erfuellt: 'var(--hm-gruen)', teilweise: 'var(--hm-gelb)',
-  offen: 'var(--hm-rot)', keine: 'var(--rand)',
+  erfuellt: 'var(--serie-1)', teilweise: 'var(--serie-3)',
+  offen: 'var(--serie-5)', keine: 'var(--rand)',
 };
 const MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
   'August', 'September', 'Oktober', 'November', 'Dezember'];

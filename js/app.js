@@ -6,6 +6,8 @@ import { holeModul } from './registry.js';
 import { wendeThemeAn, wechsleTheme } from './theme.js';
 import { wendeSchriftgroesseAn } from './module/einstellungen/schriftgroesse.js';
 import { starteGlocke } from './glocke.js';
+import { ICONS, NAV_GRUPPEN, gruppeVon } from './icons.js';
+import { starteBefehlsleiste } from './palette.js';
 import './module/ernaehrung/index.js';
 import './module/todos/index.js';
 import './module/finanzen/index.js';
@@ -25,7 +27,8 @@ import './module/kalender/index.js';
 import './module/woche/index.js';
 import './module/ki/index.js';
 
-const NAV_MODULE = ['home', 'finanzen', 'flipping', 'ki', 'suche', 'profil'];
+// Untere Leiste am Handy: vier feste Seiten plus "Mehr" (öffnet die Befehlsleiste mit allen Seiten).
+const NAV_MODULE = ['home', 'finanzen', 'flipping', 'todos'];
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');
@@ -35,6 +38,8 @@ const loginHinweis = document.getElementById('login-hinweis');
 const modulTitel = document.getElementById('modul-titel');
 const modulDetail = document.getElementById('modul-detail');
 const tabLeiste = document.getElementById('tab-leiste-unten');
+const seitenleiste = document.getElementById('seitenleiste');
+const kopfPfad = document.getElementById('kopf-pfad');
 const themeMeta = document.querySelector('meta[name="theme-color"]');
 const themeKnoepfe = [
   document.getElementById('theme-toggle-login'),
@@ -62,21 +67,67 @@ function zeige(ansicht) {
   dashboardAnsicht.hidden = ansicht !== 'dashboard';
 }
 
+function navKnopf(modulId, aktivId, klasse) {
+  const modul = holeModul(modulId);
+  if (!modul) return null;
+  const knopf = document.createElement('button');
+  knopf.type = 'button';
+  if (klasse) knopf.className = klasse;
+  if (modul.id === aktivId) knopf.classList.add('aktiv');
+  knopf.innerHTML = `${ICONS[modul.id] || modul.icon || ''}<span>${modul.titel}</span>`;
+  knopf.addEventListener('click', () => { location.hash = `#/${modul.id}`; });
+  return knopf;
+}
+
+function rendereSeitenleiste(aktivId) {
+  const nutzerMail = document.getElementById('seitenleiste').dataset.mail || '';
+  seitenleiste.innerHTML = `
+    <div class="marke"><span class="marke-zeichen">${ICONS.marke}</span><span>Mein Dashboard</span></div>
+    <button type="button" class="seite-suche" id="seite-suche">${ICONS.suche}<span>Suchen</span><kbd>Strg K</kbd></button>`;
+  seitenleiste.querySelector('#seite-suche').addEventListener('click', () => befehlsleiste.oeffne());
+  for (const gruppe of NAV_GRUPPEN) {
+    const knoepfe = gruppe.ids.map((id) => navKnopf(id, aktivId, 'nav-punkt')).filter(Boolean);
+    if (!knoepfe.length) continue;
+    const bereich = document.createElement('div');
+    bereich.className = 'nav-gruppe';
+    bereich.innerHTML = `<div class="nav-gruppe-titel">${gruppe.titel}</div>`;
+    knoepfe.forEach((k) => bereich.appendChild(k));
+    seitenleiste.appendChild(bereich);
+  }
+  const fuss = document.createElement('div');
+  fuss.className = 'seiten-fuss';
+  for (const id of ['einstellungen']) {
+    const k = navKnopf(id, aktivId, 'nav-punkt');
+    if (k) fuss.appendChild(k);
+  }
+  const chip = document.createElement('button');
+  chip.type = 'button';
+  chip.className = 'nutzer-chip';
+  chip.innerHTML = `<span class="avatar-klein">${(nutzerMail[0] || 'M').toUpperCase()}</span><span>Profil<small>${nutzerMail || 'Angemeldet'}</small></span>`;
+  chip.addEventListener('click', () => { location.hash = '#/profil'; });
+  fuss.appendChild(chip);
+  seitenleiste.appendChild(fuss);
+}
+
 function rendereTabLeiste(aktivId) {
   tabLeiste.innerHTML = '';
   for (const modulId of NAV_MODULE) {
-    const modul = holeModul(modulId);
-    if (!modul) continue;
-    const tab = document.createElement('button');
-    tab.className = modul.id === aktivId ? 'aktiv' : '';
-    tab.innerHTML = `${modul.icon || ''}<span>${modul.titel}</span>`;
-    tab.addEventListener('click', () => { location.hash = `#/${modul.id}`; });
-    tabLeiste.appendChild(tab);
+    const tab = navKnopf(modulId, aktivId, '');
+    if (tab) tabLeiste.appendChild(tab);
   }
+  const mehr = document.createElement('button');
+  mehr.type = 'button';
+  mehr.innerHTML = `${ICONS.mehr}<span>Mehr</span>`;
+  if (!NAV_MODULE.includes(aktivId)) mehr.classList.add('aktiv');
+  mehr.addEventListener('click', () => befehlsleiste.oeffne());
+  tabLeiste.appendChild(mehr);
+  rendereSeitenleiste(aktivId);
 }
 
 async function oeffneModul(modul) {
   modulTitel.textContent = modul.titel;
+  kopfPfad.textContent = gruppeVon(modul.id);
+  document.title = `${modul.titel} · Mein Dashboard`;
   rendereTabLeiste(modul.id);
   if (aktivesModulId !== modul.id) {
     aktivesModulId = modul.id;
@@ -98,6 +149,7 @@ async function route() {
   zeige(entscheideAnsicht(session));
   if (!session) return;
   starteGlocke().catch(() => { /* Glocke ist optional, die App läuft ohne sie weiter */ });
+  seitenleiste.dataset.mail = session.user?.email || '';
   const { modul } = parseHash(location.hash);
   const gewaehlt = (modul ? holeModul(modul) : null) || holeModul('home');
   if (gewaehlt) await oeffneModul(gewaehlt);
@@ -138,6 +190,29 @@ document.getElementById('neu-laden-global').addEventListener('click', async (e) 
   try { await modul.aktualisieren(); }
   finally { knopf.disabled = false; }
 });
+
+const befehlsleiste = starteBefehlsleiste({
+  holeEintraege: () => {
+    const seiten = [];
+    for (const g of NAV_GRUPPEN) {
+      for (const id of g.ids) {
+        const m = holeModul(id);
+        if (m) seiten.push({ gruppe: 'Seiten', titel: m.titel, hinweis: g.titel, icon: ICONS[id], stichworte: id, aktion: () => { location.hash = `#/${id}`; } });
+      }
+    }
+    for (const id of ['profil', 'einstellungen']) {
+      const m = holeModul(id);
+      if (m) seiten.push({ gruppe: 'Seiten', titel: m.titel, hinweis: 'System', icon: ICONS[id], stichworte: id, aktion: () => { location.hash = `#/${id}`; } });
+    }
+    const befehle = [
+      { gruppe: 'Befehle', titel: 'Zwischen Hell und Dunkel wechseln', icon: ICONS.sonne, stichworte: 'theme design modus', aktion: () => document.getElementById('theme-toggle-dashboard').click() },
+      { gruppe: 'Befehle', titel: 'Ansicht aktualisieren', icon: ICONS.neuladen, stichworte: 'neu laden refresh', aktion: () => document.getElementById('neu-laden-global').click() },
+    ];
+    return [...seiten, ...befehle];
+  },
+});
+document.getElementById('palette-oeffnen').addEventListener('click', () => befehlsleiste.oeffne());
+document.getElementById('palette-oeffnen-icon').addEventListener('click', () => befehlsleiste.oeffne());
 
 route();
 
