@@ -71,6 +71,10 @@ button:disabled { opacity: .6; cursor: default; }
   color: var(--gedaempft); padding: 6px 2px; border-radius: 10px; font-size: .68rem; }
 #tab-leiste-unten button svg { width: 24px; height: 24px; }
 #tab-leiste-unten button.aktiv { color: var(--text); }
+@media (max-width: 420px) {
+  #tab-leiste-unten button { font-size: .6rem; padding-left: 1px; padding-right: 1px; }
+  #tab-leiste-unten button svg { width: 22px; height: 22px; }
+}
 
 /* Modul-Detail */
 #modul-detail { margin-top: 8px; }

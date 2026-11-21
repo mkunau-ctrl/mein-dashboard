@@ -23,8 +23,9 @@ import './module/dateien/index.js';
 import './module/notizen/index.js';
 import './module/kalender/index.js';
 import './module/woche/index.js';
+import './module/ki/index.js';
 
-const NAV_MODULE = ['home', 'finanzen', 'flipping', 'suche', 'profil'];
+const NAV_MODULE = ['home', 'finanzen', 'flipping', 'ki', 'suche', 'profil'];
 
 const loginAnsicht = document.getElementById('login-ansicht');
 const dashboardAnsicht = document.getElementById('dashboard-ansicht');
