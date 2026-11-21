@@ -4,6 +4,49 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-21 – KI-Modul: AURORA-Agenten, Chat, Aufgabenverteilung (Branch `aurora-modul`)
+
+**Was:** Neues Modul `js/module/ki/` (sechster Bottom-Nav-Tab „KI“), das die von AURORA
+auf dem Laptop gespiegelten Tabellen `aurora_status`, `aurora_agenten`, `aurora_aufgaben`,
+`aurora_ereignisse` und `aurora_chat` anzeigt (Schema/RLS aus
+`supabase/migrations/2026-11-21-aurora.sql`, bereits angewendet). Drei Ansichten:
+`#/ki` Übersicht (Budget mit Balken/Stufe, Kill-Switch-Warnband, Gesundheit
+Worker/Sandbox/Modell, Offline-Hinweis ab 90 s, alle 9 Agentenkarten, Formular für einen
+neuen Auftrag), `#/ki/agent/<name>` (Kopf, Chatverlauf mit Status der letzten
+Nutzernachricht und Ladehinweis, letzte 20 Aufgaben mit aufklappbarem Ergebnis) und
+`#/ki/verteilung` (Live-Zeitleiste der letzten 40 Ereignisse, Aufgabenbäume der letzten
+24 h mit Einrückung, neue Zeilen kurz hervorgehoben). Live über Supabase Realtime
+(5 Tabellen, Änderungen auf 500 ms gedrosselt) plus 10-s-Polling-Fallback nur im
+Vordergrund; beim Verlassen wird der Kanal entfernt. Chat/Auftrag senden nur mit den
+erlaubten Feldern (`rolle:'nutzer'`, `status:'neu'`); `monitor` ist schreibgeschützt.
+Reine Logik in `status.js`, `budget.js`, `baum.js`, `chat.js`, `ereignisse.js` (34 Tests),
+Mock-Harness `test/ki-harness.html` ohne Netz/Schlüssel.
+
+**Warum:** Mark will auf dem Handy einzelne KIs anklicken, Status/Aufgaben sehen, mit
+ihnen chatten und live zusehen, wie Aufgaben verteilt werden – ohne offene Ports am Laptop.
+
+**Entscheidungen/Abweichungen:** Stilregeln in `app.css` unter Präfix `ki-` statt eigener
+Datei (laut Plan zulässig). `daten.js` lädt den Supabase-Client erst dynamisch, damit
+Tests mit `setzeClient(mock)` ohne CDN/Netz laufen. Chat-Eingabe auf 4000 Zeichen geprüft
+(laut Plan), obwohl die Migration 8000 erlaubt. `NAV_MODULE` hat jetzt 6 Tabs; unter 420 px
+wurden Schrift/Icon der Bottom-Nav enger gesetzt, kein Tab entfernt. Agenten werden auch
+ohne Datensatz als Platzhalter gezeigt, damit immer alle 9 Karten sichtbar sind. Leere
+Zustände, Lade- und Fehlerzustand mit Neu-laden-Knopf sind eingebaut; Fehler bleiben im
+KI-Modul. Keine Verbindung zu Supabase, kein Push/Merge.
+
+**Fehler:** `npm test` hatte schon vor dem Modul einen roten Test (`push-client.test.js`,
+VAPID-Key-Test) – unabhängig von dieser Arbeit, nicht abgeschwächt. Der lokale
+`tsc`-Aufruf entfällt, weil das Projekt kein TypeScript hat. Harness per headless Edge
+gegen `http://localhost:8765/test/ki-harness.html` geprüft: 9 Agentenkarten, Chat
+(Nutzer/Agent/System, Wartehinweis), 5 Baumknoten und Zeitleiste rendern; Live-Knöpfe
+im Harness simulieren Realtime.
+
+**Stand danach:** Commits `KI-Modul: Logik`, `KI-Modul: Rahmen`, `KI-Modul: Ansichten`,
+`KI-Modul: Doku`. `npm test`: 241 Tests, 240 grün, 1 vorbestehend rot. Realtime gegen
+echtes Supabase und Gerätetest stehen noch aus (macht der Chef).
+
+---
+
 ## 2026-10-05 – Tagesbriefing, Wochenplan, Wochenaufgaben, „Zu klären“ (Prototyp)
 
 **Was:** Neue reine Logik `supabase/functions/push-senden/wochenplan.js` (+ Daten
