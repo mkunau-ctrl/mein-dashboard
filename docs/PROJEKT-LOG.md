@@ -4,6 +4,16 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-22 – Vercel-Projekt „portal-start“, Dashboard unter /dashboard/, Ranglisten-Entwurf
+
+**Was:** Vercel-Projekt `portal-start` (prj_kw9WmtLjQpMQjskQVozKJlADZkPh) mit diesem Repo verbunden. `vercel.json`: `/` leitet auf die neutrale Seite `start/index.html` („Portal“), `/dashboard/` liefert die App (Rewrites, keine Datei verschoben, alle App-Pfade sind relativ), `X-Robots-Tag: noindex`. Auf `main` (Fast-Forward 9ba460f) mit Marks OK; GitHub Pages unverändert. 241 Tests grün. Live-Prüfung auf Production stand noch aus.
+
+**Warum:** Mark will mehrere Projekte unter einer neutralen Adresse als Unterseiten, ohne Hinweis auf sein Dashboard. Außerdem Armwrestling-Ranglisten mit drei Zugängen – Entwurf in `docs/superpowers/specs/2026-11-22-ranglisten-design.md` (nicht freigegeben, nichts gebaut).
+
+**Offen:** Supabase-Rücksprungadresse und Passkey-RP-ID für `portal-start.vercel.app/dashboard/` (Mark im Supabase-Dashboard), Vercel-Schutz (SSO) für die Ranglisten-Seite, echte Domain. Vercel-Projekte ohne GitHub-Verbindung: `kunaus-gebaeudeservice` und `berlin-doener-lage-vorschau` verbindet Mark selbst (Settings → Git), `premium-reinigung`, `malerbetrieb-heinze-website`, `website-1-haus`, `website-2-palace`, `wd-t06-musterseite` haben kein Repo.
+
+---
+
 ## 2026-11-21 – KI-Modul: AURORA-Agenten, Chat, Aufgabenverteilung (Branch `aurora-modul`)
 
 **Was:** Neues Modul `js/module/ki/` (sechster Bottom-Nav-Tab „KI“), das die von AURORA
