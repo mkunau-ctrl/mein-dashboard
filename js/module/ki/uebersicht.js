@@ -216,7 +216,7 @@ export function zeigeKi(inhalt, zustand, agent, aktionen) {
   kopf.appendChild(el('h2', null, 'Agenten'));
   inhalt.appendChild(kopf);
   inhalt.appendChild(agentenAbschnitt(zustand.agenten));
-  inhalt.appendChild(auftragAbschnitt(aktionen));
+  if (!aktionen.nurAnsicht()) inhalt.appendChild(auftragAbschnitt(aktionen));
 
   const verteilung = el('button', 'link-muted ki-verteilung-link', 'Verteilung live ansehen ›');
   verteilung.type = 'button';

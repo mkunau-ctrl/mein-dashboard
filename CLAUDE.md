@@ -90,7 +90,8 @@ bereits angewendet). Seitdem sechster Bottom-Nav-Tab „KI“. Drei Ansichten:
 `#/ki/agent/<name>` (Chat + letzte 20 Aufgaben) und `#/ki/verteilung`
 (Live-Zeitleiste + Aufgabenbäume der letzten 24 h). Live über Supabase
 Realtime (5 Tabellen, 500 ms gedrosselt) plus 10-s-Polling im Vordergrund;
-Kanal wird beim Verlassen entfernt. Schreiben nur Chat (`rolle:'nutzer'`,
+Kanal wird beim Verlassen entfernt. Schalter „Nur ansehen“ (2026-11-22, `ansicht.js`) blendet
+Eingabeformulare aus und kürzt den Chat. Schreiben nur Chat (`rolle:'nutzer'`,
 `status:'neu'`) und Aufträge; `monitor` ist schreibgeschützt. Mock-Harness
 ohne Netz: `test/ki-harness.html` (lokal per `python -m http.server` öffnen).
 Logik-Tests: `test/ki-*.test.js`. Details: `docs/F1-BERICHT.md`,

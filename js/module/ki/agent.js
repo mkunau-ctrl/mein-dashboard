@@ -1,4 +1,5 @@
 import { chatZustand, pruefeEingabe, chatStatusText } from './chat.js';
+import { letzteNachrichten, kurzfassung } from './ansicht.js';
 import { istChatbar, statusInfo, kuerze, aufgabenStatusInfo } from './status.js';
 import {
   el, karte, leer, euro, agentName, statusPunkt, pille, formHinweis, zeigeAufgabeDetails,
@@ -37,15 +38,32 @@ function chatAbschnitt(agentNameWert, zustand, aktionen) {
   const nachrichten = zustand.chat.filter((z) => z && z.agent === agentNameWert);
   const chat = chatZustand(nachrichten);
 
+  const nurAnsicht = aktionen.nurAnsicht();
+  // Nur-Ansicht: nur der letzte Austausch, lange Antworten gekuerzt (Tippen klappt sie auf).
+  const sichtbar = nurAnsicht ? letzteNachrichten(chat.verlauf, 2) : chat.verlauf;
+
   if (chat.verlauf.length === 0) {
     box.appendChild(leer('Noch keine Nachrichten.'));
   } else {
     const verlauf = el('div', 'ki-chat-verlauf');
-    for (const nachricht of chat.verlauf) {
+    if (nurAnsicht && chat.verlauf.length > sichtbar.length) {
+      verlauf.appendChild(el('p', 'ki-meta',
+        `${chat.verlauf.length - sichtbar.length} ältere Nachrichten ausgeblendet`));
+    }
+    for (const nachricht of sichtbar) {
       const rolle = nachricht.rolle === 'nutzer' || nachricht.rolle === 'agent' || nachricht.rolle === 'system'
         ? nachricht.rolle : 'system';
       const zeile = el('div', `ki-chat-zeile ki-chat-${rolle}`);
-      zeile.appendChild(el('div', 'ki-chat-text', nachricht.text || ''));
+      const schluessel = `chat-${nachricht.id ?? sichtbar.indexOf(nachricht)}`;
+      const kurz = nurAnsicht ? kurzfassung(nachricht.text) : { text: nachricht.text || '', gekuerzt: false };
+      const aufgeklappt = kurz.gekuerzt && aktionen.istOffen(schluessel);
+      zeile.appendChild(el('div', 'ki-chat-text', aufgeklappt ? (nachricht.text || '') : kurz.text));
+      if (kurz.gekuerzt) {
+        const mehr = el('button', 'link-muted ki-chat-mehr', aufgeklappt ? 'weniger' : 'mehr');
+        mehr.type = 'button';
+        mehr.addEventListener('click', () => aktionen.toggleKarte(schluessel));
+        zeile.appendChild(mehr);
+      }
       if (rolle === 'nutzer' && nachricht === chat.letzterNutzer) {
         zeile.appendChild(el('span', 'ki-chat-status', chatStatusText(nachricht.status)));
       }
@@ -56,6 +74,11 @@ function chatAbschnitt(agentNameWert, zustand, aktionen) {
 
   if (chat.wartetAufAntwort) {
     box.appendChild(el('p', 'ki-chat-laden', 'AURORA arbeitet …'));
+  }
+
+  if (nurAnsicht) {
+    box.appendChild(el('p', 'ki-meta', 'Nur-Ansicht: Senden ist ausgeschaltet.'));
+    return box;
   }
 
   if (!chatbar) {
