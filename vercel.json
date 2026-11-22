@@ -1,0 +1,12 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "/start/", "permanent": false },
+    { "source": "/dashboard", "destination": "/dashboard/", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/dashboard/:path*", "destination": "/:path*" }
+  ],
+  "headers": [
+    { "source": "/(.*)", "headers": [ { "key": "X-Robots-Tag", "value": "noindex, nofollow" } ] }
+  ]
+}
