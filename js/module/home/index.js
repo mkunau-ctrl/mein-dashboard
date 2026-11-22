@@ -1,6 +1,7 @@
 import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles } from './daten.js';
+import { zeigeSucheIn } from '../suche/index.js';
 import { gesamtKontostand, summeProMonat, warenwert, erwarteterWarenwert, schuldenSumme } from '../finanzen/berechnung.js';
 import { sortiereOffeneTodos } from '../todos/planung.js';
 import { sortiereSendungen, sortiereTermine } from '../sendungen/berechnung.js';
@@ -99,6 +100,7 @@ function renderHome(container) {
     .join('');
 
   container.innerHTML = `
+    <div id="home-suche"></div>
     <div class="home-begruessung">
       <p class="greeting">${begruessung()},</p>
       <h1>Mark</h1>
@@ -133,6 +135,7 @@ function renderHome(container) {
     <section>${abschnitt('Offene To-dos', '#/todos', todosHtml)}</section>
     <section><div class="section-head"><h2>Wetter Lemgo</h2></div><div id="home-wetter"><p class="lade">Lade Wetter …</p></div></section>`;
 
+  zeigeSucheIn(container.querySelector('#home-suche'));
   zeigeWetter(container.querySelector('#home-wetter'));
 
   container.querySelectorAll('[data-termin-ab]').forEach((b) => {

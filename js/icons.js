@@ -22,12 +22,13 @@ export const ICONS = {
   mehr: k('<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>'),
   sonne: k('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
   neuladen: k('<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>'),
+  ki: k('<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>'),
   marke: k('<path d="M5 20V12M12 20V5M19 20v-9"/>'),
 };
 
 // Gruppen der Seitenleiste: Titel und Seiten (Modul-IDs).
 export const NAV_GRUPPEN = [
-  { titel: 'Überblick', ids: ['home', 'woche', 'suche'] },
+  { titel: 'Überblick', ids: ['home', 'woche', 'ki', 'suche'] },
   { titel: 'Geld', ids: ['finanzen', 'rechnungen'] },
   { titel: 'Handel', ids: ['flipping', 'handyreparatur', 'sendungen'] },
   { titel: 'Organisation', ids: ['todos', 'kalender', 'notizen', 'berichtsheft'] },

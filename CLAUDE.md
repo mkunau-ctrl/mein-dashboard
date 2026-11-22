@@ -80,6 +80,22 @@ Push verschickt. Test-Knopf in den Einstellungen ruft die Funktion mit Nutzer-JW
 Grundwoche ändern = Zeilen in `wochenplan_bloecke` ändern (flexible Zeit rechnet sich
 selbst); neuer Einmaltermin = Zeile in `termine`. Wetter: Open-Meteo, bei Fehler Hinweis.
 
+## KI-Modul „AURORA“ (2026-11-21, Branch `aurora-modul`)
+
+`js/module/ki/` zeigt die von AURORA gespiegelten Tabellen `aurora_status`,
+`aurora_agenten`, `aurora_aufgaben`, `aurora_ereignisse`, `aurora_chat` und
+`aurora_auftraege` (Schema/RLS in `supabase/migrations/2026-11-21-aurora.sql`,
+bereits angewendet). Seitdem sechster Bottom-Nav-Tab „KI“. Drei Ansichten:
+`#/ki` (Budget, Kill-Switch, Gesundheit, 9 Agentenkarten, neuer Auftrag),
+`#/ki/agent/<name>` (Chat + letzte 20 Aufgaben) und `#/ki/verteilung`
+(Live-Zeitleiste + Aufgabenbäume der letzten 24 h). Live über Supabase
+Realtime (5 Tabellen, 500 ms gedrosselt) plus 10-s-Polling im Vordergrund;
+Kanal wird beim Verlassen entfernt. Schreiben nur Chat (`rolle:'nutzer'`,
+`status:'neu'`) und Aufträge; `monitor` ist schreibgeschützt. Mock-Harness
+ohne Netz: `test/ki-harness.html` (lokal per `python -m http.server` öffnen).
+Logik-Tests: `test/ki-*.test.js`. Details: `docs/F1-BERICHT.md`,
+`docs/PROJEKT-LOG.md` (2026-11-21). Realtime-/Gerätetest steht noch aus.
+
 **Für geplante Aufgaben / andere Claude-Sessions (E-Mail-Check, Flipping, Nachrichten):**
 Eine Push-Meldung entsteht automatisch (alle 15 Min), wenn die Aufgabe ihre Ergebnisse
 in die bestehenden Tabellen schreibt: neue Funde → `flipping_funde` (status `neu`),
@@ -831,6 +847,14 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
   (Abschnitt 3.4), `docs/superpowers/plans/2026-09-16-etappe-6-email-automatisierung.md`,
   (Dedup/Status-Historie/Abholdaten) `docs/superpowers/specs/2026-09-19-etappe-3-sendungen-automatisierung-design.md`
   und `docs/superpowers/specs/2026-09-21-etappe-4-sub-e-f-design-einstellungen-detailklicks-design.md`.
+- `js/module/ki/` – Modul „KI“ (AURORA-Anbindung, 2026-11-21, Branch
+  `aurora-modul`): `index.js` (Registrierung, Router, Realtime-/Polling-Leben,
+  `aktualisieren`), `daten.js` (einziger Supabase-Zugriff, Client für Tests
+  über `setzeClient()` injizierbar; `ladeAlles`, `sendeChat`, `sendeAuftrag`,
+  `abonniere`, `beende`), reine Logik `status.js`, `budget.js`, `baum.js`,
+  `chat.js`, `ereignisse.js` (Tests `test/ki-*.test.js`), Ansichten
+  `uebersicht.js`/`agent.js`/`verteilung.js`, DOM-Helfer `helfer.js`, Stil
+  in `app.css` unter `ki-`. Mock-Harness `test/ki-harness.html` ohne Netz.
 - `manifest.webmanifest`, `icon.svg` – PWA. **Echte PNG-Icons (192/512) und
   `apple-touch-icon` fehlen weiterhin** (offener Punkt seit Etappe 0).
 - `sw.js` – **neu seit Sub-Etappe S (2026-09-22)**, Service Worker im

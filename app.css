@@ -553,3 +553,118 @@ button:disabled { opacity: .45; cursor: default; transform: none; filter: none; 
   .druck-ansicht .bh-tabelle th, .druck-ansicht .bh-tabelle td { border-color: #000; background: #fff; }
   .druck-ansicht .bh-unterschriften div { border-color: #000; }
 }
+/* KI-Modul (AURORA) */
+.ki-karte { background: var(--karte); border: 1px solid var(--rand); border-radius: var(--radius);
+  padding: 14px; margin: 12px 0; box-shadow: var(--schatten); }
+.ki-abschnitt { font-size: .95rem; margin: 0 0 10px; font-weight: 700; }
+.ki-gross { font-size: 1.25rem; margin: 0; }
+.ki-meta { color: var(--gedaempft); font-size: .82rem; }
+.ki-leer { color: var(--gedaempft); margin: 8px 0; }
+.ki-zahlen { display: flex; flex-wrap: wrap; gap: 18px; margin: 4px 0 12px; }
+.ki-zahl { display: block; font-size: 1.15rem; font-weight: 700; }
+.ki-balken { height: 10px; border-radius: 999px; background: var(--rand); overflow: hidden; }
+.ki-balken-fuellung { height: 100%; border-radius: 999px; transition: width .3s ease; }
+.ki-warnband { background: var(--hm-rot-bg); color: var(--hm-rot); padding: 10px 12px;
+  border-radius: 10px; font-weight: 700; margin: 0 0 10px; }
+.ki-offline { background: var(--hm-gelb-bg); color: var(--hm-gelb); padding: 8px 10px;
+  border-radius: 10px; margin: 10px 0 0; font-size: .85rem; }
+.ki-gesundheit { display: flex; flex-direction: column; gap: 4px; }
+.ki-gesundheit-zeile { display: flex; justify-content: space-between; gap: 12px;
+  padding: 4px 0; border-bottom: 1px solid var(--rand); }
+.ki-status { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; }
+.ki-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none;
+  background: currentColor; }
+.ki-dot-gruen { color: var(--hm-gruen); }
+.ki-dot-gelb { color: var(--hm-gelb); }
+.ki-dot-rot { color: var(--hm-rot); }
+.ki-dot-blau { color: #3b82f6; }
+.ki-dot-grau { color: var(--gedaempft); }
+.ki-bg-gruen { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.ki-bg-gelb { background: var(--hm-gelb-bg); color: var(--hm-gelb); }
+.ki-bg-rot { background: var(--hm-rot-bg); color: var(--hm-rot); }
+.ki-bg-blau { background: var(--akzent-bg); color: #3b82f6; }
+.ki-bg-grau { background: var(--icon-bg); color: var(--gedaempft); }
+.ki-pille { display: inline-block; padding: 2px 8px; border-radius: 999px;
+  font-size: .72rem; font-weight: 600; white-space: nowrap; }
+.ki-pille-gruen { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.ki-pille-gelb { background: var(--hm-gelb-bg); color: var(--hm-gelb); }
+.ki-pille-rot { background: var(--hm-rot-bg); color: var(--hm-rot); }
+.ki-pille-blau { background: var(--akzent-bg); color: #3b82f6; }
+.ki-pille-grau { background: var(--icon-bg); color: var(--gedaempft); }
+.ki-agenten { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 560px) { .ki-agenten { grid-template-columns: 1fr 1fr; } }
+.ki-agent-karte { display: flex; align-items: center; gap: 12px; width: 100%;
+  min-height: 64px; text-align: left; background: var(--karte); color: var(--text);
+  border: 1px solid var(--rand); border-radius: var(--radius); padding: 12px 14px;
+  box-shadow: var(--schatten); }
+.ki-agent-karte.ki-unbekannt { opacity: .6; }
+.ki-symbol { width: 36px; height: 36px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; font-weight: 700; flex: none; }
+.ki-agent-haupt { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.ki-agent-name { font-weight: 700; }
+.ki-agent-aufgabe { font-size: .88rem; overflow-wrap: anywhere; }
+.ki-pfeil { color: var(--gedaempft); font-size: 1.3rem; flex: none; }
+.ki-form { display: flex; flex-direction: column; gap: 8px; }
+.ki-label { font-size: .78rem; color: var(--gedaempft); font-weight: 600; }
+.ki-form textarea, .ki-form input, .ki-form select { width: 100%; background: var(--karte-getoent);
+  color: var(--text); border: 1px solid var(--rand); border-radius: 10px; padding: 10px 12px;
+  font: inherit; min-height: 44px; }
+.ki-form textarea { resize: vertical; }
+.ki-form-zeile { display: flex; flex-wrap: wrap; gap: 10px; }
+.ki-form-feld { flex: 1 1 160px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.ki-knopf { background: var(--akzent); color: var(--bg); border: none; border-radius: 10px;
+  min-height: 44px; padding: 10px 16px; font: inherit; font-weight: 700; cursor: pointer; }
+.ki-form-hinweis { min-height: 1.2em; margin: 2px 0 0; color: var(--gedaempft); font-size: .82rem; }
+.ki-fehler-text { color: var(--hm-rot); }
+.ki-agent-kopf { display: flex; flex-direction: column; gap: 6px; }
+.ki-agent-titelzeile { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ki-chat-verlauf { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 12px; }
+.ki-chat-zeile { max-width: 86%; padding: 8px 12px; border-radius: 14px;
+  background: var(--karte-getoent); overflow-wrap: anywhere; }
+.ki-chat-text { white-space: pre-wrap; }
+.ki-chat-nutzer { align-self: flex-end; background: var(--akzent); color: var(--bg); }
+.ki-chat-agent { align-self: flex-start; }
+.ki-chat-system { align-self: center; background: transparent; color: var(--gedaempft);
+  font-size: .8rem; max-width: 100%; }
+.ki-chat-status { display: block; font-size: .7rem; color: var(--gedaempft); margin-top: 4px; }
+.ki-chat-nutzer .ki-chat-status { text-align: right; }
+.ki-chat-laden { color: var(--gedaempft); font-size: .82rem; margin: 0 0 10px; }
+.ki-chat-form { display: flex; gap: 8px; align-items: flex-end; }
+.ki-chat-form textarea { flex: 1; min-width: 0; background: var(--karte-getoent);
+  color: var(--text); border: 1px solid var(--rand); border-radius: 10px; padding: 10px 12px;
+  font: inherit; resize: vertical; min-height: 44px; }
+.ki-aufgaben { display: flex; flex-direction: column; }
+.ki-aufgabe { border-bottom: 1px solid var(--rand); }
+.ki-aufgabe-kopf { display: flex; align-items: center; gap: 8px; width: 100%;
+  min-height: 44px; padding: 10px 0; background: transparent; color: var(--text);
+  border: none; text-align: left; font: inherit; }
+.ki-aufgabe-text { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: .88rem; }
+.ki-details { padding: 0 0 10px; }
+.ki-details-text, .ki-ergebnis { white-space: pre-wrap; overflow-wrap: anywhere;
+  background: var(--karte-getoent); border-radius: 10px; padding: 10px; margin: 4px 0 10px;
+  font: inherit; font-size: .85rem; }
+.ki-ergebnis { border-left: 3px solid var(--hm-gruen); }
+.ki-zeitleiste { display: flex; flex-direction: column; }
+.ki-ereignis { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--rand);
+  font-size: .85rem; }
+.ki-zeit { color: var(--gedaempft); font-variant-numeric: tabular-nums; flex: none; }
+.ki-ereignis-text { overflow-wrap: anywhere; }
+.ki-neu { animation: ki-aufleuchten 1.4s ease-out; }
+@keyframes ki-aufleuchten {
+  from { background: var(--akzent-bg); }
+  to { background: transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ki-neu { animation: none; }
+  .ki-balken-fuellung { transition: none; }
+}
+.ki-baum-knoten { border-left: 2px solid var(--rand); padding-left: 8px; margin: 2px 0; }
+.ki-fehler { background: var(--hm-rot-bg); color: var(--hm-rot); border-radius: 10px;
+  padding: 10px 12px; margin: 10px 0; }
+.ki-fehler .link-muted { color: inherit; text-decoration: underline; margin-left: 6px; }
+.ki-meldung { border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: .88rem; }
+.ki-meldung-ok { background: var(--hm-gruen-bg); color: var(--hm-gruen); }
+.ki-meldung-info { background: var(--akzent-bg); color: var(--text); }
+.ki-meldung-fehler { background: var(--hm-rot-bg); color: var(--hm-rot); }
+.ki-karte .section-head { margin: 0 0 10px; }
+.ki-verteilung-link { display: inline-block; min-height: 44px; margin-top: 4px; }
