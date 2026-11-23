@@ -668,3 +668,11 @@ button:disabled { opacity: .45; cursor: default; transform: none; filter: none; 
 .ki-meldung-fehler { background: var(--hm-rot-bg); color: var(--hm-rot); }
 .ki-karte .section-head { margin: 0 0 10px; }
 .ki-verteilung-link { display: inline-block; min-height: 44px; margin-top: 4px; }
+
+/* KI: Schalter "Nur ansehen" */
+.ki-leiste { display: flex; justify-content: flex-end; margin: 0 0 10px; }
+.ki-schalter { background: var(--karte-getoent); color: var(--text); border: 1px solid var(--rand);
+  border-radius: 999px; min-height: 44px; padding: 8px 16px; font: inherit; font-size: .85rem;
+  font-weight: 600; cursor: pointer; }
+.ki-schalter[aria-pressed="true"] { background: var(--akzent); color: var(--bg); border-color: var(--akzent); }
+.ki-chat-mehr { display: block; margin-top: 4px; min-height: 44px; }

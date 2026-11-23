@@ -4,6 +4,22 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-22 – KI-Modul: Schalter „Nur ansehen“
+
+**Was:** Neuer Schalter oben im KI-Modul (`js/module/ki/index.js`, Logik in `ansicht.js`, Tests
+`test/ki-ansicht.test.js`, Stil `.ki-schalter` in `app.css`). Bei „an“ fehlen das Formular
+„Neuer Auftrag“ (Übersicht) und das Chat-Eingabefeld (Agentenseite). Der Chat zeigt nur die
+letzten 2 Nachrichten, lange Texte sind auf 280 Zeichen gekürzt (Tippen auf „mehr“ klappt auf).
+Die Einstellung merkt sich `localStorage` (`ki-nur-ansicht`); ist der Speicher gesperrt, gilt „aus“.
+
+**Warum:** Mark wollte eine reine Ansicht, in der er klarer sieht und der Chat aufgeräumt ist.
+
+**Ergebnis:** 248 Tests grün (vorher 241), Mock-Harness bei 390 px geprüft, keine JS-Fehler.
+Nicht am echten Gerät getestet.
+
+**Fehler/Hinweis:** Die Kürzung langer Chat-Texte ist nur per Unit-Test geprüft; die Mock-Daten
+der Harness enthalten keine langen Texte.
+
 ## 2026-11-21 – KI-Modul: AURORA-Agenten, Chat, Aufgabenverteilung (Branch `aurora-modul`)
 
 **Was:** Neues Modul `js/module/ki/` (sechster Bottom-Nav-Tab „KI“), das die von AURORA

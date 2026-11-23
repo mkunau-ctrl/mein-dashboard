@@ -1,6 +1,11 @@
 import { registriere } from '../../registry.js';
 import { parseHash } from '../../router.js';
 import { ladeAlles, abonniere, beende, sendeChat, sendeAuftrag } from './daten.js';
+import { leseNurAnsicht, speichereNurAnsicht } from './ansicht.js';
+
+function holeSpeicher() {
+  try { return window.localStorage; } catch { return null; }
+}
 
 const LEERE_DATEN = {
   status: null, agenten: [], aufgaben: [], ereignisse: [], chat: [], auftraege: [],
@@ -15,6 +20,7 @@ let listenerAktiv = false;
 let offen = new Set();
 let letzteEreignisse = new Set();
 let meldung = null;
+let nurAnsicht = false;
 const entwuerfe = { chat: '', auftragZiel: '', auftragKriterium: '', auftragAgent: 'orchestrator' };
 const ansichtModule = new Map();
 
@@ -53,6 +59,7 @@ const aktionen = {
     void zeichne();
   },
   istOffen: (id) => offen.has(id),
+  nurAnsicht: () => nurAnsicht,
   entwurf: (feld) => entwuerfe[feld],
   setEntwurf: (feld, wert) => { entwuerfe[feld] = wert; },
   gesehen: letzteEreignisse,
@@ -165,8 +172,32 @@ function beiHashwechsel() {
   if (containerRef && containerRef.isConnected) void zeichne();
 }
 
+function baueAnsichtSchalter() {
+  const knopf = document.createElement('button');
+  knopf.type = 'button';
+  knopf.id = 'ki-nur-ansicht';
+  knopf.className = 'ki-schalter';
+  const zeigeZustand = () => {
+    knopf.setAttribute('aria-pressed', nurAnsicht ? 'true' : 'false');
+    knopf.textContent = nurAnsicht ? 'Nur ansehen: an' : 'Nur ansehen: aus';
+  };
+  zeigeZustand();
+  knopf.addEventListener('click', () => {
+    nurAnsicht = !nurAnsicht;
+    speichereNurAnsicht(holeSpeicher(), nurAnsicht);
+    zeigeZustand();
+    void zeichne();
+  });
+  return knopf;
+}
+
 function baueRahmen(container) {
   container.innerHTML = '';
+  nurAnsicht = leseNurAnsicht(holeSpeicher());
+  const leiste = document.createElement('div');
+  leiste.className = 'ki-leiste';
+  leiste.appendChild(baueAnsichtSchalter());
+  container.appendChild(leiste);
   const fehler = document.createElement('div');
   fehler.id = 'ki-fehler';
   fehler.hidden = true;
