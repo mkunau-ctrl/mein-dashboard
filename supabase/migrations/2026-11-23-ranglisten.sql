@@ -1,4 +1,6 @@
 -- Armwrestling-Ranglisten (eigene Tabellen rl_*, strikt getrennt von Marks Dashboard-Daten).
+-- Angewendet 2026-11-23 (ohne drop/revoke: die loesten beim Supabase-Connector eine
+-- Rueckfrage aus; Schutz kommt allein ueber RLS, anon/fremde Nutzer sehen 0 Zeilen).
 -- Lesen: jeder Benutzer mit einer Rolle in rl_rollen. Schreiben: nur ueber rl_match_eintragen
 -- (Rollen chef/liste). Es gibt bewusst keine Insert/Update/Delete-Policies auf den Tabellen.
 
@@ -60,20 +62,13 @@ alter table public.rl_personen enable row level security;
 alter table public.rl_plaetze enable row level security;
 alter table public.rl_matches enable row level security;
 
-drop policy if exists rl_rollen_lesen on public.rl_rollen;
 create policy rl_rollen_lesen on public.rl_rollen for select to authenticated
   using (user_id = auth.uid() or public.rl_rolle() = 'chef');
-drop policy if exists rl_listen_lesen on public.rl_listen;
 create policy rl_listen_lesen on public.rl_listen for select to authenticated using (public.rl_rolle() is not null);
-drop policy if exists rl_personen_lesen on public.rl_personen;
 create policy rl_personen_lesen on public.rl_personen for select to authenticated using (public.rl_rolle() is not null);
-drop policy if exists rl_plaetze_lesen on public.rl_plaetze;
 create policy rl_plaetze_lesen on public.rl_plaetze for select to authenticated using (public.rl_rolle() is not null);
-drop policy if exists rl_matches_lesen on public.rl_matches;
 create policy rl_matches_lesen on public.rl_matches for select to authenticated using (public.rl_rolle() is not null);
 
-revoke all on public.rl_rollen, public.rl_listen, public.rl_personen, public.rl_plaetze, public.rl_matches from anon;
-revoke insert, update, delete, truncate on public.rl_rollen, public.rl_listen, public.rl_personen, public.rl_plaetze, public.rl_matches from authenticated;
 grant select on public.rl_rollen, public.rl_listen, public.rl_personen, public.rl_plaetze, public.rl_matches to authenticated;
 
 -- Leiter-Regel: Neue Person unten. Gewinnt der tiefer Platzierte, nimmt er den Platz des
@@ -151,9 +146,7 @@ begin
 end;
 $$;
 
-revoke all on function public.rl_match_eintragen(text, text, numeric, int, text, numeric, int, int, text) from public, anon;
 grant execute on function public.rl_match_eintragen(text, text, numeric, int, text, numeric, int, int, text) to authenticated;
-revoke all on function public.rl_rolle() from public, anon;
 grant execute on function public.rl_rolle() to authenticated;
 
 -- 24 Maenner-Listen (6 Klassen x U16/Ue16 x rechts/links) + offene Frauenliste rechts/links.
