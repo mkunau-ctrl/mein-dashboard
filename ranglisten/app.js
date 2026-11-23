@@ -44,7 +44,7 @@ $('login-form').addEventListener('submit', async (ev) => {
   if (!email) { meldung.textContent = 'Benutzername ungültig.'; return; }
   const knopf = ev.target.querySelector('button[type="submit"]');
   knopf.disabled = true;
-  const { error } = await db.auth.signInWithPassword({ email, password: String(f.get('passwort') ?? '') });
+  const { error } = await db.auth.signInWithPassword({ email, password: String(f.get('passwort') ?? '').trim() });
   knopf.disabled = false;
   if (error) { meldung.textContent = 'Benutzername oder Passwort falsch.'; return; }
   ev.target.reset();
