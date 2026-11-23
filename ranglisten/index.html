@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1d2321">
+<title>Rangliste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="./stil.css">
+</head>
+<body>
+<main class="tafel">
+
+  <section id="ansicht-login" class="login" hidden>
+    <h1 class="kreide-titel">Rangliste</h1>
+    <form id="login-form" class="karte" autocomplete="on">
+      <label>Benutzername
+        <input name="benutzer" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+      </label>
+      <label>Passwort
+        <input name="passwort" type="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="knopf haupt">Anmelden</button>
+      <p class="meldung" id="login-meldung" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="ansicht-liste" hidden>
+    <header class="kopf">
+      <div>
+        <h1 class="kreide-titel">Rangliste</h1>
+        <span class="untertitel" id="listen-titel"></span>
+      </div>
+      <button type="button" class="knopf-rund" id="knopf-auswahl" aria-label="Liste wechseln" aria-expanded="false">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      </button>
+    </header>
+
+    <div id="auswahl" class="karte vertieft" hidden>
+      <div class="auswahl-zeile" data-feld="gruppe"></div>
+      <div class="auswahl-zeile" data-feld="klasse"></div>
+      <div class="auswahl-zeile" data-feld="alter"></div>
+      <div class="auswahl-zeile" data-feld="arm"></div>
+    </div>
+
+    <ol id="plaetze" class="plaetze" aria-live="polite"></ol>
+    <p id="leer" class="leer" hidden>Noch keine Matches in dieser Liste.</p>
+
+    <section class="karte vertieft letzte">
+      <h2 class="kreide-klein">Letzte Matches</h2>
+      <ul id="matches" class="matches"></ul>
+    </section>
+
+    <button type="button" class="knopf haupt" id="knopf-match" hidden>Match eintragen</button>
+
+    <form id="match-form" class="karte formular" hidden novalidate>
+      <h2 class="kreide-klein">Neues Match</h2>
+      <p class="hinweis" id="match-liste"></p>
+      <datalist id="namen"></datalist>
+      <fieldset>
+        <legend>Person A</legend>
+        <label>Name <input name="a_name" list="namen" maxlength="60" autocomplete="off" required></label>
+        <div class="zwei">
+          <label>Gewicht (kg) <input name="a_gewicht" inputmode="decimal"></label>
+          <label>Alter <input name="a_alter" inputmode="numeric"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Person B</legend>
+        <label>Name <input name="b_name" list="namen" maxlength="60" autocomplete="off" required></label>
+        <div class="zwei">
+          <label>Gewicht (kg) <input name="b_gewicht" inputmode="decimal"></label>
+          <label>Alter <input name="b_alter" inputmode="numeric"></label>
+        </div>
+      </fieldset>
+      <label>Runden <input name="runden" inputmode="numeric" value="1" required></label>
+      <fieldset class="sieger">
+        <legend>Sieger</legend>
+        <label class="wahl"><input type="radio" name="sieger" value="a"> Person A</label>
+        <label class="wahl"><input type="radio" name="sieger" value="b"> Person B</label>
+      </fieldset>
+      <div class="zwei">
+        <button type="button" class="knopf" id="match-abbrechen">Abbrechen</button>
+        <button type="submit" class="knopf haupt">Speichern</button>
+      </div>
+      <p class="meldung" id="match-meldung" role="alert"></p>
+    </form>
+
+    <footer class="fuss">
+      <span id="angemeldet"></span>
+      <button type="button" class="link" id="abmelden">Abmelden</button>
+    </footer>
+  </section>
+
+</main>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
