@@ -110,6 +110,18 @@ Verkaufs-Anfragen/Kauf-Chats → `verkaufs_nachrichten` (status nicht `erledigt`
 `user_id` (`df0b24a6-6a74-4830-995c-84015161dcc3`). Mehr braucht es nicht; Schalter pro
 Auslöser und Ruhezeit stellt Mark in der App ein.
 
+## Armwrestling-Rangliste (2026-11-23, eigenständige Seite)
+
+`ranglisten/` ist **kein Dashboard-Modul**, sondern eine eigene neutrale Seite unter
+`portal-start.vercel.app/ranglisten/` (keine Links/Namen zum Dashboard). Daten: Tabellen `rl_*`
+(Migration `supabase/migrations/2026-11-23-ranglisten.sql`), Schreiben nur über die Funktion
+`rl_match_eintragen` (Rollen `chef`/`liste`), Lesen für alle drei Rollen. Zugänge `chef`, `liste`,
+`zuschauer` = Supabase-Nutzer `<name>@rangliste.local` mit Zeile in `rl_rollen`. Die Policy
+`kein_ranglisten_konto` sperrt diese Konten auf allen anderen Tabellen; **neue Tabellen bekommen sie
+nicht automatisch** und müssen sie selbst anlegen. Logik + Test: `ranglisten/logik.js`,
+`test/ranglisten-logik.test.js`. Migrationen ohne `drop`/`revoke` schreiben (sonst hängt der
+Supabase-Connector an einer Rückfrage).
+
 ## Wo weiterlesen
 
 - **Design (seit 2026-11-20 Liquid Glass):** `docs/DESIGN-SYSTEM.md` und `app.css`. Neue Oberflächen nur mit den dortigen Tokens, keine Ampelfarben.

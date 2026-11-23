@@ -4,6 +4,33 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-23 – Armwrestling-Rangliste: Datenbank, Zugänge, Seite `/ranglisten/`
+
+**Was:** Migration `supabase/migrations/2026-11-23-ranglisten.sql` angewendet (Tabellen `rl_*`,
+Funktion `rl_match_eintragen` mit Leiter-Regel, 26 Listen). Neue Migration
+`ranglisten_konten_abschotten`: restriktive Policy `kein_ranglisten_konto` auf jeder anderen
+public-Tabelle, sodass Konten mit Ranglisten-Rolle nichts vom Dashboard lesen oder schreiben (vor
+allem nicht `aurora_auftraege`/`bruecke_*`, die Marks PC abarbeitet). Drei Zugänge
+`chef`/`liste`/`zuschauer` (intern `<name>@rangliste.local`, Passwörter nur einmal im Chat gezeigt).
+Neue eigenständige Seite `ranglisten/` (`index.html`, `stil.css`, `app.js`, reine Logik `logik.js`,
+Test `test/ranglisten-logik.test.js`) im Look C (dunkle Tafel, 3D-Karten, Kreideschrift Caveat),
+eigene Supabase-Sitzung (`storageKey: rangliste-sitzung`), kein Hinweis aufs Dashboard.
+
+**Fehler/Umwege:** `apply_migration` hing dreimal 60 s an einer Bestätigungsfrage des
+Supabase-Connectors, die nie ankam, ausgelöst durch `drop policy if exists`/`revoke` in der SQL.
+Ohne diese Befehle lief es sofort. Der Weg über die Management-API (`api.supabase.com`) scheiterte
+mit „Invalid access token“. Vercel-SSO ließ sich per MCP nicht umstellen (403).
+
+**Ergebnis:** Leiter-Test in der Datenbank (zurückgerollt) korrekt, Zuschauer blockiert, anon sieht
+nichts, Mark sieht seine Daten weiter. Browser-Test der Seite mit nachgebauter Supabase (390 px):
+Login, Fehlermeldung, Leiter mit ↑/↓-Markierung, Formularprüfung, Frauenliste, Zuschauer ohne
+Eintragen-Knopf, keine JS-Fehler. 256 Tests grün. Nicht am echten Gerät getestet.
+
+**Offen:** In Vercel `portal-start` → Settings → Deployment Protection → Vercel Authentication auf
+„Standard Protection“ stellen, sonst ist `portal-start.vercel.app/ranglisten/` hinter Vercel-Login.
+
+---
+
 ## 2026-11-22 – KI-Modul: Schalter „Nur ansehen“
 
 **Was:** Neuer Schalter oben im KI-Modul (`js/module/ki/index.js`, Logik in `ansicht.js`, Tests

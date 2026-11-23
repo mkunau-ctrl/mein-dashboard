@@ -1,7 +1,8 @@
 {
   "redirects": [
     { "source": "/", "destination": "/start/", "permanent": false },
-    { "source": "/dashboard", "destination": "/dashboard/", "permanent": false }
+    { "source": "/dashboard", "destination": "/dashboard/", "permanent": false },
+    { "source": "/ranglisten", "destination": "/ranglisten/", "permanent": false }
   ],
   "rewrites": [
     { "source": "/dashboard/", "destination": "/index.html" },
