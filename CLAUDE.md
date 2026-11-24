@@ -147,6 +147,7 @@ jeder Handelsrunde. Zugang, Regeln v2 und Protokoll-Anleitung stehen als `regel`
 ## Wo weiterlesen
 
 - **Design (seit 2026-11-20 Liquid Glass):** `docs/DESIGN-SYSTEM.md` und `app.css`. Neue Oberflächen nur mit den dortigen Tokens, keine Ampelfarben.
+- **KI-Agenten-Wissen (aus Marks Video, 2026-11-24):** `docs/WISSEN-KI-AGENTEN.md` – 16-Schritte-Architektur (Systemprompt, RAG, MCP, Rechte, Guardrails, Kosten, Observability, Evals) und wie sie auf Marks dauerhafte AURORA-Agenten übertragen wird.
 - **Verlauf / warum was so ist:** `docs/PROJEKT-LOG.md` (neueste Einträge oben).
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
