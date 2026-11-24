@@ -63,6 +63,15 @@ Tabelle `videos` (Migration `2026-11-24-videos.sql`). **Claude ansehen:** Zeile 
 setzen. Ton wird nicht transkribiert. Tests: `test/videos-berechnung.test.js`. Details/Fallstricke:
 `docs/PROJEKT-LOG.md` (2026-11-24).
 
+## Dauerhafte Agenten + Obsidian (2026-11-24, Prototyp)
+
+Modul `js/module/agenten/` (`#/agenten`, Gruppe Überblick, Schnelleinstieg „Agenten“): Profile (`agent_profile`: Zugehörigkeit, Rechte, Freigabe-Liste,
+Systemprompt) und Wissen je Agent (`agent_wissen`, Volltextsuche, Status aktiv/vorschlag/archiv). 16 Profile (9 AURORA-Agenten + dashboard, design3d, flipping,
+trading, finanzen, ausbildung, kundenseiten) mit Startwissen aus den `projekt_notizen`. **Obsidian:** `automatisierung/obsidian-sync.mjs` (Logik
+`obsidian-sync-lauf.js`, `js/module/agenten/obsidian.js`) gleicht den Vault-Ordner `Agenten/` mit `agent_wissen` ab, löscht nie, meldet Konflikte;
+Freigabe per `status: aktiv` in Obsidian. **Der AURORA-Kern auf Marks PC lädt die Profile noch nicht**, Aufgabenliste: `docs/AURORA-AGENTEN-UEBERGABE.md`.
+Migrationen `2026-11-24-agenten.sql` + `-seed.sql`. Tests: `test/agenten-*.test.js`. Details: `docs/PROJEKT-LOG.md` (2026-11-24).
+
 ## Push-Benachrichtigungen (2026-10-03, Prototyp)
 
 Web-Push aufs iPhone (nur als Home-Bildschirm-App). Tabellen `push_abos`/

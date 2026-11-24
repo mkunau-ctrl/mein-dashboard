@@ -27,6 +27,7 @@ import './module/notizen/index.js';
 import './module/kalender/index.js';
 import './module/woche/index.js';
 import './module/ki/index.js';
+import './module/agenten/index.js';
 
 // Untere Leiste am Handy: vier feste Seiten (Home in der Mitte) plus ganz rechts "Profil" (Seite "Mein Profil", dort sind alle Bereiche auswählbar).
 const NAV_MODULE = ['ki', 'finanzen', 'home', 'todos'];

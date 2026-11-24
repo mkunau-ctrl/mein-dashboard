@@ -26,6 +26,7 @@ const SCHNELLEINSTIEGE = [
   { label: 'Projekte', icon: FOLDER_ICON, ziel: '#/projekte' },
   { label: 'Dateien', icon: FOLDER_ICON, ziel: '#/dateien' },
   { label: 'Videos', icon: VIDEO_ICON, ziel: '#/videos' },
+  { label: 'Agenten', icon: SUCHE_ICON, ziel: '#/agenten' },
   { label: 'Kalender', icon: KALENDER_ICON, ziel: '#/kalender' },
   { label: 'Notizen', icon: DOC_ICON, ziel: '#/notizen' },
   { label: 'Woche', icon: KALENDER_ICON, ziel: '#/woche' },
