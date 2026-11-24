@@ -12,6 +12,7 @@ const TODO_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const KALENDER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
 const HANDY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>';
 const VIDEO_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>';
+const X_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const CHEVRON_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
 const TYP_ICON = { expense: RECEIPT_ICON, todo: TODO_ICON, sendung: BOX_ICON, termin: KALENDER_ICON, notiz: DOC_ICON };
 
@@ -65,6 +66,7 @@ function render(container, kompakt = false) {
     <div class="searchbar${kompakt ? '' : ' searchbar-fix'}" style="margin:16px 0;">
       ${SUCHE_ICON}
       <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="button" id="suche-leeren" class="suche-leeren" aria-label="Suche leeren" hidden>${X_ICON}</button>
     </div>
     <div id="suche-treffer" class="punkt-liste" hidden></div>
     <div id="suche-standard" ${kompakt ? 'hidden' : ''}>
@@ -106,8 +108,16 @@ function render(container, kompakt = false) {
   const standardBox = container.querySelector('#suche-standard');
   let letzteSucheGespeichert = '';
 
+  const leeren = container.querySelector('#suche-leeren');
+  leeren.addEventListener('click', () => {
+    eingabe.value = '';
+    eingabe.dispatchEvent(new Event('input'));
+    eingabe.focus();
+  });
+
   eingabe.addEventListener('input', () => {
     const wert = eingabe.value;
+    leeren.hidden = !wert;
     if (!wert.trim()) {
       trefferListe.hidden = true;
       standardBox.hidden = kompakt;

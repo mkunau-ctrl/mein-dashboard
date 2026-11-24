@@ -30,6 +30,16 @@ export async function meldeAnMitPasskey() {
   }
 }
 
+export async function meldeAnMitPasswort(email, passwort) {
+  try {
+    const { error } = await supabase.auth.signInWithPassword({ email, password: passwort });
+    if (error) return { ok: false, fehler: error.message };
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, fehler: e.message || String(e) };
+  }
+}
+
 export async function registrierePasskey() {
   try {
     const { error } = await supabase.auth.registerPasskey();
