@@ -45,6 +45,8 @@ Marks Wunsch („Agenten, die immer wissen, wozu sie gehören, projektübergreif
 **Was AURORA laut Dashboard-Stand schon hat:** 9 Agenten, Aufgaben + Aufgabenbäume, Chat, Budget/Kill-Switch/Gesundheit (`aurora_*`-Tabellen, `js/module/ki/`).
 **Was fehlt:** dauerhafte Agenten-Profile, Wissensspeicher je Agent, Rechte je Agent, Freigabe-Schritt (Human in the loop) im Dashboard.
 
-## Nächster Schritt (Vorschlag, noch nicht gebaut)
+## Umsetzung (2026-11-24, gebaut)
 
-Tabellen `agent_profile` (Identität/Zugehörigkeit/Regeln) und `agent_wissen` (Wissenseinträge je Agent, Volltextsuche), Ansicht im KI-Modul zum Ansehen und Pflegen, plus Übergabe-Datei `docs/AURORA-AGENTEN-UEBERGABE.md` für den Kern auf Marks PC (der Kern lädt Profil + passendes Wissen beim Start).
+Tabellen `agent_profile` und `agent_wissen`, Modul „Agenten“ im Dashboard, Obsidian-Abgleich, Übergabe für den Kern: siehe `docs/AURORA-AGENTEN-UEBERGABE.md`.
+Noch offen: Der AURORA-Kern lädt Profil und Wissen noch nicht, ein Freigabe-Schritt im Dashboard fehlt, Vektorsuche (`vector` verfügbar, nicht installiert) erst bei
+größerem Wissen.

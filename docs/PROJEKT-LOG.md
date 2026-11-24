@@ -15,6 +15,21 @@ eine Fortschrittszeile je Video, Pool `verarbeiteMitLimit` (getestet), fehlgesch
 Fließband 19,8 s; alle 10 liefen stabil durch. **Fazit:** Mehr gleichzeitig beschleunigt in dieser Umgebung nichts; das Fließband bringt den Gewinn. Auf dem iPhone
 (Hardware-Encoder, wenig Arbeitsspeicher) **nicht gemessen**; 10 gleichzeitig kann dort Speicher kosten, deshalb Standard 2.
 
+## 2026-11-24 – Dauerhafte Agenten mit Zugehörigkeit, Wissen und Obsidian
+
+**Was:** Mark will, wie in den Videos, verschiedene dauerhafte Agenten, die auf Dinge spezialisiert sind und mit Obsidian arbeiten. Gebaut:
+(1) Tabellen `agent_profile` (Identität, `zugehoerigkeit[]`, Rechte `darf`, `freigabe_noetig`, Systemprompt, `modell_klasse`) und `agent_wissen` (Markdown, Tags,
+`quelle`, `vertrauen` eigen/extern, `status` aktiv/vorschlag/archiv, `pfad`, deutscher Volltext-Index) plus Funktion `agent_wissen_suche`; Migrationen
+`2026-11-24-agenten.sql`/`-seed.sql`. (2) 16 Profile: 9 AURORA-Agenten und 7 Spezialisten, Startwissen aus `projekt_notizen` und den Videodokumenten
+(Zugangs-/Secret-Notizen bewusst nicht kopiert, per Muster geprüft). (3) Dashboard-Modul „Agenten“: Liste, Profil bearbeiten, Wissen suchen (Live-Filter hält Fokus/Tastatur),
+anlegen/bearbeiten/löschen, Vorschläge freigeben, „Als Obsidian-Notiz kopieren“. (4) Obsidian: `js/module/agenten/obsidian.js` (Notiz <-> Markdown, Wikilinks,
+Abgleichsplaner), `automatisierung/obsidian-sync-lauf.js` + `obsidian-sync.mjs` (löscht nie, Konflikte nur gemeldet, Freigabe per `status: aktiv`, `_Profil.md` je Agent mit
+Wikilinks). (5) Übergabe `docs/AURORA-AGENTEN-UEBERGABE.md` für den Kern.
+**Fallstricke:** Die Hash-Regel des Routers erlaubt keinen Unterstrich, daher `#/agenten/gemeinsam` für `_gemeinsam`. Generierte `tsvector`-Spalte darf nur unveränderliche
+Funktionen nutzen (`array_to_string` nicht), Tags sind deshalb nicht im Volltextindex. Management-API von Supabase aus der Sandbox: 401, alles über das Supabase-Werkzeug.
+**Geprüft:** 306 Tests grün (u. a. Abgleich mit echten Dateien im Temp-Ordner und Datenbank-Attrappe, 5 Szenarien), Browsertest der Oberfläche bei iPhone-Breite mit Attrappe.
+**Nicht geprüft:** echter Obsidian-Vault auf Marks PC, Abgleich gegen die echte Datenbank mit Service-Schlüssel, der AURORA-Kern (lädt Profile noch nicht), iPhone.
+
 ## 2026-11-24 – 39 Videos angesehen, Wissen gespeichert (Design/3D-Websites)
 
 **Was:** Mark lud 39 Reels in die Video-Ablage und bat, sie anzusehen und alles Wichtige zu speichern, vor allem Design- und 3D-Websites. Jedes Video
