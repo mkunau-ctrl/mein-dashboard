@@ -11,6 +11,7 @@ const FOLDER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 const TODO_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h10M9 12h10M9 18h10"/><path d="m4 6 1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>';
 const KALENDER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
 const HANDY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>';
+const VIDEO_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>';
 const CHEVRON_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
 const TYP_ICON = { expense: RECEIPT_ICON, todo: TODO_ICON, sendung: BOX_ICON, termin: KALENDER_ICON, notiz: DOC_ICON };
 
@@ -23,6 +24,7 @@ const SCHNELLEINSTIEGE = [
   { label: 'Handyreparaturen', icon: HANDY_ICON, ziel: '#/handyreparatur' },
   { label: 'Projekte', icon: FOLDER_ICON, ziel: '#/projekte' },
   { label: 'Dateien', icon: FOLDER_ICON, ziel: '#/dateien' },
+  { label: 'Videos', icon: VIDEO_ICON, ziel: '#/videos' },
   { label: 'Kalender', icon: KALENDER_ICON, ziel: '#/kalender' },
   { label: 'Notizen', icon: DOC_ICON, ziel: '#/notizen' },
   { label: 'Woche', icon: KALENDER_ICON, ziel: '#/woche' },

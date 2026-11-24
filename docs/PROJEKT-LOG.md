@@ -4,6 +4,41 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-24 – Video-Ablage: lokal komprimieren, Claude kann Videos ansehen (`#/videos`)
+
+**Was:** Mark will Videos (erstes Thema: dauerhafte Agenten für AURORA) nicht über Cloudflare teilen, sondern
+im Dashboard ablegen: lokal möglichst schnell und klein komprimiert, danach soll Claude sie ansehen können.
+Neues Modul `js/module/videos/` (Schnelleinstieg „Videos“ in der Suche, `#/videos`): Datei wählen, Profil
+(Lesbar 720p/15 fps, Klein 480p, Hoch 1080p), optionale Notiz „Worum geht es“, Komprimierung im Browser
+(WebCodecs über **mediabunny 1.66.4**, lokal unter `js/vendor/` statt CDN, MPL-2.0, ~750 KB, wird erst beim
+ersten Komprimieren geladen), Upload nur des kleinen Ergebnisses, Liste mit Abspielen/Löschen und Claudes
+Notiz. Dateien: `berechnung.js` (reine Regeln, `test/videos-berechnung.test.js`), `komprimieren.js`,
+`daten.js`, `index.js`. Migration `supabase/migrations/2026-11-24-videos.sql` (angewendet): Tabelle `videos`
+(RLS wie überall) + Bucket `video-ablage`.
+
+**Wie Claude es ansieht:** Claudes Cloud-Umgebung kann kein Video abspielen. `automatisierung/video-bilder.sh
+<URL> [Ordner] [N]` lädt die Datei, zieht N gleichmäßig verteilte JPGs (Standard 16) plus `tafel.jpg`
+(Raster) per ffmpeg, die das Read-Werkzeug zeigt. Danach `videos.claude_notiz` und `angesehen_am`
+setzen, damit Mark es in der Liste sieht. **Ton wird nicht transkribiert** (kein Whisper in der Umgebung);
+gesprochener Inhalt muss in der Notiz stehen oder Mark nennt ihn im Chat.
+
+**Entscheidungen/Fallstricke:**
+- Bucket ist **öffentlich lesbar, aber nicht auflistbar**, Pfad `<user_id>/<volle UUID>-<name>.mp4`
+  (nicht erratbar). Grund: Claudes Cloud-Session hat kein Login; ein privater Bucket wäre für sie
+  unlesbar. Schreiben/Löschen nur im eigenen Ordner. Wer das nicht will: Video nach dem Ansehen löschen.
+- Netz: `vogztxoaqbnuciboughd.supabase.co` musste in der Cloud-Umgebung „Default“ freigeschaltet
+  werden (vorher Proxy-403, auch jsDelivr ist dort gesperrt, deshalb die Bibliothek im Repo).
+- **Bug im ersten Entwurf (Test hat ihn gefunden):** 10 Minuten „Lesbar“ wären ~71 MB und damit über dem
+  Supabase-Free-Limit von 50 MB. `effektiveBitrates` senkt die Bitrate nach Länge (Ziel 44 MB, Untergrenze
+  120 kbit/s); darunter „zu lang“. Ist die fertige Datei trotzdem > 50 MB, wird nicht hochgeladen.
+- Codec: bevorzugt MP4/H.264, sonst WebM/VP9/VP8; Ton AAC wenn der Browser es kann, sonst Opus, sonst
+  stumm (Hinweis in der Oberfläche). Im Playwright-Chromium wurde Opus-in-MP4 gewählt.
+- **Gemessen** (Playwright-Chromium in der Cloud-Sandbox, Software-Encoder): 20 s 1080p/30 fps/8 Mbit,
+  19,4 MB → 2,3 MB (−88 %) in 9 s, abspielbar (ffmpeg), Text im Bild lesbar. Auf iPhone/Mac mit
+  Hardware-Encoder erwartet schneller, **nicht gemessen**.
+- Nicht getestet: echter Upload mit Login, iPhone-Safari (WebCodecs ab iOS 16.4; Audio-Encoder dort
+  unsicher), sehr große Eingaben (>2 GB), Hochkant-Video mit Drehmetadaten (Logik getestet, Browser nicht).
+
 ## 2026-11-24 – Paper-Trading (Alpaca) im Dashboard: Finanzen -> Paper-Trading
 
 **Was:** Claude handelt als Paper-Trading-Assistent mit einem Alpaca-Paper-Konto (nur Spielgeld, 100.000 $
