@@ -122,6 +122,15 @@ nicht automatisch** und müssen sie selbst anlegen. Logik + Test: `ranglisten/lo
 `test/ranglisten-logik.test.js`. Migrationen ohne `drop`/`revoke` schreiben (sonst hängt der
 Supabase-Connector an einer Rückfrage).
 
+## Paper-Trading (2026-11-24, Prototyp)
+
+Claude handelt mit einem Alpaca-**Paper**-Konto (nur Spielgeld). Dashboard: Finanzen > Übersicht >
+Kachel „Paper-Trading“ (`js/module/finanzen/paper-trading.js`, Tabellen `paper_snapshots`/
+`paper_aktivitaet`, Migration `2026-11-24-paper-trading.sql`); die Ansicht liest nur, Claude schreibt nach
+jeder Handelsrunde. Zugang, Regeln v2 und Protokoll-Anleitung stehen als `regel`-Notizen `Alpaca ...` in
+`projekt_notizen` (nie Secrets ins Repo). Geplante Aufgabe stündlich Mo-Fr 15:35-21:35 Berlin. Details:
+`docs/PROJEKT-LOG.md` (2026-11-24).
+
 ## Wo weiterlesen
 
 - **Design (seit 2026-11-20 Liquid Glass):** `docs/DESIGN-SYSTEM.md` und `app.css`. Neue Oberflächen nur mit den dortigen Tokens, keine Ampelfarben.

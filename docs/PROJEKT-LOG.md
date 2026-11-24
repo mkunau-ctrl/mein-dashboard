@@ -4,6 +4,30 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-24 – Paper-Trading (Alpaca) im Dashboard: Finanzen -> Paper-Trading
+
+**Was:** Claude handelt als Paper-Trading-Assistent mit einem Alpaca-Paper-Konto (nur Spielgeld, 100.000 $
+Start). Damit Mark sieht, was Claude tut, gibt es in Finanzen > Übersicht eine Kachel „Paper-Trading“
+(`#/finanzen/uebersicht/paper-trading`, `js/module/finanzen/paper-trading.js`, Logik
+`paper-berechnung.js` + Test `test/paper-berechnung.test.js`, Daten `paper-daten.js`): Depotwert,
+Gewinn/Verlust seit Start, Mini-Kurve, Positionen, offene Orders und ein Aktivitäts-Feed (Trades mit
+Begründung, geprüfte Nachrichten mit Quellen, Analysen, Runden-Notizen). Migration
+`supabase/migrations/2026-11-24-paper-trading.sql` (Tabellen `paper_snapshots`, `paper_aktivitaet`,
+RLS `user_id = auth.uid()`). Die Ansicht liest nur, geschrieben wird per Supabase-MCP durch Claude nach
+jeder Handelsrunde. Der Alpaca-Schlüssel steht nie im Browser-Code oder Repo: Secret als
+Netzwerk-Credential der Cloud-Umgebung (Hosts `paper-api.alpaca.markets`, `data.alpaca.markets`), Key ID,
+Regeln v2 und Protokoll-Anleitung als `regel`-Notizen in `projekt_notizen` (Titel `Alpaca ...`).
+Auf Marks Wunsch zusätzlich eine Fallback-Kopie des Secrets in einer Notiz (nur Paper-Key).
+
+**Takt:** Geplante Aufgabe stündlich Mo-Fr 15:35-21:35 Berlin (Minimum 1 h bei geplanten Aufgaben), dazu
+ein session-only Cron alle 15 Min. Regeln v2: keine Positionslimits, Stop-Loss nur wenn sinnvoll, Nachrichten
+nur mit 2 seriösen Quellen. `sw.js` Cache auf v10 angehoben.
+
+**Offen:** Finnhub-Key für Quartalszahlen (Host `finnhub.io`, Header `X-Finnhub-Token`), erster echter
+Lauf ab 15:35 Uhr, Handytest der Ansicht.
+
+---
+
 ## 2026-11-23 – Armwrestling-Rangliste: Datenbank, Zugänge, Seite `/ranglisten/`
 
 **Was:** Migration `supabase/migrations/2026-11-23-ranglisten.sql` angewendet (Tabellen `rl_*`,
