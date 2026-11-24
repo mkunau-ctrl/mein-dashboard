@@ -15,6 +15,7 @@ export const ICONS = {
   notizen: k('<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
   berichtsheft: k('<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>'),
   dateien: k('<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'),
+  videos: k('<rect x="3" y="5" width="13" height="14" rx="2.5"/><path d="m16 10 5-3v10l-5-3z"/>'),
   projekte: k('<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/>'),
   ernaehrung: k('<path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c3-5 6-8 10-10"/>'),
   einstellungen: k('<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>'),
@@ -32,7 +33,7 @@ export const NAV_GRUPPEN = [
   { titel: 'Geld', ids: ['finanzen', 'rechnungen'] },
   { titel: 'Handel', ids: ['flipping', 'handyreparatur', 'sendungen'] },
   { titel: 'Organisation', ids: ['todos', 'kalender', 'notizen', 'berichtsheft'] },
-  { titel: 'Ablage', ids: ['dateien', 'projekte'] },
+  { titel: 'Ablage', ids: ['dateien', 'videos', 'projekte'] },
   { titel: 'Leben', ids: ['ernaehrung'] },
 ];
 
