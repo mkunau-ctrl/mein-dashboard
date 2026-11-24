@@ -105,3 +105,21 @@ export function fasseZusammen(ergebnisse, gewaehlt, abgebrochen) {
     : (abgebrochen ? 'Abgebrochen.' : (ok === 1 ? 'Fertig.' : ''));
   return [kopf, ...zeilen].filter(Boolean).join('\n');
 }
+
+// Arbeitet items mit hoechstens `limit` gleichzeitig ab (Reihenfolge der Ergebnisse = Reihenfolge der items).
+// fn darf NICHT werfen (Fehler als Ergebnis zurueckgeben). gestoppt(): true = keine neuen Aufgaben mehr starten;
+// nicht gestartete Eintraege bleiben undefined.
+export const MAX_PARALLEL = 10;
+export async function verarbeiteMitLimit(items, limit, fn, { gestoppt = () => false } = {}) {
+  const ergebnisse = new Array(items.length);
+  let naechster = 0;
+  const arbeiter = async () => {
+    while (naechster < items.length && !gestoppt()) {
+      const i = naechster++;
+      ergebnisse[i] = await fn(items[i], i);
+    }
+  };
+  const anzahl = Math.max(1, Math.min(Math.floor(limit) || 1, MAX_PARALLEL, items.length));
+  await Promise.all(Array.from({ length: anzahl }, arbeiter));
+  return ergebnisse;
+}

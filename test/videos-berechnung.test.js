@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   PROFILE, zielGroesse, zielFps, formatiereGroesse, formatiereDauer, ersparnisText,
-  videoPfad, sortiereVideos, schaetzeGroesse, effektiveBitrates, fasseZusammen, MAX_UPLOAD_BYTES, ZIEL_BYTES,
+  videoPfad, sortiereVideos, schaetzeGroesse, effektiveBitrates, fasseZusammen, verarbeiteMitLimit, MAX_PARALLEL, MAX_UPLOAD_BYTES, ZIEL_BYTES,
 } from '../js/module/videos/berechnung.js';
 
 test('zielGroesse: skaliert 1080p-Querformat auf 720p, gerade Zahlen', () => {
@@ -100,4 +100,43 @@ test('fasseZusammen: mehrere Videos mit Erfolg und Fehler', () => {
 test('fasseZusammen: einzelnes Video und Abbruch', () => {
   assert.match(fasseZusammen([{ name: 'a', ok: true, vorher: 10, nachher: 5, sekunden: 1, hinweise: ['ohne Ton'] }], 1, false), /^Fertig\.\n✓ a:.*\(ohne Ton\)/);
   assert.equal(fasseZusammen([], 1, true), 'Abgebrochen.');
+});
+
+test('verarbeiteMitLimit: nie mehr als limit gleichzeitig, Reihenfolge der Ergebnisse bleibt', async () => {
+  let laufend = 0; let spitze = 0;
+  const items = Array.from({ length: 12 }, (_, i) => i);
+  const erg = await verarbeiteMitLimit(items, 4, async (x) => {
+    laufend++; spitze = Math.max(spitze, laufend);
+    await new Promise((r) => setTimeout(r, 5 + (x % 3) * 3));
+    laufend--;
+    return x * 2;
+  });
+  assert.equal(spitze, 4);
+  assert.deepEqual(erg, items.map((x) => x * 2));
+});
+
+test('verarbeiteMitLimit: Limit wird auf 1..MAX_PARALLEL begrenzt', async () => {
+  let laufend = 0; let spitze = 0;
+  const items = Array.from({ length: 30 }, (_, i) => i);
+  await verarbeiteMitLimit(items, 99, async () => {
+    laufend++; spitze = Math.max(spitze, laufend);
+    await new Promise((r) => setTimeout(r, 2));
+    laufend--;
+  });
+  assert.equal(spitze, MAX_PARALLEL);
+  const e = await verarbeiteMitLimit([1, 2], 0, async (x) => x);
+  assert.deepEqual(e, [1, 2]);
+  assert.deepEqual(await verarbeiteMitLimit([], 3, async (x) => x), []);
+});
+
+test('verarbeiteMitLimit: gestoppt hindert neue Aufgaben, laufende werden fertig', async () => {
+  let gestartet = 0; let stopp = false;
+  const erg = await verarbeiteMitLimit([1, 2, 3, 4, 5, 6], 2, async (x) => {
+    gestartet++;
+    if (gestartet >= 2) stopp = true;
+    await new Promise((r) => setTimeout(r, 5));
+    return x;
+  }, { gestoppt: () => stopp });
+  assert.equal(gestartet, 2);
+  assert.deepEqual(erg.filter((x) => x !== undefined), [1, 2]);
 });
