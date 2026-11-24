@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   PROFILE, zielGroesse, zielFps, formatiereGroesse, formatiereDauer, ersparnisText,
-  videoPfad, sortiereVideos, schaetzeGroesse, effektiveBitrates, MAX_UPLOAD_BYTES, ZIEL_BYTES,
+  videoPfad, sortiereVideos, schaetzeGroesse, effektiveBitrates, fasseZusammen, MAX_UPLOAD_BYTES, ZIEL_BYTES,
 } from '../js/module/videos/berechnung.js';
 
 test('zielGroesse: skaliert 1080p-Querformat auf 720p, gerade Zahlen', () => {
@@ -85,4 +85,19 @@ test('effektiveBitrates: extrem lange Videos werden als zu lang markiert', () =>
 
 test('schaetzeGroesse: ohne Dauer null', () => {
   assert.equal(schaetzeGroesse(0, PROFILE.lesbar), null);
+});
+
+test('fasseZusammen: mehrere Videos mit Erfolg und Fehler', () => {
+  const t = fasseZusammen([
+    { name: 'a.mov', ok: true, vorher: 100 * 1024 * 1024, nachher: 8 * 1024 * 1024, sekunden: 12, hinweise: [] },
+    { name: 'b.mov', ok: false, fehler: 'Zu gross' },
+  ], 3, true);
+  assert.match(t, /^1 von 3 Videos fertig \(abgebrochen\)\./);
+  assert.match(t, /✓ a\.mov: 100,0 MB → 8,0 MB −92 % in 12 s/);
+  assert.match(t, /✗ b\.mov: Zu gross/);
+});
+
+test('fasseZusammen: einzelnes Video und Abbruch', () => {
+  assert.match(fasseZusammen([{ name: 'a', ok: true, vorher: 10, nachher: 5, sekunden: 1, hinweise: ['ohne Ton'] }], 1, false), /^Fertig\.\n✓ a:.*\(ohne Ton\)/);
+  assert.equal(fasseZusammen([], 1, true), 'Abgebrochen.');
 });

@@ -3,7 +3,7 @@ import { ladeVideos, ladeHoch, loesche, oeffentlicheUrl } from './daten.js';
 import { komprimiere, unterstuetzt } from './komprimieren.js';
 import {
   PROFILE, STANDARD_PROFIL, MAX_UPLOAD_BYTES, formatiereGroesse, formatiereDauer, ersparnisText,
-  sortiereVideos,
+  sortiereVideos, fasseZusammen,
 } from './berechnung.js';
 
 const VIDEO_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>';
@@ -29,8 +29,8 @@ registriere({
         <select id="vid-profil" style="width:100%;margin-bottom:8px;">${profilOptionen}</select>
         <input id="vid-notiz" type="text" placeholder="Worum geht es im Video? (hilft Claude)" maxlength="300" style="width:100%;margin-bottom:10px;">
         <label class="knopf-neutral" style="display:block;text-align:center;cursor:pointer;">
-          Video auswählen
-          <input id="vid-auswahl" type="file" accept="video/*" hidden>
+          Videos auswählen (auch mehrere)
+          <input id="vid-auswahl" type="file" accept="video/*" multiple hidden>
         </label>
       </div>
       <div id="vid-lauf" class="stat-karte" hidden>
@@ -38,7 +38,7 @@ registriere({
         <progress id="vid-fortschritt" max="100" value="0" style="width:100%;"></progress>
         <button id="vid-abbrechen" type="button" class="knopf-neutral" style="margin-top:8px;">Abbrechen</button>
       </div>
-      <p id="vid-status" class="lade" hidden></p>
+      <p id="vid-status" class="lade" style="white-space:pre-line;" hidden></p>
       <div class="punkt-liste" id="vid-liste"></div>`;
     container.querySelector('#vid-zurueck').addEventListener('click', () => { history.back(); });
     const status = container.querySelector('#vid-status');
@@ -104,44 +104,54 @@ registriere({
 
     container.querySelector('#vid-abbrechen').addEventListener('click', () => { abbruch?.abort(); });
 
+    // Mehrere Videos: nacheinander (Hardware-Encoder und Speicher vertragen kein paralleles Komprimieren).
+    // Ein Fehler bei einem Video stoppt die anderen nicht; nur "Abbrechen" beendet die ganze Reihe.
     auswahl.addEventListener('change', async (e) => {
-      const datei = e.target.files[0];
+      const dateien = [...e.target.files];
       e.target.value = '';
-      if (!datei) return;
+      if (dateien.length === 0) return;
       const profilKey = container.querySelector('#vid-profil').value;
       const notiz = container.querySelector('#vid-notiz').value.trim();
       abbruch = new AbortController();
       zeigeStatus(null);
       auswahl.disabled = true;
       lauf.hidden = false;
-      fortschritt.value = 0;
-      laufText.textContent = `Komprimiere „${datei.name}“ (${formatiereGroesse(datei.size)}) …`;
-      try {
-        const ergebnis = await komprimiere(datei, profilKey, {
-          signal: abbruch.signal,
-          onFortschritt: (p) => {
-            fortschritt.value = Math.round(p * 100);
-            laufText.textContent = `Komprimiere „${datei.name}“ … ${Math.round(p * 100)} %`;
-          },
-        });
-        if (ergebnis.blob.size > MAX_UPLOAD_BYTES) {
-          throw new Error(`Auch komprimiert zu groß (${formatiereGroesse(ergebnis.blob.size)}, Limit ${formatiereGroesse(MAX_UPLOAD_BYTES)}). Bitte kürzen oder Qualität „Klein“ wählen.`);
+      const ergebnisse = [];
+      let abgebrochen = false;
+      for (const [i, datei] of dateien.entries()) {
+        const praefix = dateien.length > 1 ? `Video ${i + 1} von ${dateien.length}: ` : '';
+        fortschritt.value = 0;
+        laufText.textContent = `${praefix}Komprimiere „${datei.name}“ (${formatiereGroesse(datei.size)}) …`;
+        try {
+          const ergebnis = await komprimiere(datei, profilKey, {
+            signal: abbruch.signal,
+            onFortschritt: (p) => {
+              fortschritt.value = Math.round(p * 100);
+              laufText.textContent = `${praefix}Komprimiere „${datei.name}“ … ${Math.round(p * 100)} %`;
+            },
+          });
+          if (ergebnis.blob.size > MAX_UPLOAD_BYTES) {
+            throw new Error(`Auch komprimiert zu groß (${formatiereGroesse(ergebnis.blob.size)}, Limit ${formatiereGroesse(MAX_UPLOAD_BYTES)}). Bitte kürzen oder Qualität „Klein“ wählen.`);
+          }
+          laufText.textContent = `${praefix}Lade ${formatiereGroesse(ergebnis.blob.size)} hoch …`;
+          fortschritt.removeAttribute('value'); // unbestimmt
+          await ladeHoch(ergebnis, datei, { profil: profilKey, notiz });
+          const hinweise = [];
+          if (ergebnis.ohneTon) hinweise.push('ohne Ton (dieser Browser kann den Ton nicht kodieren)');
+          if (ergebnis.gedrosselt) hinweise.push('Qualität wegen der Länge gesenkt (unter 50 MB)');
+          ergebnisse.push({ name: datei.name, ok: true, vorher: datei.size, nachher: ergebnis.blob.size, sekunden: ergebnis.sekunden, hinweise });
+          await rendere(); // Liste wächst schon während die nächsten laufen
+        } catch (err) {
+          if (err.name === 'AbortError') { abgebrochen = true; break; }
+          const fehler = /unsupported or unrecognizable/i.test(err.message) ? 'Das ist kein lesbares Video (Format nicht erkannt).' : err.message;
+          ergebnisse.push({ name: datei.name, ok: false, fehler });
         }
-        laufText.textContent = `Lade ${formatiereGroesse(ergebnis.blob.size)} hoch …`;
-        fortschritt.removeAttribute('value'); // unbestimmt
-        await ladeHoch(ergebnis, datei, { profil: profilKey, notiz });
-        const hinweise = [];
-        if (ergebnis.ohneTon) hinweise.push('Ohne Ton (dieser Browser kann den Ton nicht kodieren).');
-        if (ergebnis.gedrosselt) hinweise.push('Wegen der Länge wurde die Qualität gesenkt, damit die Datei unter 50 MB bleibt.');
-        zeigeStatus(`Fertig in ${ergebnis.sekunden} s: ${formatiereGroesse(datei.size)} → ${formatiereGroesse(ergebnis.blob.size)} ${ersparnisText(datei.size, ergebnis.blob.size)}. ${hinweise.join(' ')}`.trim());
-        container.querySelector('#vid-notiz').value = '';
-      } catch (err) {
-        zeigeStatus(err.name === 'AbortError' ? 'Abgebrochen.' : err.message);
-      } finally {
-        lauf.hidden = true;
-        auswahl.disabled = !unterstuetzt();
-        abbruch = null;
       }
+      container.querySelector('#vid-notiz').value = '';
+      lauf.hidden = true;
+      auswahl.disabled = !unterstuetzt();
+      abbruch = null;
+      zeigeStatus(fasseZusammen(ergebnisse, dateien.length, abgebrochen));
       await rendere();
     });
 
