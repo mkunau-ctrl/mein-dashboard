@@ -4,6 +4,16 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-24 – 39 Videos angesehen, Wissen gespeichert (Design/3D-Websites)
+
+**Was:** Mark lud 39 Reels in die Video-Ablage und bat, sie anzusehen und alles Wichtige zu speichern, vor allem Design- und 3D-Websites. Jedes Video
+über eine 12-Bilder-Tafel (ffmpeg + PIL) plus eingebrannte Untertitel ausgewertet; **der Ton wurde nicht ausgewertet** (Transkriptionsmodelle liegen auf
+gesperrten Hosts). Ergebnis: `videos.claude_notiz`/`angesehen_am` bei allen gesetzt, `docs/WISSEN-VIDEOS-2026-11-24.md` (alle Videos einzeln),
+`docs/WISSEN-DESIGN-3D-WEBSITES.md` (Muster, Anti-KI-Look, Skills, UX-Wissen, Umsetzungshinweise `[Claude]`), `stand`-Notizen und Dauerregel
+„0c Neue Videos ansehen + Wissen speichern“ in `projekt_notizen`; `CLAUDE.md` verlinkt beides und nennt die Video-Prüfabfrage beim Start.
+**Fallstricke:** Das Wartehilfs-Skript für die Parallel-Messung (6 gleichzeitige) lief ins Hintergrund-Zeitlimit; die Messung ist unvollständig.
+Tafel-Erkennung „Karten-Frames“ per Helligkeit war für das KI-Video unbrauchbar (Karte und Gesicht im selben Bild), deshalb feste 12 Zeitpunkte je Video.
+
 ## 2026-11-24 – Videos: mehrere auf einmal hochladen
 
 **Was:** Mark wollte mehrere Videos auf einmal hochladen (diktiert als „Lehrer“, gemeint „mehrere“). `js/module/videos/index.js`:

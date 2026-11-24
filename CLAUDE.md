@@ -5,6 +5,8 @@
 > `execute_sql`). Zuerst ausfuehren:
 > `select art, titel, inhalt from projekt_notizen where art in ('regel','stand','offen') and not erledigt order by art, titel;`
 > und `select titel, inhalt, erstellt_am from projekt_notizen where art='log' order by erstellt_am desc limit 10;`
+> **Neue Videos prüfen (Dauerregel, Mark 2026-11-24):** `select id, name, pfad, dauer_s, notiz from videos where angesehen_am is null;`
+> Neue Videos selbst ansehen und Wichtiges speichern (vor allem Design/3D-Websites), Vorgehen siehe `regel`-Notiz „0c Neue Videos ansehen + Wissen speichern“.
 > **Nach JEDER Aenderung** (Code oder Daten) dort einen `log`-Eintrag anhaengen,
 > betroffene `stand`-Zeilen aktualisieren, `offen`-Punkte pflegen. Der Rest
 > dieser Datei und `docs/PROJEKT-LOG.md` sind fuer Code-Details/Verlauf.
@@ -148,6 +150,7 @@ jeder Handelsrunde. Zugang, Regeln v2 und Protokoll-Anleitung stehen als `regel`
 
 - **Design (seit 2026-11-20 Liquid Glass):** `docs/DESIGN-SYSTEM.md` und `app.css`. Neue Oberflächen nur mit den dortigen Tokens, keine Ampelfarben.
 - **KI-Agenten-Wissen (aus Marks Video, 2026-11-24):** `docs/WISSEN-KI-AGENTEN.md` – 16-Schritte-Architektur (Systemprompt, RAG, MCP, Rechte, Guardrails, Kosten, Observability, Evals) und wie sie auf Marks dauerhafte AURORA-Agenten übertragen wird.
+- **Design- und 3D-Websites, Claude-Design-Skills, UX-Tricks (aus Marks 39 Videos, 2026-11-24):** `docs/WISSEN-DESIGN-3D-WEBSITES.md` (Muster, Skills, Anwendung) und `docs/WISSEN-VIDEOS-2026-11-24.md` (alle Videos einzeln).
 - **Verlauf / warum was so ist:** `docs/PROJEKT-LOG.md` (neueste Einträge oben).
 - **Gesamtkonzept:** `docs/specs/2026-09-08-dashboard-konzept.md`.
 - **Feinpläne pro Etappe:** weitere Dateien in `docs/specs/`.
