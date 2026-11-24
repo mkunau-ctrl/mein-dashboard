@@ -14,30 +14,34 @@
 <body>
 <main class="tafel">
 
-  <section id="ansicht-login" class="login" hidden>
-    <h1 class="kreide-titel">Rangliste</h1>
-    <form id="login-form" class="karte" autocomplete="on">
+  <section id="ansicht-liste">
+    <header class="kopf">
+      <div>
+        <h1 class="kreide-titel">Rangliste</h1>
+        <span class="untertitel" id="listen-titel"></span>
+      </div>
+      <div class="kopf-knoepfe">
+        <button type="button" class="knopf-klein" id="knopf-anmelden">Anmelden</button>
+      <button type="button" class="knopf-rund" id="knopf-auswahl" aria-label="Liste wechseln" aria-expanded="false">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      </button>
+      </div>
+    </header>
+
+    <form id="login-form" class="karte formular" autocomplete="on" hidden>
+      <h2 class="kreide-klein">Anmelden</h2>
       <label>Benutzername
         <input name="benutzer" autocomplete="username" autocapitalize="none" spellcheck="false" required>
       </label>
       <label>Passwort
         <input name="passwort" type="password" autocomplete="current-password" required>
       </label>
-      <button type="submit" class="knopf haupt">Anmelden</button>
+      <div class="zwei">
+        <button type="button" class="knopf" id="login-abbrechen">Abbrechen</button>
+        <button type="submit" class="knopf haupt">Anmelden</button>
+      </div>
       <p class="meldung" id="login-meldung" role="alert"></p>
     </form>
-  </section>
-
-  <section id="ansicht-liste" hidden>
-    <header class="kopf">
-      <div>
-        <h1 class="kreide-titel">Rangliste</h1>
-        <span class="untertitel" id="listen-titel"></span>
-      </div>
-      <button type="button" class="knopf-rund" id="knopf-auswahl" aria-label="Liste wechseln" aria-expanded="false">
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-      </button>
-    </header>
 
     <div id="auswahl" class="karte vertieft" hidden>
       <div class="auswahl-zeile" data-feld="gruppe"></div>
@@ -91,7 +95,6 @@
 
     <footer class="fuss">
       <span id="angemeldet"></span>
-      <button type="button" class="link" id="abmelden">Abmelden</button>
     </footer>
   </section>
 
