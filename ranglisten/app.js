@@ -29,12 +29,32 @@ function el(tag, klasse, text) {
   return e;
 }
 
-function zeige(ansicht) {
-  $('ansicht-login').hidden = ansicht !== 'login';
-  $('ansicht-liste').hidden = ansicht !== 'liste';
+// ---------- Anmeldung (optional, nur zum Eintragen) ----------
+function zeigeLogin(an) {
+  $('login-form').hidden = !an;
+  if (an) { $('login-meldung').textContent = ''; $('login-form').querySelector('input[name="benutzer"]').focus(); }
 }
 
-// ---------- Anmeldung ----------
+function zeigeStatus() {
+  const drin = !!zustand.rolle;
+  $('knopf-anmelden').textContent = drin ? 'Abmelden' : 'Anmelden';
+  $('angemeldet').textContent = drin ? `Angemeldet als ${zustand.benutzer}` : '';
+  $('knopf-match').hidden = !darfEintragen();
+}
+
+$('knopf-anmelden').addEventListener('click', async () => {
+  if (zustand.rolle) {
+    await db.auth.signOut();
+    zustand.rolle = null;
+    zustand.benutzer = '';
+    schliesseFormular();
+    zeigeStatus();
+  } else {
+    zeigeLogin($('login-form').hidden);
+  }
+});
+$('login-abbrechen').addEventListener('click', () => zeigeLogin(false));
+
 $('login-form').addEventListener('submit', async (ev) => {
   ev.preventDefault();
   const f = new FormData(ev.target);
@@ -47,34 +67,31 @@ $('login-form').addEventListener('submit', async (ev) => {
   const { error } = await db.auth.signInWithPassword({ email, password: String(f.get('passwort') ?? '').trim() });
   knopf.disabled = false;
   if (error) { meldung.textContent = 'Benutzername oder Passwort falsch.'; return; }
+  const ok = await ladeRolle();
+  if (!ok) { meldung.textContent = 'Dieses Konto hat keinen Zugang.'; return; }
   ev.target.reset();
-  await start();
+  zeigeLogin(false);
+  zeigeStatus();
 });
 
-$('abmelden').addEventListener('click', async () => {
-  await db.auth.signOut();
-  zustand.rolle = null;
-  zeige('login');
-});
-
-async function start() {
+// Rolle der gespeicherten Sitzung holen; ohne Sitzung bleibt man Zuschauer.
+async function ladeRolle() {
   const { data } = await db.auth.getSession();
   const sitzung = data?.session;
-  if (!sitzung) { zeige('login'); return; }
+  if (!sitzung) return false;
   const { data: rolle } = await db.from('rl_rollen').select('benutzer, rolle').eq('user_id', sitzung.user.id).maybeSingle();
-  if (!rolle) {
-    await db.auth.signOut();
-    zeige('login');
-    $('login-meldung').textContent = 'Dieses Konto hat keinen Zugang zur Rangliste.';
-    return;
-  }
+  if (!rolle) { await db.auth.signOut(); return false; }
   zustand.rolle = rolle.rolle;
   zustand.benutzer = rolle.benutzer;
-  $('angemeldet').textContent = `Angemeldet als ${rolle.benutzer}`;
-  $('knopf-match').hidden = !darfEintragen();
-  zeige('liste');
+  return true;
+}
+
+async function start() {
   baueAuswahl();
-  await ladeListe();
+  const laden = ladeListe();
+  await ladeRolle();
+  zeigeStatus();
+  await laden;
 }
 
 const darfEintragen = () => zustand.rolle === 'chef' || zustand.rolle === 'liste';
@@ -201,7 +218,7 @@ function zeigeHinweis(text) {
 }
 
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && zustand.rolle) ladeListe();
+  if (document.visibilityState === 'visible') ladeListe();
 });
 
 start();

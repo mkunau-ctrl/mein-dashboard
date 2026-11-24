@@ -60,6 +60,8 @@ body {
   cursor: pointer;
   transition: transform 80ms ease, box-shadow 80ms ease;
 }
+.kopf-knoepfe { display: flex; align-items: center; gap: 10px; }
+.knopf-klein { font: inherit; font-size: 14px; font-weight: 600; color: var(--text); background: none; border: 1px solid var(--text-leise); border-radius: 22px; min-height: 44px; padding: 0 16px; cursor: pointer; }
 .knopf-rund { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .knopf { padding: 0 18px; font-weight: 600; width: 100%; }
 .knopf.haupt { background: var(--kreide); color: #1d2321; box-shadow: 0 4px 0 #8a6f1e, inset 0 1px 0 rgba(255,255,255,0.3); }

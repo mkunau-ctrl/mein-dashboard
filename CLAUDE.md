@@ -115,8 +115,9 @@ Auslöser und Ruhezeit stellt Mark in der App ein.
 `ranglisten/` ist **kein Dashboard-Modul**, sondern eine eigene neutrale Seite unter
 `portal-start.vercel.app/ranglisten/` (keine Links/Namen zum Dashboard). Daten: Tabellen `rl_*`
 (Migration `supabase/migrations/2026-11-23-ranglisten.sql`), Schreiben nur über die Funktion
-`rl_match_eintragen` (Rollen `chef`/`liste`), Lesen für alle drei Rollen. Zugänge `chef`, `liste`,
-`zuschauer` = Supabase-Nutzer `<name>@rangliste.local` mit Zeile in `rl_rollen`. Die Policy
+`rl_match_eintragen` (Rollen `chef`/`liste`), Lesen für alle drei Rollen. **Seit 2026-11-24 ist die Liste ohne Login lesbar** (Policies `rl_*_oeffentlich` für `anon`, Migration
+`2026-11-24-ranglisten-oeffentlich.sql`), Anmelden-Knopf oben rechts nur zum Eintragen. Zugänge `chef`, `liste`
+(`zuschauer` wird nicht mehr gebraucht) = Supabase-Nutzer `<name>@rangliste.local` mit Zeile in `rl_rollen`. Die Policy
 `kein_ranglisten_konto` sperrt diese Konten auf allen anderen Tabellen; **neue Tabellen bekommen sie
 nicht automatisch** und müssen sie selbst anlegen. Logik + Test: `ranglisten/logik.js`,
 `test/ranglisten-logik.test.js`. Migrationen ohne `drop`/`revoke` schreiben (sonst hängt der
