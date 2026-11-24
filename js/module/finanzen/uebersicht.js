@@ -56,6 +56,15 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
     await zeigeSchulden(inhalt, zustand, aktualisieren);
     return;
   }
+  if (detail === 'paper-trading') {
+    const { zeigePaperTrading } = await import('./paper-trading.js');
+    container.innerHTML = '<div class="modul-kopf"><button id="ua-zurueck" type="button">‹ Übersicht</button></div>';
+    container.querySelector('#ua-zurueck').addEventListener('click', () => { location.hash = '#/finanzen/uebersicht'; });
+    const inhalt = document.createElement('div');
+    container.appendChild(inhalt);
+    await zeigePaperTrading(inhalt);
+    return;
+  }
   const heuteStr = heute();
   const von = zeitraumVon(zeitraum, heuteStr);
   const stand = gesamtKontostand(zustand.konten, zustand.expenses, zustand.einnahmen, heuteStr);
@@ -100,6 +109,10 @@ export async function zeigeUebersicht(container, zustand, aktualisieren, zeitrau
       <div class="kachel" data-ziel="schulden">
         <small>Schulden</small>
         <span>${offeneSchulden(zustand.schulden, zustand.zahlungen).reduce((s, schuld) => s + schuldenRestbetrag(schuld, zustand.zahlungen), 0).toFixed(2)} €</span>
+      </div>
+      <div class="kachel" data-ziel="paper-trading">
+        <small>Paper-Trading</small>
+        <span>Claudes Depot</span>
       </div>
     </div>
     <div class="punkt-liste">
