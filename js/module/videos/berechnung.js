@@ -93,3 +93,15 @@ export function effektiveBitrates(dauerSekunden, profil) {
   }
   return { videoBitrate: video, audioBitrate: profil.audioBitrate, gedrosselt: true, zu_lang: false };
 }
+
+// Abschlusstext fuer eine Reihe von Uploads. ergebnisse: [{name, ok, vorher, nachher, sekunden, hinweise, fehler}]
+export function fasseZusammen(ergebnisse, gewaehlt, abgebrochen) {
+  const zeilen = ergebnisse.map((r) => r.ok
+    ? `✓ ${r.name}: ${formatiereGroesse(r.vorher)} → ${formatiereGroesse(r.nachher)} ${ersparnisText(r.vorher, r.nachher)} in ${r.sekunden} s${r.hinweise?.length ? ` (${r.hinweise.join('; ')})` : ''}`
+    : `✗ ${r.name}: ${r.fehler}`);
+  const ok = ergebnisse.filter((r) => r.ok).length;
+  const kopf = gewaehlt > 1
+    ? `${ok} von ${gewaehlt} Videos fertig${abgebrochen ? ' (abgebrochen)' : ''}.`
+    : (abgebrochen ? 'Abgebrochen.' : (ok === 1 ? 'Fertig.' : ''));
+  return [kopf, ...zeilen].filter(Boolean).join('\n');
+}

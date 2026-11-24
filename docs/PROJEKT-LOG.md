@@ -4,6 +4,17 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-24 – Videos: mehrere auf einmal hochladen
+
+**Was:** Mark wollte mehrere Videos auf einmal hochladen (diktiert als „Lehrer“, gemeint „mehrere“). `js/module/videos/index.js`:
+Dateiauswahl mit `multiple`, die Videos laufen **nacheinander** (Hardware-Encoder und Speicher vertragen kein paralleles Komprimieren),
+Anzeige „Video 2 von 5: …“, die Liste wächst schon während die nächsten laufen. Ein fehlerhaftes Video stoppt die anderen nicht
+(Zeile ✗ mit Grund); „Abbrechen“ beendet die ganze Reihe. Eine Notiz gilt für alle Videos des Stapels. Abschlusstext
+`fasseZusammen` in `berechnung.js` (getestet). Englische Bibliotheksfehlermeldung wird auf Deutsch übersetzt.
+**Geprüft:** Playwright mit 3 Dateien (Hochkant 1080×1920 → 720×1280, kaputte Datei, 20-s-Video): 2 von 3 fertig, Fehlerzeile für die
+kaputte, Hochkant korrekt (damit ist der bisher offene Punkt „Hochkant im Browser“ erledigt). **Nicht geprüft:** iPhone, sehr viele
+große Dateien hintereinander (Speicherverbrauch).
+
 ## 2026-11-24 – Erstes Video angesehen, Wissen gespeichert
 
 **Was:** Marks Reel (KI-System in 16 Schritten, Beispiel Hausverwaltung) per `automatisierung/video-bilder.sh` und eingebrannten
