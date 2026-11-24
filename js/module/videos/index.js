@@ -29,9 +29,9 @@ registriere({
         <select id="vid-profil" style="width:100%;margin-bottom:8px;">${profilOptionen}</select>
         <label for="vid-parallel" class="lade" style="display:block;margin-bottom:4px;">Gleichzeitig komprimieren</label>
         <select id="vid-parallel" style="width:100%;margin-bottom:8px;">
-          <option value="1">1 (nacheinander, am schonendsten)</option>
-          <option value="2">2</option>
-          <option value="3" selected>3 (empfohlen)</option>
+          <option value="1">1 (nacheinander, Upload läuft parallel)</option>
+          <option value="2" selected>2 (empfohlen)</option>
+          <option value="3">3</option>
           <option value="5">5</option>
           <option value="10">10 (maximal, braucht viel Speicher)</option>
         </select>
@@ -138,10 +138,22 @@ registriere({
       const kopf = () => { laufText.textContent = `${fertig} von ${dateien.length} fertig${parallel > 1 && dateien.length > 1 ? ` · bis zu ${Math.min(parallel, dateien.length)} gleichzeitig` : ''}`; };
       kopf();
 
+      // Komprimieren und Hochladen laufen als Fliessband: sobald ein Video fertig komprimiert ist, startet sein Upload im
+      // Hintergrund und der Komprimier-Platz ist sofort fuer das naechste Video frei. Hoechstens MAX_OFFENE_UPLOADS fertige
+      // Videos warten gleichzeitig im Arbeitsspeicher auf ihren Upload (Schutz bei langsamem Netz).
+      const MAX_OFFENE_UPLOADS = 3;
+      let offeneUploads = 0;
+      const gestoppt = () => abbruch.signal.aborted;
+
+      // liefert entweder ein fertiges Fehlerergebnis oder { upload: Promise<Ergebnis> }
       const job = async (datei, i) => {
         const z = zeilen[i];
         z.text(`wartet … (${formatiereGroesse(datei.size)})`);
         try {
+          while (offeneUploads >= MAX_OFFENE_UPLOADS && !gestoppt()) {
+            await new Promise((r) => setTimeout(r, 150));
+          }
+          if (gestoppt()) throw new DOMException('Abgebrochen', 'AbortError');
           const ergebnis = await komprimiere(datei, profilKey, {
             signal: abbruch.signal,
             onFortschritt: (p) => { z.wert(Math.round(p * 100)); z.text(`komprimiere ${Math.round(p * 100)} %`); },
@@ -152,14 +164,23 @@ registriere({
             return { name: datei.name, ok: false, fehler, wiederholbar: false };
           }
           z.text(`lade ${formatiereGroesse(ergebnis.blob.size)} hoch …`); z.wert(null);
-          await ladeHoch(ergebnis, datei, { profil: profilKey, notiz });
-          const hinweise = [];
-          if (ergebnis.ohneTon) hinweise.push('ohne Ton (dieser Browser kann den Ton nicht kodieren)');
-          if (ergebnis.gedrosselt) hinweise.push('Qualität wegen der Länge gesenkt (unter 50 MB)');
-          z.text(`✓ fertig (${formatiereGroesse(datei.size)} → ${formatiereGroesse(ergebnis.blob.size)})`); z.wert(100);
-          fertig++; kopf();
-          rendere(); // Liste wächst schon, während die anderen laufen
-          return { name: datei.name, ok: true, vorher: datei.size, nachher: ergebnis.blob.size, sekunden: ergebnis.sekunden, hinweise };
+          offeneUploads++;
+          const upload = (async () => {
+            try {
+              await ladeHoch(ergebnis, datei, { profil: profilKey, notiz });
+              const hinweise = [];
+              if (ergebnis.ohneTon) hinweise.push('ohne Ton (dieser Browser kann den Ton nicht kodieren)');
+              if (ergebnis.gedrosselt) hinweise.push('Qualität wegen der Länge gesenkt (unter 50 MB)');
+              z.text(`✓ fertig (${formatiereGroesse(datei.size)} → ${formatiereGroesse(ergebnis.blob.size)})`); z.wert(100);
+              fertig++; kopf();
+              rendere(); // Liste wächst schon, während die anderen laufen
+              return { name: datei.name, ok: true, vorher: datei.size, nachher: ergebnis.blob.size, sekunden: ergebnis.sekunden, hinweise };
+            } catch (err) {
+              z.text(`✗ Hochladen: ${err.message}`);
+              return { name: datei.name, ok: false, fehler: err.message, wiederholbar: true };
+            } finally { offeneUploads--; }
+          })();
+          return { upload };
         } catch (err) {
           if (err.name === 'AbortError') { z.text('abgebrochen'); return { name: datei.name, ok: false, fehler: 'abgebrochen', abgebrochen: true }; }
           const kein = /unsupported or unrecognizable/i.test(err.message);
@@ -168,14 +189,15 @@ registriere({
           return { name: datei.name, ok: false, fehler, wiederholbar: !kein };
         }
       };
+      const loese = async (r) => (r && r.upload ? r.upload : r);
 
-      const gestoppt = () => abbruch.signal.aborted;
-      let ergebnisse = await verarbeiteMitLimit(dateien, parallel, job, { gestoppt });
+      const vorlaeufig = await verarbeiteMitLimit(dateien, parallel, job, { gestoppt });
+      let ergebnisse = await Promise.all(vorlaeufig.map(loese)); // wartet auf alle laufenden Uploads
       if (parallel > 1 && !gestoppt()) {
         for (let i = 0; i < dateien.length && !gestoppt(); i++) {
           if (ergebnisse[i] && !ergebnisse[i].ok && ergebnisse[i].wiederholbar) {
             zeilen[i].text('zweiter Versuch, jetzt einzeln …'); zeilen[i].wert(0);
-            ergebnisse[i] = await job(dateien[i], i);
+            ergebnisse[i] = await loese(await job(dateien[i], i));
           }
         }
       }

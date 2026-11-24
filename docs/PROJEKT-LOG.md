@@ -4,6 +4,17 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-24 – Videos: Fließband (Upload überlappt) und bis zu 10 gleichzeitig
+
+**Was:** Mark wollte (1) dass das nächste Video schon komprimiert wird, während eines hochlädt, und (2) bis zu 10 Videos gleichzeitig komprimieren.
+`js/module/videos/index.js`: Komprimieren und Hochladen sind getrennt; sobald ein Video fertig komprimiert ist, läuft sein Upload im Hintergrund und der
+Komprimier-Platz ist frei (höchstens 3 fertige Videos warten im Speicher auf den Upload). Auswahl „Gleichzeitig komprimieren“ (1, 2, 3, 5, 10; Standard 2),
+eine Fortschrittszeile je Video, Pool `verarbeiteMitLimit` (getestet), fehlgeschlagene Videos bekommen am Ende einen zweiten Versuch einzeln.
+**Gemessen (Playwright-Chromium, Software-Encoder, 4 Kerne, gemockter Upload):** 4 Videos mit je 3 s Upload: 10,8 s mit Fließband statt ca. 22 s hintereinander.
+6 × 20-s-Video: 1 gleichzeitig 57,9 s, 3 gleichzeitig 60,4 s (**kein Gewinn**, Prozessor ausgelastet). 10 × 4-s-Video: 10 gleichzeitig 21,1 s, 1 gleichzeitig mit
+Fließband 19,8 s; alle 10 liefen stabil durch. **Fazit:** Mehr gleichzeitig beschleunigt in dieser Umgebung nichts; das Fließband bringt den Gewinn. Auf dem iPhone
+(Hardware-Encoder, wenig Arbeitsspeicher) **nicht gemessen**; 10 gleichzeitig kann dort Speicher kosten, deshalb Standard 2.
+
 ## 2026-11-24 – 39 Videos angesehen, Wissen gespeichert (Design/3D-Websites)
 
 **Was:** Mark lud 39 Reels in die Video-Ablage und bat, sie anzusehen und alles Wichtige zu speichern, vor allem Design- und 3D-Websites. Jedes Video
