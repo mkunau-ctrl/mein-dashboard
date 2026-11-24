@@ -4,6 +4,15 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-24 – Erstes Video angesehen, Wissen gespeichert
+
+**Was:** Marks Reel (KI-System in 16 Schritten, Beispiel Hausverwaltung) per `automatisierung/video-bilder.sh` und eingebrannten
+Untertiteln ausgewertet (Ton nicht möglich: Transkriptionsmodelle liegen auf gesperrten Hosts). Zusammenfassung in
+`videos.claude_notiz`; das Wissen steht dauerhaft in `docs/WISSEN-KI-AGENTEN.md` und als `stand`-Notiz „Wissen: KI-Agenten-Architektur“
+in `projekt_notizen`. Mark will daraus dauerhafte AURORA-Agenten mit Zugehörigkeit und Wissen. Nächster Schritt (Vorschlag):
+Tabellen `agent_profile`/`agent_wissen` + Ansicht im KI-Modul + Übergabe-Datei für den Kern. **Hinweis:** In Marks Supabase sind
+`vector` und `pg_trgm` verfügbar, aber nicht installiert.
+
 ## 2026-11-24 – Untere Leiste: „Mehr“ wird „Profil“, dort sind alle Bereiche wählbar
 
 **Was/Warum:** Mark wollte ganz rechts in der Handy-Leiste nicht mehr „Mehr“, sondern „Mein Profil“, und dort alles auswählen
