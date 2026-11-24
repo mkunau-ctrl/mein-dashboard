@@ -49,6 +49,18 @@ Suche). Privater Bucket `austausch` (50 MB/Datei, Pfad `<user_id>/<id>-<name>`),
 Tabelle `dateien`. Logik in `berechnung.js` (Test `test/dateien-berechnung.test.js`).
 Noch nicht am echten Gerät getestet. Details: `docs/PROJEKT-LOG.md`.
 
+## Video-Ablage (2026-11-24, Prototyp)
+
+Modul `js/module/videos/` (`#/videos`, Schnelleinstieg „Videos“ in der Suche): Video wird im Browser
+lokal komprimiert (WebCodecs, `js/vendor/mediabunny.min.mjs`, Profile in `berechnung.js`), nur das kleine
+Ergebnis geht in den **öffentlich lesbaren** (nicht auflistbaren) Bucket `video-ablage`, Metadaten in
+Tabelle `videos` (Migration `2026-11-24-videos.sql`). **Claude ansehen:** Zeile in `videos` lesen, Datei per
+`curl` von `https://vogztxoaqbnuciboughd.supabase.co/storage/v1/object/public/video-ablage/<pfad>` holen
+(Host ist in der Cloud-Umgebung freigeschaltet) bzw. `automatisierung/video-bilder.sh <URL> [Ordner] [N]`
+(ffmpeg: Einzelbilder + `tafel.jpg`, mit Read ansehen), danach `videos.claude_notiz`/`angesehen_am`
+setzen. Ton wird nicht transkribiert. Tests: `test/videos-berechnung.test.js`. Details/Fallstricke:
+`docs/PROJEKT-LOG.md` (2026-11-24).
+
 ## Push-Benachrichtigungen (2026-10-03, Prototyp)
 
 Web-Push aufs iPhone (nur als Home-Bildschirm-App). Tabellen `push_abos`/

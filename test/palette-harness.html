@@ -1,0 +1,11 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="/app.css"></head><body>
+<div id="dashboard-ansicht"><button id="oeffnen">Suchen</button></div>
+<div id="palette" hidden role="dialog"><div class="palette-box"><div class="palette-kopf"><input id="palette-eingabe" type="text" placeholder="Seite oder Befehl suchen"></div>
+<div id="palette-liste" class="palette-liste" role="listbox"></div><div class="palette-fuss"></div></div></div>
+<script type="module">
+import { starteBefehlsleiste } from '/js/palette.js';
+const l = starteBefehlsleiste({ holeEintraege: () => Array.from({length: 30}, (_, i) => ({ gruppe: 'Seiten', titel: 'Seite ' + i, hinweis: 'x', aktion: () => {} })) });
+document.getElementById('oeffnen').onclick = () => l.oeffne();
+window.__l = l;
+</script></body></html>

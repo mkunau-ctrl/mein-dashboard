@@ -344,8 +344,10 @@ button:disabled { opacity: .45; cursor: default; transform: none; filter: none; 
 .palette-leer { padding: 24px 14px; color: var(--gedaempft); text-align: center; }
 .palette-fuss { display: flex; gap: 14px; padding: 10px 18px; border-top: 1px solid var(--glas-linie); color: var(--gedaempft); font-size: .78rem; }
 @media (max-width: 899px) {
-  #palette { align-items: flex-end; padding: 0; }
-  .palette-box { max-width: none; max-height: 84vh; border-radius: var(--r-l) var(--r-l) 0 0; padding-bottom: env(safe-area-inset-bottom); }
+  /* Oben statt unten: Suchfeld + Treffer bleiben ueber der Tastatur sichtbar (Hoehe setzt palette.js per visualViewport) */
+  #palette { align-items: flex-start; padding: calc(env(safe-area-inset-top) + 8px) 8px 8px; }
+  .palette-box { max-width: none; max-height: 100%; border-radius: var(--r-l); }
+  .palette-liste { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
   .palette-fuss { display: none; }
 }
 
@@ -368,6 +370,8 @@ button:disabled { opacity: .45; cursor: default; transform: none; filter: none; 
 
 .searchbar { display: flex; align-items: center; gap: 10px; border-radius: 999px; padding: 0 18px; min-height: 50px; }
 .searchbar:focus-within { box-shadow: var(--glas-schatten), var(--fokus); }
+/* Suche-Tab: Feld bleibt beim Scrollen der Treffer oben stehen (unter der Kopfzeile) */
+.searchbar-fix { position: sticky; top: calc(var(--kopf-hoehe) + 20px + env(safe-area-inset-top)); z-index: 10; }
 .searchbar svg { width: 18px; height: 18px; color: var(--gedaempft); flex: none; }
 .searchbar input { border: none; background: none; outline: none; box-shadow: none; flex: 1; padding: 0; min-height: 0; border-radius: 0; }
 .searchbar input:focus { box-shadow: none; }

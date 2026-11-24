@@ -1,0 +1,4 @@
+mediabunny 1.66.4 (MPL-2.0), https://mediabunny.dev, unveraendert aus dem npm-Paket kopiert
+(dist/bundles/mediabunny.min.mjs). Wird nur vom Video-Modul (js/module/videos/komprimieren.js)
+geladen. Lokal eingebunden statt per CDN, damit die App ohne Fremdserver funktioniert.
+Lizenztext: https://github.com/Vanilagy/mediabunny/blob/main/LICENSE
