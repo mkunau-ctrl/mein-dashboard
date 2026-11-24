@@ -28,7 +28,7 @@ import './module/kalender/index.js';
 import './module/woche/index.js';
 import './module/ki/index.js';
 
-// Untere Leiste am Handy: vier feste Seiten (Home in der Mitte) plus "Mehr" (öffnet die Befehlsleiste mit allen Seiten).
+// Untere Leiste am Handy: vier feste Seiten (Home in der Mitte) plus ganz rechts "Profil" (Seite "Mein Profil", dort sind alle Bereiche auswählbar).
 const NAV_MODULE = ['ki', 'finanzen', 'home', 'todos'];
 
 const loginAnsicht = document.getElementById('login-ansicht');
@@ -116,12 +116,13 @@ function rendereTabLeiste(aktivId) {
     const tab = navKnopf(modulId, aktivId, '');
     if (tab) tabLeiste.appendChild(tab);
   }
-  const mehr = document.createElement('button');
-  mehr.type = 'button';
-  mehr.innerHTML = `${ICONS.mehr}<span>Mehr</span>`;
-  if (!NAV_MODULE.includes(aktivId)) mehr.classList.add('aktiv');
-  mehr.addEventListener('click', () => befehlsleiste.oeffne());
-  tabLeiste.appendChild(mehr);
+  // Ganz rechts: Mein Profil. Aktiv auch auf allen Seiten ohne eigenen Tab (sie sind von dort erreichbar).
+  const profil = document.createElement('button');
+  profil.type = 'button';
+  profil.innerHTML = `${ICONS.profil}<span>Profil</span>`;
+  if (!NAV_MODULE.includes(aktivId)) profil.classList.add('aktiv');
+  profil.addEventListener('click', () => { location.hash = '#/profil'; });
+  tabLeiste.appendChild(profil);
   rendereSeitenleiste(aktivId);
 }
 

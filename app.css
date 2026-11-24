@@ -304,6 +304,7 @@ button:disabled { opacity: .45; cursor: default; transform: none; filter: none; 
   font-size: .68rem; font-weight: 600; letter-spacing: 0; box-shadow: none;
 }
 #tab-leiste-unten button svg { width: 22px; height: 22px; }
+#tab-leiste-unten button span { white-space: nowrap; }
 #tab-leiste-unten button:hover { filter: none; color: var(--text); }
 #tab-leiste-unten button.aktiv { color: var(--akzent); background: var(--glas-stark); border-color: var(--glas-rand);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 6px 14px -8px rgba(0,0,0,.5); }

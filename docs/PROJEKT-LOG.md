@@ -4,6 +4,20 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-24 – Untere Leiste: „Mehr“ wird „Profil“, dort sind alle Bereiche wählbar
+
+**Was/Warum:** Mark wollte ganz rechts in der Handy-Leiste nicht mehr „Mehr“, sondern „Mein Profil“, und dort alles auswählen
+können. `js/app.js` `rendereTabLeiste`: der rechte Tab ist jetzt Profil-Icon + „Profil“ und öffnet `#/profil` (vorher öffnete
+„Mehr“ die Befehlsleiste); er ist weiter aktiv auf allen Seiten ohne eigenen Tab. Die Seite `js/module/profil/index.js` (Titel
+„Mein Profil“) zeigt unter Avatar/E-Mail jetzt **alle Bereiche gruppiert wie die Seitenleiste** (`NAV_GRUPPEN`: Überblick, Geld,
+Handel, Organisation, Ablage, Leben; nur registrierte Module), dann System (Einstellungen) und Abmelden. **Entfernt:** die drei
+Deko-Zeilen „Persönliche Daten“, „Konten & Verbindungen“, „Dokumente“ (zeigten nur „Noch nicht verfügbar“) sowie die
+Berichtsheft-Zeile (steht jetzt unter Organisation als „Ausbildung“). `js/icons.js`: „Videos“ fehlte in `NAV_GRUPPEN` und hatte
+kein Icon, jetzt in Ablage. **Fallstrick:** Das Label „Mein Profil“ bricht in der Leiste auf allen Breiten (320-430 px) in zwei
+Zeilen um, deshalb heißt der Tab „Profil“ (nowrap gesetzt). Die Befehlsleiste (Suchen) ist weiter über das Suchsymbol oben
+erreichbar. **Geprüft:** Playwright (Profil-Seite mit gemocktem Login: 6 Gruppen, 18 Bereiche, Klick auf Videos setzt `#/videos`),
+274 Tests grün. **Nicht geprüft:** die echte Leiste in der laufenden App (Login nötig), iPhone.
+
 ## 2026-11-24 – Suche: Treffer oben statt hinter der Tastatur (Handy)
 
 **Was/Warum:** Mark: Beim Suchen sollen alle Ergebnisse oben erscheinen, sonst „buggt“ es mit der Tastatur. Ursache:
