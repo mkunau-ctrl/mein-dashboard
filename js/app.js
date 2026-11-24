@@ -1,7 +1,7 @@
 import { parseHash } from './router.js';
 import { entscheideAnsicht } from './view.js';
 import { holeSession, sendeMagicLink, beiAuthWechsel,
-         meldeAnMitPasskey } from './auth.js';
+         meldeAnMitPasskey, meldeAnMitPasswort } from './auth.js';
 import { holeModul } from './registry.js';
 import { wendeThemeAn, wechsleTheme } from './theme.js';
 import { wendeSchriftgroesseAn } from './module/einstellungen/schriftgroesse.js';
@@ -173,6 +173,30 @@ document.getElementById('passkey-login').addEventListener('click', async () => {
   loginHinweis.textContent = 'Passkey wird abgefragt …';
   const { ok, fehler } = await meldeAnMitPasskey();
   if (!ok) loginHinweis.textContent = `Fehler: ${fehler}`;
+});
+
+// Passwort-Login: erster Klick zeigt das Feld, danach meldet er an (unabhaengig von Mail-Limit und Passkey-Adresse).
+const passwortForm = document.getElementById('passwort-form');
+const passwortFeld = document.getElementById('passwort');
+passwortForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (passwortFeld.hidden) {
+    passwortFeld.hidden = false;
+    passwortFeld.focus();
+    return;
+  }
+  const email = emailFeld.value.trim();
+  if (!email || !passwortFeld.value) {
+    loginHinweis.textContent = 'Bitte E-Mail und Passwort eingeben.';
+    return;
+  }
+  const knopf = passwortForm.querySelector('button');
+  knopf.disabled = true;
+  loginHinweis.textContent = 'Melde an …';
+  const { ok, fehler } = await meldeAnMitPasswort(email, passwortFeld.value);
+  knopf.disabled = false;
+  if (!ok) { loginHinweis.textContent = `Fehler: ${fehler}`; return; }
+  passwortFeld.value = '';
 });
 
 beiAuthWechsel(() => route());
