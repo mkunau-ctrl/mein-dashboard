@@ -9,6 +9,26 @@ export function starteBefehlsleiste({ holeEintraege }) {
   let sichtbar = [];
   let index = 0;
   let zuletztFokus = null;
+  const vv = window.visualViewport;
+  const handy = window.matchMedia('(max-width: 899px)');
+
+  // Handy: Die Leiste klebt oben und passt sich dem sichtbaren Bereich ueber der Tastatur an.
+  // iOS legt die Tastatur UEBER die Seite (Layout-Viewport bleibt gleich); visualViewport sagt,
+  // was wirklich sichtbar ist. So stehen Suchfeld und alle Treffer immer oben und nie hinter der Tastatur.
+  function passeAnTastaturAn() {
+    if (box.hidden) return;
+    if (vv && handy.matches && vv.height > 120) { // kleine/unsinnige Werte ignorieren, dann greift das CSS
+      box.style.top = `${vv.offsetTop}px`;
+      box.style.bottom = 'auto';
+      box.style.height = `${vv.height}px`;
+    } else {
+      box.style.top = box.style.bottom = box.style.height = '';
+    }
+  }
+  if (vv) {
+    vv.addEventListener('resize', passeAnTastaturAn);
+    vv.addEventListener('scroll', passeAnTastaturAn);
+  }
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -54,13 +74,15 @@ export function starteBefehlsleiste({ holeEintraege }) {
     zuletztFokus = document.activeElement;
     eintraege = holeEintraege();
     box.hidden = false;
+    passeAnTastaturAn();
     eingabe.value = '';
     filtere();
-    setTimeout(() => eingabe.focus(), 0);
+    setTimeout(() => { eingabe.focus(); passeAnTastaturAn(); }, 0);
   }
 
   function schliesse() {
     box.hidden = true;
+    box.style.top = box.style.bottom = box.style.height = '';
     if (zuletztFokus && typeof zuletztFokus.focus === 'function') zuletztFokus.focus();
   }
 

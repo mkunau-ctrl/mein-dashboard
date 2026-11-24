@@ -62,9 +62,9 @@ async function ladeZustand() {
 
 function render(container, kompakt = false) {
   container.innerHTML = `
-    <div class="searchbar" style="margin:16px 0;">
+    <div class="searchbar${kompakt ? '' : ' searchbar-fix'}" style="margin:16px 0;">
       ${SUCHE_ICON}
-      <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …">
+      <input id="suche-eingabe" type="search" placeholder="Ausgaben, To-dos, Sendungen, Termine …" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false">
     </div>
     <div id="suche-treffer" class="punkt-liste" hidden></div>
     <div id="suche-standard" ${kompakt ? 'hidden' : ''}>

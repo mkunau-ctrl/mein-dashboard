@@ -4,6 +4,22 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-24 – Suche: Treffer oben statt hinter der Tastatur (Handy)
+
+**Was/Warum:** Mark: Beim Suchen sollen alle Ergebnisse oben erscheinen, sonst „buggt“ es mit der Tastatur. Ursache:
+Die Befehlsleiste (`js/palette.js`, `#palette`) war auf dem Handy ein Bottom-Sheet am unteren Rand (`align-items: flex-end`).
+iOS legt die Tastatur über die Seite, ohne den Layout-Viewport zu ändern, dadurch verschwanden Treffer hinter der Tastatur.
+**Fix:** Auf dem Handy (<900 px) klebt die Leiste oben (Suchfeld zuerst, Treffer direkt darunter, scrollbar); `palette.js`
+setzt `top`/`height` der Leiste per `visualViewport` (resize/scroll), sodass sie nur den Bereich über der Tastatur nutzt.
+Werte unter 120 px werden ignoriert (dann greift das CSS). Im Suche-Tab (`js/module/suche/index.js`) bleibt das Suchfeld
+beim Scrollen der Treffer oben stehen (`.searchbar-fix`, sticky unter der Kopfzeile), plus `enterkeyhint="search"`,
+`autocomplete="off"`. Beide Suchen filtern weiter live bei jedem Tastendruck.
+**Geprüft:** Playwright (iPhone-13-Emulation, Tastatur per gemocktem `visualViewport` auf 470 px): Box endet bei 462 px,
+Liste scrollt, Filter zeigt 11 Treffer, Schließen räumt die Inline-Styles auf. Mock-Seite: `test/palette-harness.html`.
+**Nicht geprüft:** echtes iPhone-Safari mit echter Tastatur (iOS-Verhalten von `visualViewport` nur aus Wissen, nicht gemessen);
+der sticky-Suchfeld-Effekt im Suche-Tab wurde nur per CSS-Review, nicht im Browser getestet. Hinweis: Die Befehlsleiste
+sucht nur Seiten/Befehle, die Datensuche (Ausgaben, To-dos …) ist der Suche-Tab.
+
 ## 2026-11-24 – Video-Ablage: lokal komprimieren, Claude kann Videos ansehen (`#/videos`)
 
 **Was:** Mark will Videos (erstes Thema: dauerhafte Agenten für AURORA) nicht über Cloudflare teilen, sondern
