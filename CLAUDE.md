@@ -976,6 +976,15 @@ nicht der Nutzer). Nach jeder fertigen (Sub-)Etappe: `docs/PROJEKT-LOG.md`
 
 ## Nav (Bottom-Nav-Struktur, seit Etappe 8 v2)
 
+**AKTUELL (2026-11-24, überschreibt die Beschreibung darunter):** Die Handy-Leiste unten zeigt `NAV_MODULE = ['ki', 'finanzen', 'home', 'todos']`
+plus ganz rechts **„Profil“** (`js/app.js` `rendereTabLeiste`, öffnet `#/profil`, aktiv auf allen Seiten ohne eigenen Tab). Die Seite „Mein Profil“
+(`js/module/profil/index.js`) listet **alle Bereiche gruppiert wie die Seitenleiste** (`NAV_GRUPPEN` in `js/icons.js`: Überblick inkl. Agenten, Geld, Handel,
+Organisation, Ablage inkl. Videos, Leben), dazu Einstellungen und Abmelden; die früheren Platzhalterzeilen sind entfernt. Neue Module: in `js/icons.js`
+(`ICONS` + `NAV_GRUPPEN`) eintragen, dann erscheinen sie automatisch im Profil und in der Befehlsleiste. Die Befehlsleiste (Lupe oben) ist auf dem Handy oben
+verankert und folgt per `visualViewport` der Tastatur (`js/palette.js`).
+
+**Ältere Beschreibung (Etappe 8 v2, nur noch als Verlauf):**
+
 Feste Reihenfolge, **nicht** mehr automatisch aus allen registrierten
 Modulen erzeugt: **Home → Finanzen → Ausbildung → Suche → Profil**
 (`NAV_MODULE` in `js/app.js`). Ernährung, To-dos und Sendungen sind

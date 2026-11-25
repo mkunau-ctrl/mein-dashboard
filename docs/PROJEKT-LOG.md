@@ -15,6 +15,14 @@ eine Fortschrittszeile je Video, Pool `verarbeiteMitLimit` (getestet), fehlgesch
 Fließband 19,8 s; alle 10 liefen stabil durch. **Fazit:** Mehr gleichzeitig beschleunigt in dieser Umgebung nichts; das Fließband bringt den Gewinn. Auf dem iPhone
 (Hardware-Encoder, wenig Arbeitsspeicher) **nicht gemessen**; 10 gleichzeitig kann dort Speicher kosten, deshalb Standard 2.
 
+## 2026-11-25 – „Speicher das alles“: Notizen und Doku auf den Stand gebracht
+
+**Was:** Mark bat, alles zu speichern. Geprüft: Git sauber, alles auf `main` (PR 15, 17, 19, 20, 21, 22), Notizen decken fast alles ab. Lücken gefüllt in
+`projekt_notizen`: `stand` „Video-Ablage“ (Fließband, Mehrfach-Upload, gleichzeitig 1-10, Ansehen-Vorgehen), neue `stand`-Notizen „Marks Ziele und Arbeitsweise“,
+„Cloud-Umgebung: Fähigkeiten und Grenzen“ (erlaubte/gesperrte Hosts, Werkzeuge, was nicht erreichbar ist), „Dashboard-Änderungen 2026-11-24“, `offen`
+„Gerätetest“ erweitert. `CLAUDE.md`: Abschnitt „Nav“ auf die heutige Leiste (KI, Finanzen, Home, To-dos + Profil) und die neue Profil-Seite aktualisiert.
+**Hinweis:** Diktat-Erkennungsfehler gemerkt (z. B. „Lehrer“ = mehrere, „Speicher das alles“ = alles in Notizen/Doku ablegen).
+
 ## 2026-11-24 – Dauerhafte Agenten mit Zugehörigkeit, Wissen und Obsidian
 
 **Was:** Mark will, wie in den Videos, verschiedene dauerhafte Agenten, die auf Dinge spezialisiert sind und mit Obsidian arbeiten. Gebaut:
