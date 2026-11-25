@@ -10,6 +10,35 @@ function el(tag, klasse, text) {
 
 const LINK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
 
+function externerLink(url, klasse) {
+  const a = el('a', klasse);
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  return a;
+}
+
+function zeichneUnterseiten(eintrag, suche) {
+  const details = el('details', 'web-unterseiten');
+  details.open = Boolean(suche); // bei aktiver Suche gleich aufgeklappt
+  details.style.marginLeft = '54px';
+  details.appendChild(el('summary', 'lade', `Unterseiten (${eintrag.unterseiten.length})`));
+  const liste = el('div');
+  liste.style.display = 'flex';
+  liste.style.flexDirection = 'column';
+  liste.style.gap = '6px';
+  liste.style.padding = '8px 0 2px';
+  for (const u of eintrag.unterseiten) {
+    const a = externerLink(u.url, 'web-unterseite');
+    a.textContent = u.name;
+    a.title = kurzeAdresse(u.url);
+    a.style.color = 'inherit';
+    liste.appendChild(a);
+  }
+  details.appendChild(liste);
+  return details;
+}
+
 function zeichneListe(ziel, suche) {
   ziel.replaceChildren();
   const gruppen = gruppiere(undefined, suche);
@@ -25,10 +54,15 @@ function zeichneListe(ziel, suche) {
 
     const liste = el('div', 'punkt-liste');
     for (const s of gruppe.eintraege) {
-      const zeile = el('a', 'punkt-zeile');
-      zeile.href = s.url;
-      zeile.target = '_blank';
-      zeile.rel = 'noopener noreferrer';
+      const block = el('div', 'punkt-zeile');
+      block.style.flexDirection = 'column';
+      block.style.alignItems = 'stretch';
+      block.style.gap = '8px';
+
+      const zeile = externerLink(s.url, 'web-link');
+      zeile.style.display = 'flex';
+      zeile.style.alignItems = 'center';
+      zeile.style.gap = '14px';
       zeile.style.textDecoration = 'none';
       zeile.style.color = 'inherit';
 
@@ -40,7 +74,10 @@ function zeichneListe(ziel, suche) {
       info.appendChild(el('strong', null, s.name));
       info.appendChild(el('small', null, s.hinweis ? `${kurzeAdresse(s.url)} · ${s.hinweis}` : kurzeAdresse(s.url)));
       zeile.appendChild(info);
-      liste.appendChild(zeile);
+      block.appendChild(zeile);
+
+      if (s.unterseiten && s.unterseiten.length > 0) block.appendChild(zeichneUnterseiten(s, suche));
+      liste.appendChild(block);
     }
     ziel.appendChild(liste);
   }
@@ -61,8 +98,8 @@ registriere({
 
     const suchfeld = document.createElement('input');
     suchfeld.type = 'search';
-    suchfeld.placeholder = 'Webseite suchen …';
-    suchfeld.setAttribute('aria-label', 'Webseite suchen');
+    suchfeld.placeholder = 'Webseite oder Unterseite suchen …';
+    suchfeld.setAttribute('aria-label', 'Webseite oder Unterseite suchen');
     suchfeld.style.width = '100%';
     suchfeld.style.marginBottom = '12px';
     container.appendChild(suchfeld);
