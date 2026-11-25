@@ -4,6 +4,13 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-25 – Lichterketten-Marktanalyse (Recherche, kein Code)
+
+**Was:** Mark wollte eine ausführliche, kritische Marktanalyse für günstige, lange und helle Lichterketten (AliExpress, Temu, SHEIN, Amazon, eBay, Alibaba, weitere Shops) mit Preisen, Qualität, Risiko und Beschaffungswegen. Ergebnis: `docs/LICHTERKETTEN-ANALYSE-2026-11-25.md` (17 Angebote, Kennzahlen, Risiko 1–10, Rangliste, Break-even für Direktimport, Kauf-Checkliste, Quellenliste). Jede Zahl ist als geprüft, Suchindex, Rechnung oder Schätzung gekennzeichnet.
+**Befunde:** Die 100-m-Ketten (31 V, 1000 LEDs) sind mit nur 6 W angegeben, das ergibt grob 2–4 lm je Meter. Belegt sind ca. 26 € (eBay, 100 m) bis 34,99 € (OBI, 79,92 m beleuchtet). Mehr Licht je Euro liefern dichte 1.500-LED-Ketten (Action 22,95 €, Aldi 24,99 €, beide nur Suchindex). Bei den geprüften Amazon-Marken sind 67–87 % der Haltbarkeits-Kommentare negativ. Seit 1.7.2026 gilt der EU-Pauschalzoll von 3 € je Warenkategorie unter 150 €. Direktimport lohnt rechnerisch erst ab ca. 500 Sets.
+**Fehler und Fallstricke (für den Neuaufbau):** (1) Die Default-Umgebung sperrt alle Shops (Proxy 403, im Lese-Agenten `ENOTFOUND`); sieben Lese-Agenten scheiterten daran. Lösung: eigene Umgebung „Shop-Recherche Preisvergleich“ mit 15 Hosts (`create_environment` mit `switch_session network_only`), die Default-Umgebung blieb unverändert. (2) Auch mit Freigabe sperren eBay (403), Kaufland, Action (Cloudflare), Aldi (403), AliExpress (Slider-Prüfseite) und SHEIN (Captcha); Temu und Alibaba liefern nur leere JavaScript-Hüllen. Die Sperren wurden bewusst nicht umgangen. Lesbar waren nur OBI, Amazon (Technik und Bewertungen, Preise nur in USD wegen des US-Standorts) und die Test- und Behördenseiten. (3) Amazon: Rezensionstexte stehen nicht im HTML, nur die KI-Zusammenfassung mit Zählwerten je Thema; der erste Parser fand deshalb keine Rezensionen. (4) Drei Suchaufrufe gingen beim Neustart des Workers verloren und wurden wiederholt.
+**Offen:** Live-Preise bei AliExpress, Temu, SHEIN, Amazon und eBay am Handy prüfen (personalisierte Preise); Zollsatz für 9405 31 00 per TARIC bestätigen; Leistung und Prüfzeichen der Action-, Aldi- und OBI-Ketten im Datenblatt prüfen.
+
 ## 2026-11-24 – Videos: Fließband (Upload überlappt) und bis zu 10 gleichzeitig
 
 **Was:** Mark wollte (1) dass das nächste Video schon komprimiert wird, während eines hochlädt, und (2) bis zu 10 Videos gleichzeitig komprimieren.
