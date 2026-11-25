@@ -57,10 +57,10 @@ test('unterseitenUrl baut die Adresse und lehnt fremde Hosts ab', () => {
 
 test('gruppiere ohne Suche gibt alle Gruppen in fester Reihenfolge und alle Unterseiten', () => {
   const g = gruppiere();
-  assert.deepEqual(g.map((x) => x.id), ['apps', 'kunden', 'weitere']);
+  assert.deepEqual(g.map((x) => x.id), ['apps', 'vorschauen', 'kunden', 'weitere']);
   assert.equal(g.reduce((n, x) => n + x.eintraege.length, 0), WEBSEITEN.length);
   const visio = g.flatMap((x) => x.eintraege).find((e) => e.name === 'Visiomedia');
-  assert.equal(visio.unterseiten.length, 17);
+  assert.equal(visio.unterseiten.length, 13);
   assert.ok(visio.unterseiten.every((u) => u.url.startsWith('https://visiomedia-website.vercel.app/')));
 });
 
@@ -78,7 +78,19 @@ test('Suche findet auch Unterseiten und zeigt dann nur die passenden', () => {
   assert.deepEqual(treffer[0].unterseiten.map((u) => u.name), ['Projekt: Quibic']);
   // Trifft der Name der Webseite, bleiben alle Unterseiten erhalten.
   const alle = gruppiere(WEBSEITEN, 'visiomedia').flatMap((g) => g.eintraege).find((e) => e.name === 'Visiomedia');
-  assert.equal(alle.unterseiten.length, 17);
+  assert.equal(alle.unterseiten.length, 13);
+});
+
+test('Gruppe Vorschauen: 4 Visiomedia-Vorschauen und die K-und-K-Varianten, jeweils eigene Adresse', () => {
+  const v = gruppiere().find((g) => g.id === 'vorschauen').eintraege;
+  const visio = v.filter((e) => e.url.startsWith('https://visiomedia-website.vercel.app/vorschau'));
+  assert.equal(visio.length, 4);
+  const kuk = v.filter((e) => e.name.startsWith('K und K'));
+  assert.ok(kuk.length >= 4);
+  assert.ok(kuk.every((e) => e.url.startsWith('https://k-und-k-website-git-') && e.hinweis));
+  // Die Visiomedia-Vorschauen stehen nicht zusätzlich als Unterseiten (keine Doppelung).
+  const hauptseite = WEBSEITEN.find((e) => e.name === 'Visiomedia');
+  assert.ok(!hauptseite.unterseiten.some((u) => u.pfad.startsWith('/vorschau')));
 });
 
 test('gruppiere blendet Einträge und Unterseiten mit unsicherer URL aus', () => {

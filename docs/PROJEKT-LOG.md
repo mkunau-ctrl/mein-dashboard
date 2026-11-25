@@ -4,6 +4,11 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-25 - Webseiten-Tab: Gruppe "Vorschauen und Design-Varianten"
+
+**Was:** Neue Gruppe `vorschauen` in `js/module/webseiten/daten.js` (steht direkt unter den Apps): die 4 Visiomedia-Vorschauen (Uebersicht, A Kinosaal, B Filmstreifen, C Szenen; live 200, nicht mehr als Unterseiten) und 6 K-und-K-Vorschauen: Hero Propeller, Orthese, Lampe, 3D-Tuer sowie zwei Claude-Entwuerfe (Branches `claude/funny-...` und `claude/vibrant-...`). Quelle der K-und-K-Adressen: Vercel-Aliase der Git-Branches (`k-und-k-website-git-<branch>-mkunau-ctrls-projects.vercel.app`). Tests angepasst (11), Service-Worker-Cache v15.
+
+**Offen:** Die K-und-K-Branch-Vorschauen liegen hinter der Vercel-Anmeldung (Weiterleitung auf vercel.com/sso-api): nur mit angemeldetem Vercel-Konto sichtbar, deshalb nicht live auf Inhalt geprueft. Fuer die beiden Claude-Entwuerfe ist der Inhalt unbekannt. Weitere Vorschauen bei anderen Kunden (z. B. Hotel Lindenkrug Demo 1/2 stehen unter Kunden) nicht in diese Gruppe verschoben.
 ## 2026-11-25 - Webseiten-Tab: Unterseiten ergaenzt
 
 **Was:** Die Eintraege in `js/module/webseiten/daten.js` koennen jetzt `unterseiten` haben (Name + Pfad relativ zur Hauptadresse). In der Liste klappt unter der Webseite "Unterseiten (n)" auf; die Suche findet auch Unterseiten (dann bleiben nur die passenden sichtbar und die Liste ist aufgeklappt). Eingetragen sind nur Seiten, die am 2026-11-25 live mit 200 antworteten: Visiomedia 17 (4 Vorschauen, 13 Projekte), Doener Express 13 (Shop und Admin), Hotel Lindenkrug Palace 5, Kunaus 3, Tischlerei Kosiek 4, Tobis Hausmeister 4. Neu als Eintrag: Ranglisten (`/ranglisten/`). Unterseiten mit anderem Host werden verworfen. Tests in `test/webseiten-daten.test.js` (10). Service-Worker-Cache v14.

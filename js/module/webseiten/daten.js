@@ -1,10 +1,11 @@
 // Liste aller Webseiten und Web-Apps von Mark (Quelle: Vercel-Projekte, Stand 2026-11-25).
-// Neue Seite = Eintrag hier ergänzen (und Test laufen lassen). Gruppen: apps, kunden, weitere.
+// Neue Seite = Eintrag hier ergänzen (und Test laufen lassen). Gruppen: apps, vorschauen, kunden, weitere.
 // `unterseiten`: weitere Seiten derselben Webseite, `pfad` relativ zur Hauptadresse.
 // Die eingetragenen Unterseiten wurden am 2026-11-25 live geprüft (Antwort 200).
 
 export const GRUPPEN = [
   { id: 'apps', titel: 'Apps und eigene Projekte' },
+  { id: 'vorschauen', titel: 'Vorschauen und Design-Varianten' },
   { id: 'kunden', titel: 'Kunden- und Demo-Webseiten' },
   { id: 'weitere', titel: 'Weitere Vercel-Projekte (Zweck nicht dokumentiert)' },
 ];
@@ -39,16 +40,22 @@ export const WEBSEITEN = [
   },
   { gruppe: 'apps', name: '3D Halle', url: 'https://3d-halle.vercel.app', hinweis: '3D-Demo' },
 
+  { gruppe: 'vorschauen', name: 'Visiomedia – Vorschau (Übersicht)', url: 'https://visiomedia-website.vercel.app/vorschau.html', hinweis: 'Alle drei Varianten' },
+  { gruppe: 'vorschauen', name: 'Visiomedia – A: Kinosaal', url: 'https://visiomedia-website.vercel.app/vorschau-a-kinosaal.html', hinweis: '3D-Einstieg' },
+  { gruppe: 'vorschauen', name: 'Visiomedia – B: Filmstreifen', url: 'https://visiomedia-website.vercel.app/vorschau-b-filmstreifen.html', hinweis: '3D-Einstieg' },
+  { gruppe: 'vorschauen', name: 'Visiomedia – C: Szenen', url: 'https://visiomedia-website.vercel.app/vorschau-c-szenen.html', hinweis: '3D-Einstieg' },
+  { gruppe: 'vorschauen', name: 'K und K – Hero Propeller', url: 'https://k-und-k-website-git-hero-propeller-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig' },
+  { gruppe: 'vorschauen', name: 'K und K – Hero Orthese', url: 'https://k-und-k-website-git-hero-orthese-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig' },
+  { gruppe: 'vorschauen', name: 'K und K – Hero Lampe', url: 'https://k-und-k-website-git-hero-lampe-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig' },
+  { gruppe: 'vorschauen', name: 'K und K – Hero 3D-Tür', url: 'https://k-und-k-website-git-hero-3d-tuer-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig' },
+  { gruppe: 'vorschauen', name: 'K und K – Entwurf funny', url: 'https://k-und-k-website-git-claude-funny-f-baefae-mkunau-ctrls-projects.vercel.app', hinweis: 'Claude-Branch, Inhalt nicht geprüft, Anmeldung nötig' },
+  { gruppe: 'vorschauen', name: 'K und K – Entwurf vibrant', url: 'https://k-und-k-website-git-claude-vibrant-5126e0-mkunau-ctrls-projects.vercel.app', hinweis: 'Claude-Branch, Inhalt nicht geprüft, Anmeldung nötig' },
   {
     gruppe: 'kunden',
     name: 'Visiomedia',
     url: 'https://visiomedia-website.vercel.app',
     hinweis: 'Nicht indexiert',
     unterseiten: [
-      { name: 'Vorschau (Übersicht)', pfad: '/vorschau.html' },
-      { name: 'Vorschau A: Kinosaal', pfad: '/vorschau-a-kinosaal.html' },
-      { name: 'Vorschau B: Filmstreifen', pfad: '/vorschau-b-filmstreifen.html' },
-      { name: 'Vorschau C: Szenen', pfad: '/vorschau-c-szenen.html' },
       { name: 'Projekt: David vs Goliath', pfad: '/projekte/david-vs-goliath.html' },
       { name: 'Projekt: DB Schule', pfad: '/projekte/db-schule.html' },
       { name: 'Projekt: E2EMON', pfad: '/projekte/e2emon.html' },
