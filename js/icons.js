@@ -24,6 +24,7 @@ export const ICONS = {
   sonne: k('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
   neuladen: k('<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>'),
   ki: k('<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>'),
+  webseiten: k('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 4 5.7 4 9s-1.4 6.3-4 9c-2.6-2.7-4-5.7-4-9s1.4-6.3 4-9z"/>'),
   agenten: k('<circle cx="9" cy="8" r="3.2"/><circle cx="17.5" cy="9.5" r="2.4"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M15.5 15.2A4.5 4.5 0 0 1 21 20"/>'),
   marke: k('<path d="M5 20V12M12 20V5M19 20v-9"/>'),
 };
@@ -34,7 +35,7 @@ export const NAV_GRUPPEN = [
   { titel: 'Geld', ids: ['finanzen', 'rechnungen'] },
   { titel: 'Handel', ids: ['flipping', 'handyreparatur', 'sendungen'] },
   { titel: 'Organisation', ids: ['todos', 'kalender', 'notizen', 'berichtsheft'] },
-  { titel: 'Ablage', ids: ['dateien', 'videos', 'projekte'] },
+  { titel: 'Ablage', ids: ['dateien', 'videos', 'projekte', 'webseiten'] },
   { titel: 'Leben', ids: ['ernaehrung'] },
 ];
 

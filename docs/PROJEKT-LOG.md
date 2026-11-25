@@ -4,6 +4,11 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-25 - Neuer Tab "Webseiten" (Links zu allen Webseiten)
+
+**Was:** Modul `js/module/webseiten/` (`#/webseiten`, Gruppe Ablage, Schnelleinstieg "Webseiten" in der Suche). Zeigt alle 27 Vercel-Projekte plus den Doener-Express-Shop und die alte Berlin-Doener-Seite als Link-Liste, gruppiert (Apps, Kunden- und Demo-Webseiten, Weitere) mit Suchfeld; Links oeffnen in neuem Tab (`noopener noreferrer`), nur http/https. Die Liste steht fest in `daten.js` (Quelle: Vercel-Projekte, Stand 2026-11-25); neue Seite = Eintrag ergaenzen. Tests `test/webseiten-daten.test.js`. Service-Worker-Cache v13.
+
+**Offen:** Die Zuordnung zu Gruppen stammt aus den CLAUDE.md der Projekte; bei den 12 "Weiteren" ist der Zweck nicht dokumentiert. Eigene Domains (ausser doenerexpress-lemgo.de) wurden nicht abgefragt, die Adressen sind die `.vercel.app`-Hauptadressen. Nicht am Geraet getestet, nur in einer Testseite bei 375 px angesehen.
 ## 2026-11-25 – Lichterketten: Dropshipping-Einordnung (Recherche, kein Code)
 
 **Was:** Mark erklärte, er wolle die Lichterketten per Dropshipping verkaufen, deshalb sollten die Billig-Shops (AliExpress, Temu, SHEIN, Alibaba) ausgelesen werden. Daraufhin entstand `docs/LICHTERKETTEN-DROPSHIPPING-2026-11-25.md` (Urteil, Quellen-Tabelle, Pflichten nach ElektroG, GPSR und CE, Margen-Rechnung, Lieferzeit und Saison, Lieferanten-Anfrage-Vorlage, Testplan).
