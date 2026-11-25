@@ -4,6 +4,13 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-25 - Vercel-Anmeldeschutz bei K und K und Sportbodenbau abgeschaltet
+
+**Was:** Auf Marks ausdruecklichen Wunsch (Vorschauen ohne Vercel-Login zeigen) wurde `ssoProtection` (Vercel Authentication) bei zwei Vercel-Projekten auf `null` gesetzt: `k-und-k-website` (vorher `all_except_custom_domains`) und `sportbodenbau-moeller-3d` (vorher `all`). Per Vercel-CLI (`vercel api ... PATCH`, angemeldet als mkunau-ctrl), weil die MCP-Verbindung mit 403 keine Schreibrechte hatte. Folge: alle Deployment- und Branch-Vorschau-Adressen dieser zwei Projekte sind ohne Login per Link erreichbar. Die Seiten sind weiter per `X-Robots-Tag: noindex` fuer Suchmaschinen gesperrt, aber nicht mehr geheim. Live geprueft ohne Anmeldung: alle 6 K-und-K-Vorschauen antworten 200. Sportbodenbau liegt unter `/design/prototyp-3d/` (Wurzel `/` ist 404); die Adresse in `daten.js` wurde darauf geaendert. Das `login`-Flag wurde bei diesen Eintraegen entfernt; Entwurf "funny" verbietet die Einbettung (X-Frame-Options DENY, Platzhalterseite von Vercel) und oeffnet in neuem Tab. Tests (15), Cache v17.
+
+**Rueckgaengig:** Vercel-Projekt, Settings, Deployment Protection, Vercel Authentication wieder einschalten (oder `vercel api /v9/projects/<id> --method PATCH` mit `{"ssoProtection":{"deploymentType":"preview"}}`).
+
+**Offen:** Der Entwurf "funny" ist vermutlich nur eine Vercel-Platzhalterseite (Inhalt nicht geprueft). Die uebrigen Projekte wurden nicht angefasst.
 ## 2026-11-25 - Vorfuehrungsseite /zeigen/ mit Dropdown
 
 **Was:** Neue eigenstaendige Seite `zeigen/index.html` (`portal-start.vercel.app/zeigen/`, ohne Dashboard-Anmeldung, `noindex`): Dropdown mit allen Webseiten und Unterseiten (gruppiert), darunter die Seite im Rahmen (iframe) mit Knoepfen Neuer Tab, Neu laden, Vollbild. Die Auswahl steht im Hash (Neuladen behaelt sie); es werden nur Adressen aus der eigenen Liste geladen. Daten kommen aus `js/module/webseiten/daten.js` (`praesentation()`), Flags dort: `zeigen:false` (nicht in der Vorfuehrung: Dashboard, Portal-Start, Doener-Express-Admin/Kasse/Warenkorb/Tracker/Drucker, Gelddaten wegen 404), `rahmen:false` (Seite verbietet Einbettung: Schneider Gartenwerk X-Frame-Options DENY, Kotzolt SAMEORIGIN, wd-t06 vorsorglich wegen CSP) und `login:true`. Im Tab Webseiten oben Link "Zum Zeigen oeffnen". `vercel.json`: Weiterleitung `/zeigen` -> `/zeigen/`. 15 Tests, Service-Worker-Cache v16.

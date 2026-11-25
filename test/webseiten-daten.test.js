@@ -27,8 +27,16 @@ test('praesentation: Einbettungs- und Login-Flags werden weitergegeben', () => {
   const alle = praesentation().flatMap((g) => g.optionen);
   assert.equal(alle.find((x) => x.label === 'Schneider Gartenwerk').rahmen, false);
   const kuk = alle.filter((x) => x.label.startsWith('K und K – Hero'));
-  assert.ok(kuk.length >= 4 && kuk.every((x) => x.login === true));
-  assert.equal(alle.find((x) => x.label === 'Sportbodenbau Möller (3D)').login, true);
+  // Seit 2026-11-25 ist der Vercel-Schutz bei K und K und Sportbodenbau aus: kein Login-Hinweis mehr.
+  assert.ok(kuk.length >= 4 && kuk.every((x) => x.login === false));
+  const sport = alle.find((x) => x.label === 'Sportbodenbau Möller (3D)');
+  assert.equal(sport.login, false);
+  assert.equal(sport.rahmen, true);
+  assert.equal(sport.url, 'https://sportbodenbau-moeller-3d.vercel.app/design/prototyp-3d/');
+  // Der Claude-Entwurf "funny" verbietet die Einbettung (X-Frame-Options DENY).
+  assert.equal(alle.find((x) => x.label === 'K und K – Entwurf funny').rahmen, false);
+  // Das Login-Flag selbst bleibt als Fähigkeit erhalten.
+  assert.equal(praesentation([{ gruppe: 'apps', name: 'X', url: 'https://x.de', login: true }])[0].optionen[0].login, true);
 });
 
 test('praesentation: unsichere Einträge und fremde Hosts fallen weg', () => {
