@@ -2,6 +2,8 @@
 
 **Recherchedatum: 25.11.2026** · kritische, unabhängige Analyse, keine Werbung · Ablage: `docs/LICHTERKETTEN-ANALYSE-2026-11-25.md`
 
+**Für Dropshipping** (Machbarkeit, Marge, Pflichten, Lieferanten) siehe die Ergänzung `docs/LICHTERKETTEN-DROPSHIPPING-2026-11-25.md`.
+
 **So sind die Daten gekennzeichnet (bitte beachten):**
 
 - **[GEPRÜFT]** = Seite am 25.11.2026 selbst geöffnet und gelesen.
