@@ -1,8 +1,45 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  WEBSEITEN, GRUPPEN, istSichereUrl, kurzeAdresse, unterseitenUrl, gruppiere,
+  WEBSEITEN, GRUPPEN, istSichereUrl, kurzeAdresse, unterseitenUrl, gruppiere, praesentation,
 } from '../js/module/webseiten/daten.js';
+
+test('praesentation: nur sichere Adressen, keine zeigen:false-Seiten, Admin und Dashboard fehlen', () => {
+  const alle = praesentation().flatMap((g) => g.optionen);
+  assert.ok(alle.length > 20);
+  assert.ok(alle.every((o) => istSichereUrl(o.url) && o.label));
+  const urls = alle.map((o) => o.url);
+  assert.equal(new Set(urls).size, urls.length, 'doppelte Adresse in der Auswahl');
+  for (const verboten of ['/dashboard', '/admin', 'drucker', 'checkout', 'warenkorb', 'tracker', 'gelddaten']) {
+    assert.ok(!urls.some((u) => u.includes(verboten)), `${verboten} darf nicht in der Vorführung stehen`);
+  }
+});
+
+test('praesentation: Unterseiten erscheinen als "Seite › Unterseite" mit voller Adresse', () => {
+  const alle = praesentation().flatMap((g) => g.optionen);
+  const o = alle.find((x) => x.label === 'Visiomedia › Projekt: Quibic');
+  assert.equal(o.url, 'https://visiomedia-website.vercel.app/projekte/quibic.html');
+  assert.equal(o.rahmen, true);
+  assert.equal(o.login, false);
+});
+
+test('praesentation: Einbettungs- und Login-Flags werden weitergegeben', () => {
+  const alle = praesentation().flatMap((g) => g.optionen);
+  assert.equal(alle.find((x) => x.label === 'Schneider Gartenwerk').rahmen, false);
+  const kuk = alle.filter((x) => x.label.startsWith('K und K – Hero'));
+  assert.ok(kuk.length >= 4 && kuk.every((x) => x.login === true));
+  assert.equal(alle.find((x) => x.label === 'Sportbodenbau Möller (3D)').login, true);
+});
+
+test('praesentation: unsichere Einträge und fremde Hosts fallen weg', () => {
+  const liste = [
+    { gruppe: 'apps', name: 'Gut', url: 'https://gut.de', unterseiten: [{ name: 'a', pfad: '/a' }, { name: 'b', pfad: 'https://boese.de' }, { name: 'c', pfad: '/c', zeigen: false }] },
+    { gruppe: 'apps', name: 'Böse', url: 'javascript:alert(1)' },
+    { gruppe: 'apps', name: 'Versteckt', url: 'https://versteckt.de', zeigen: false },
+  ];
+  const o = praesentation(liste).flatMap((g) => g.optionen);
+  assert.deepEqual(o.map((x) => x.label), ['Gut', 'Gut › a']);
+});
 
 test('alle Einträge haben Name, sichere URL und bekannte Gruppe', () => {
   const gruppen = new Set(GRUPPEN.map((g) => g.id));

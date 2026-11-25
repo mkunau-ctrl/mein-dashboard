@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Webseiten</title>
+<style>
+  :root { color-scheme: dark; --bg: #0b0d12; --fl: #161a22; --linie: #2a3040; --text: #eef1f6; --leise: #9aa3b5; --blau: #0a84ff; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  body { display: flex; flex-direction: column; }
+  header { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 12px;
+    background: var(--fl); border-bottom: 1px solid var(--linie); }
+  select { flex: 1 1 260px; min-width: 0; min-height: 44px; padding: 8px 12px; font: inherit; color: var(--text);
+    background: var(--bg); border: 1px solid var(--linie); border-radius: 12px; }
+  button, a.knopf { min-height: 44px; padding: 8px 16px; font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--linie); border-radius: 999px; cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; }
+  button:hover, a.knopf:hover { border-color: var(--blau); }
+  a.primaer { background: var(--blau); border-color: var(--blau); color: #fff; }
+  main { flex: 1; position: relative; min-height: 0; }
+  iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
+  #hinweis { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 14px; padding: 24px; text-align: center; }
+  #hinweis p { margin: 0; max-width: 34em; color: var(--leise); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <label for="auswahl" hidden>Webseite wählen</label>
+  <select id="auswahl" aria-label="Webseite wählen"></select>
+  <a id="neuTab" class="knopf" target="_blank" rel="noopener noreferrer" href="#">Neuer Tab</a>
+  <button id="neuLaden" type="button">Neu laden</button>
+  <button id="vollbild" type="button">Vollbild</button>
+</header>
+<main>
+  <iframe id="rahmen" title="Gewählte Webseite" referrerpolicy="no-referrer" allow="fullscreen"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+  <div id="hinweis" hidden>
+    <p id="hinweisText"></p>
+    <a id="hinweisLink" class="knopf primaer" target="_blank" rel="noopener noreferrer" href="#">Seite öffnen</a>
+  </div>
+</main>
+<script type="module">
+import { praesentation } from '../js/module/webseiten/daten.js';
+
+const gruppen = praesentation();
+const auswahl = document.getElementById('auswahl');
+const rahmen = document.getElementById('rahmen');
+const hinweis = document.getElementById('hinweis');
+const hinweisText = document.getElementById('hinweisText');
+const hinweisLink = document.getElementById('hinweisLink');
+const neuTab = document.getElementById('neuTab');
+const alle = [];
+
+for (const g of gruppen) {
+  const og = document.createElement('optgroup');
+  og.label = g.titel;
+  for (const o of g.optionen) {
+    const opt = document.createElement('option');
+    opt.value = String(alle.length);
+    opt.textContent = o.login ? `${o.label} (Vercel-Login nötig)` : o.label;
+    og.appendChild(opt);
+    alle.push(o);
+  }
+  auswahl.appendChild(og);
+}
+
+// Nur Adressen aus der eigenen Liste werden geladen; die Auswahl steht im Hash, damit Neuladen sie behält.
+function indexAusHash() {
+  const url = decodeURIComponent(location.hash.slice(1));
+  const i = alle.findIndex((o) => o.url === url);
+  return i >= 0 ? i : 0;
+}
+
+function zeige(i) {
+  const o = alle[i];
+  if (!o) return;
+  auswahl.value = String(i);
+  neuTab.href = o.url;
+  history.replaceState(null, '', `#${encodeURIComponent(o.url)}`);
+  if (!o.rahmen || o.login) {
+    rahmen.hidden = true;
+    rahmen.removeAttribute('src');
+    hinweis.hidden = false;
+    hinweisText.textContent = o.login
+      ? 'Diese Vorschau ist durch die Vercel-Anmeldung geschützt und kann hier nicht angezeigt werden. Sie öffnet sich nur, wenn du bei Vercel angemeldet bist.'
+      : 'Diese Webseite erlaubt keine Anzeige in einem Rahmen. Sie öffnet sich in einem neuen Tab.';
+    hinweisLink.href = o.url;
+    return;
+  }
+  hinweis.hidden = true;
+  rahmen.hidden = false;
+  rahmen.src = o.url;
+}
+
+auswahl.addEventListener('change', () => zeige(Number(auswahl.value)));
+document.getElementById('neuLaden').addEventListener('click', () => {
+  const o = alle[Number(auswahl.value)];
+  if (o && o.rahmen && !o.login) rahmen.src = o.url;
+});
+document.getElementById('vollbild').addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen?.();
+});
+window.addEventListener('hashchange', () => zeige(indexAusHash()));
+
+if (alle.length === 0) {
+  hinweis.hidden = false;
+  hinweisText.textContent = 'Keine Webseiten eingetragen.';
+  hinweisLink.hidden = true;
+} else {
+  zeige(indexAusHash());
+}
+</script>
+</body>
+</html>
