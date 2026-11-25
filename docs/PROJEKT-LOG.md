@@ -4,6 +4,11 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-25 - Webseiten-Tab: Unterseiten ergaenzt
+
+**Was:** Die Eintraege in `js/module/webseiten/daten.js` koennen jetzt `unterseiten` haben (Name + Pfad relativ zur Hauptadresse). In der Liste klappt unter der Webseite "Unterseiten (n)" auf; die Suche findet auch Unterseiten (dann bleiben nur die passenden sichtbar und die Liste ist aufgeklappt). Eingetragen sind nur Seiten, die am 2026-11-25 live mit 200 antworteten: Visiomedia 17 (4 Vorschauen, 13 Projekte), Doener Express 13 (Shop und Admin), Hotel Lindenkrug Palace 5, Kunaus 3, Tischlerei Kosiek 4, Tobis Hausmeister 4. Neu als Eintrag: Ranglisten (`/ranglisten/`). Unterseiten mit anderem Host werden verworfen. Tests in `test/webseiten-daten.test.js` (10). Service-Worker-Cache v14.
+
+**Offen:** Quelle der Pfade sind die lokalen Projektordner, abgeglichen mit der Live-Seite. Fuer Projekte ohne lokalen Ordner (z. B. Schneider Gartenwerk, Redeker Studium, Inko, Gelddaten) sind keine Unterseiten erfasst. Impressum, Datenschutz, AGB und 404 sind bewusst nicht aufgelistet. Interne Dashboard-Seiten (#/...) stehen nicht hier.
 ## 2026-11-25 - Neuer Tab "Webseiten" (Links zu allen Webseiten)
 
 **Was:** Modul `js/module/webseiten/` (`#/webseiten`, Gruppe Ablage, Schnelleinstieg "Webseiten" in der Suche). Zeigt alle 27 Vercel-Projekte plus den Doener-Express-Shop und die alte Berlin-Doener-Seite als Link-Liste, gruppiert (Apps, Kunden- und Demo-Webseiten, Weitere) mit Suchfeld; Links oeffnen in neuem Tab (`noopener noreferrer`), nur http/https. Die Liste steht fest in `daten.js` (Quelle: Vercel-Projekte, Stand 2026-11-25); neue Seite = Eintrag ergaenzen. Tests `test/webseiten-daten.test.js`. Service-Worker-Cache v13.

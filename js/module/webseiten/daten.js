@@ -1,5 +1,7 @@
 // Liste aller Webseiten und Web-Apps von Mark (Quelle: Vercel-Projekte, Stand 2026-11-25).
 // Neue Seite = Eintrag hier ergänzen (und Test laufen lassen). Gruppen: apps, kunden, weitere.
+// `unterseiten`: weitere Seiten derselben Webseite, `pfad` relativ zur Hauptadresse.
+// Die eingetragenen Unterseiten wurden am 2026-11-25 live geprüft (Antwort 200).
 
 export const GRUPPEN = [
   { id: 'apps', titel: 'Apps und eigene Projekte' },
@@ -10,27 +12,113 @@ export const GRUPPEN = [
 export const WEBSEITEN = [
   { gruppe: 'apps', name: 'Dashboard', url: 'https://portal-start.vercel.app/dashboard', hinweis: 'Dieses Dashboard' },
   { gruppe: 'apps', name: 'Portal-Startseite', url: 'https://portal-start.vercel.app', hinweis: 'Gemeinsame Adresse für die Unterseiten' },
+  { gruppe: 'apps', name: 'Ranglisten', url: 'https://portal-start.vercel.app/ranglisten/', hinweis: 'Armwrestling-Rangliste' },
   { gruppe: 'apps', name: 'Mister X Jagd', url: 'https://mister-x-jagd.vercel.app', hinweis: 'Standortspiel' },
   { gruppe: 'apps', name: 'Tipptrainer', url: 'https://tipptrainer.vercel.app', hinweis: 'Tipptraining mit KI-Lektionen' },
   { gruppe: 'apps', name: 'Monteur-App', url: 'https://handwerker-app-indol.vercel.app', hinweis: 'Handwerker-App (Prototyp)' },
-  { gruppe: 'apps', name: 'Döner Express', url: 'https://www.doenerexpress-lemgo.de', hinweis: 'Online-Bestellshop Lemgo' },
+  {
+    gruppe: 'apps',
+    name: 'Döner Express',
+    url: 'https://www.doenerexpress-lemgo.de',
+    hinweis: 'Online-Bestellshop Lemgo',
+    unterseiten: [
+      { name: 'Speisekarte', pfad: '/speisekarte.html' },
+      { name: 'Warenkorb', pfad: '/warenkorb.html' },
+      { name: 'Kasse', pfad: '/checkout.html' },
+      { name: 'Bestellverfolgung', pfad: '/tracker.html' },
+      { name: 'Kontakt', pfad: '/kontakt.html' },
+      { name: 'Über uns', pfad: '/ueber-uns.html' },
+      { name: 'Bondrucker', pfad: '/drucker.html' },
+      { name: 'Admin', pfad: '/admin.html' },
+      { name: 'Admin: Kunden', pfad: '/admin-customers.html' },
+      { name: 'Admin: Rabatte', pfad: '/admin-discounts.html' },
+      { name: 'Admin: Speisekarte', pfad: '/admin-menu.html' },
+      { name: 'Admin: Einstellungen', pfad: '/admin-settings.html' },
+      { name: 'Admin: Statistik', pfad: '/admin-stats.html' },
+    ],
+  },
   { gruppe: 'apps', name: '3D Halle', url: 'https://3d-halle.vercel.app', hinweis: '3D-Demo' },
 
-  { gruppe: 'kunden', name: 'Visiomedia', url: 'https://visiomedia-website.vercel.app', hinweis: 'Nicht indexiert' },
+  {
+    gruppe: 'kunden',
+    name: 'Visiomedia',
+    url: 'https://visiomedia-website.vercel.app',
+    hinweis: 'Nicht indexiert',
+    unterseiten: [
+      { name: 'Vorschau (Übersicht)', pfad: '/vorschau.html' },
+      { name: 'Vorschau A: Kinosaal', pfad: '/vorschau-a-kinosaal.html' },
+      { name: 'Vorschau B: Filmstreifen', pfad: '/vorschau-b-filmstreifen.html' },
+      { name: 'Vorschau C: Szenen', pfad: '/vorschau-c-szenen.html' },
+      { name: 'Projekt: David vs Goliath', pfad: '/projekte/david-vs-goliath.html' },
+      { name: 'Projekt: DB Schule', pfad: '/projekte/db-schule.html' },
+      { name: 'Projekt: E2EMON', pfad: '/projekte/e2emon.html' },
+      { name: 'Projekt: Endless Engines', pfad: '/projekte/endless-engines.html' },
+      { name: 'Projekt: Falk Maschinenbau', pfad: '/projekte/falk-maschinenbau.html' },
+      { name: 'Projekt: Gameshow', pfad: '/projekte/gameshow.html' },
+      { name: 'Projekt: Latin Link', pfad: '/projekte/latin-link.html' },
+      { name: 'Projekt: Liveshow', pfad: '/projekte/liveshow.html' },
+      { name: 'Projekt: Mutterhaus Altvansburg', pfad: '/projekte/mutterhaus-altvansburg.html' },
+      { name: 'Projekt: Neue Welt', pfad: '/projekte/neue-welt.html' },
+      { name: 'Projekt: Quibic', pfad: '/projekte/quibic.html' },
+      { name: 'Projekt: Taoasis', pfad: '/projekte/taoasis.html' },
+      { name: 'Projekt: Volles Leben', pfad: '/projekte/volles-leben.html' },
+    ],
+  },
   { gruppe: 'kunden', name: 'Sportbodenbau Möller (3D)', url: 'https://sportbodenbau-moeller-3d.vercel.app', hinweis: '3D-Prototyp' },
   { gruppe: 'kunden', name: 'K und K', url: 'https://k-und-k-website.vercel.app' },
-  { gruppe: 'kunden', name: 'Kunaus Gebäudeservice', url: 'https://kunaus-gebaeudeservice.vercel.app' },
+  {
+    gruppe: 'kunden',
+    name: 'Kunaus Gebäudeservice',
+    url: 'https://kunaus-gebaeudeservice.vercel.app',
+    unterseiten: [
+      { name: 'Leistungen', pfad: '/leistungen.html' },
+      { name: 'Über uns', pfad: '/ueber-uns.html' },
+      { name: 'Kontakt', pfad: '/kontakt.html' },
+    ],
+  },
   { gruppe: 'kunden', name: 'Premium Reinigung', url: 'https://premium-reinigung.vercel.app' },
   { gruppe: 'kunden', name: 'Hotel Lindenkrug – Demo 1', url: 'https://website-1-haus.vercel.app', hinweis: 'Akquise-Demo' },
-  { gruppe: 'kunden', name: 'Hotel Lindenkrug – Demo 2 (Palace)', url: 'https://website-2-palace.vercel.app', hinweis: 'Akquise-Demo' },
+  {
+    gruppe: 'kunden',
+    name: 'Hotel Lindenkrug – Demo 2 (Palace)',
+    url: 'https://website-2-palace.vercel.app',
+    hinweis: 'Akquise-Demo',
+    unterseiten: [
+      { name: 'Zimmer', pfad: '/zimmer.html' },
+      { name: 'Speisekarte', pfad: '/speisekarte.html' },
+      { name: 'Feiern', pfad: '/feiern.html' },
+      { name: 'Lieferservice', pfad: '/lieferservice.html' },
+      { name: 'Kontakt', pfad: '/kontakt.html' },
+    ],
+  },
   { gruppe: 'kunden', name: 'Berlin Döner Lage (Vorschau)', url: 'https://berlin-doener-lage-vorschau.vercel.app' },
   { gruppe: 'kunden', name: 'Berlin Döner Lage (Netlify)', url: 'https://berlin-doener-lage.netlify.app', hinweis: 'Alte Fassung' },
 
   { gruppe: 'weitere', name: 'Redeker Studium', url: 'https://redeker-studium.vercel.app' },
   { gruppe: 'weitere', name: 'Malerbetrieb Heinze', url: 'https://malerbetrieb-heinze-website.vercel.app' },
   { gruppe: 'weitere', name: 'Schneider Gartenwerk', url: 'https://schneider-gartenwerk.vercel.app' },
-  { gruppe: 'weitere', name: 'Tischlerei Kosiek', url: 'https://tischlerei-kosiek.vercel.app' },
-  { gruppe: 'weitere', name: 'Tobis Hausmeister (Redesign)', url: 'https://tobis-hausmeister-redesign.vercel.app' },
+  {
+    gruppe: 'weitere',
+    name: 'Tischlerei Kosiek',
+    url: 'https://tischlerei-kosiek.vercel.app',
+    unterseiten: [
+      { name: 'Leistungen', pfad: '/leistungen.html' },
+      { name: 'Galerie', pfad: '/galerie.html' },
+      { name: 'Über uns', pfad: '/ueber-uns.html' },
+      { name: 'Kontakt', pfad: '/kontakt.html' },
+    ],
+  },
+  {
+    gruppe: 'weitere',
+    name: 'Tobis Hausmeister (Redesign)',
+    url: 'https://tobis-hausmeister-redesign.vercel.app',
+    unterseiten: [
+      { name: 'Leistungen', pfad: '/leistungen.html' },
+      { name: 'Meister', pfad: '/meister.html' },
+      { name: 'Referenzen', pfad: '/referenzen.html' },
+      { name: 'Kontakt', pfad: '/kontakt.html' },
+    ],
+  },
   { gruppe: 'weitere', name: 'Kotzolt Leuchten', url: 'https://kotzolt-leuchten-premium-design.vercel.app' },
   { gruppe: 'weitere', name: 'Inko GmbH', url: 'https://inko-gmbh.vercel.app' },
   { gruppe: 'weitere', name: '3020 Pizza Taxi', url: 'https://3020-pizza-taxi.vercel.app' },
@@ -59,11 +147,42 @@ export function kurzeAdresse(url) {
   }
 }
 
-// Filtert nach Suchtext (Name, Adresse, Hinweis) und gruppiert; leere Gruppen fallen weg.
+// Volle Adresse einer Unterseite; gleicher Host wie die Hauptadresse, sonst null.
+export function unterseitenUrl(hauptUrl, pfad) {
+  try {
+    const haupt = new URL(hauptUrl);
+    const ziel = new URL(String(pfad ?? ''), `${haupt.origin}/`);
+    if (ziel.origin !== haupt.origin) return null;
+    return ziel.href;
+  } catch {
+    return null;
+  }
+}
+
+function sichereUnterseiten(s) {
+  return (s.unterseiten ?? [])
+    .map((u) => ({ name: u.name, url: unterseitenUrl(s.url, u.pfad) }))
+    .filter((u) => u.url && istSichereUrl(u.url));
+}
+
+// Filtert nach Suchtext (Name, Adresse, Hinweis, Unterseiten) und gruppiert; leere Gruppen fallen weg.
+// Passt nur eine Unterseite, erscheint die Webseite mit genau den passenden Unterseiten.
 export function gruppiere(liste = WEBSEITEN, suche = '') {
   const q = String(suche ?? '').trim().toLowerCase();
-  const passt = (s) => !q || [s.name, s.url, s.hinweis].some((t) => String(t ?? '').toLowerCase().includes(q));
-  return GRUPPEN
-    .map((g) => ({ ...g, eintraege: liste.filter((s) => s.gruppe === g.id && istSichereUrl(s.url) && passt(s)) }))
-    .filter((g) => g.eintraege.length > 0);
+  const enthaelt = (...teile) => teile.some((t) => String(t ?? '').toLowerCase().includes(q));
+  const ergebnis = (g) => {
+    const eintraege = [];
+    for (const s of liste) {
+      if (s.gruppe !== g.id || !istSichereUrl(s.url)) continue;
+      const alle = sichereUnterseiten(s);
+      if (!q || enthaelt(s.name, s.url, s.hinweis)) {
+        eintraege.push({ ...s, unterseiten: alle });
+        continue;
+      }
+      const treffer = alle.filter((u) => enthaelt(u.name, u.url));
+      if (treffer.length) eintraege.push({ ...s, unterseiten: treffer });
+    }
+    return { ...g, eintraege };
+  };
+  return GRUPPEN.map(ergebnis).filter((g) => g.eintraege.length > 0);
 }
