@@ -72,6 +72,9 @@ trading, finanzen, ausbildung, kundenseiten) mit Startwissen aus den `projekt_no
 Freigabe per `status: aktiv` in Obsidian. **Der AURORA-Kern auf Marks PC lädt die Profile noch nicht**, Aufgabenliste: `docs/AURORA-AGENTEN-UEBERGABE.md`.
 Migrationen `2026-11-24-agenten.sql` + `-seed.sql`. Tests: `test/agenten-*.test.js`. Details: `docs/PROJEKT-LOG.md` (2026-11-24).
 
+## Webseiten-Tab (2026-11-25)
+
+Modul `js/module/webseiten/` (`#/webseiten`, Gruppe Ablage): Link-Liste aller Webseiten und Web-Apps mit Suche. Die Daten stehen fest in `daten.js` (`WEBSEITEN`, Gruppen `apps`/`kunden`/`weitere`); neue Seite = Eintrag + `npm test`. Test: `test/webseiten-daten.test.js`. Details: `docs/PROJEKT-LOG.md` (2026-11-25).
 ## Push-Benachrichtigungen (2026-10-03, Prototyp)
 
 Web-Push aufs iPhone (nur als Home-Bildschirm-App). Tabellen `push_abos`/
