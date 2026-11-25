@@ -94,6 +94,13 @@ registriere({
     zurueck.type = 'button';
     zurueck.addEventListener('click', () => { history.back(); });
     kopf.appendChild(zurueck);
+    const zeigen = el('a', 'knopf-neutral', 'Zum Zeigen öffnen ›');
+    zeigen.href = '../zeigen/'; // Vorführungsseite ohne Anmeldung (Dropdown)
+    zeigen.target = '_blank';
+    zeigen.rel = 'noopener noreferrer';
+    zeigen.style.marginLeft = 'auto';
+    zeigen.style.textDecoration = 'none';
+    kopf.appendChild(zeigen);
     container.appendChild(kopf);
 
     const suchfeld = document.createElement('input');

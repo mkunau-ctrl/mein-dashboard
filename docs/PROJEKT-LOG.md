@@ -4,6 +4,11 @@ Chronologisches Logbuch, neueste Einträge oben. Prosa, kein Code-Dump.
 
 ---
 
+## 2026-11-25 - Vorfuehrungsseite /zeigen/ mit Dropdown
+
+**Was:** Neue eigenstaendige Seite `zeigen/index.html` (`portal-start.vercel.app/zeigen/`, ohne Dashboard-Anmeldung, `noindex`): Dropdown mit allen Webseiten und Unterseiten (gruppiert), darunter die Seite im Rahmen (iframe) mit Knoepfen Neuer Tab, Neu laden, Vollbild. Die Auswahl steht im Hash (Neuladen behaelt sie); es werden nur Adressen aus der eigenen Liste geladen. Daten kommen aus `js/module/webseiten/daten.js` (`praesentation()`), Flags dort: `zeigen:false` (nicht in der Vorfuehrung: Dashboard, Portal-Start, Doener-Express-Admin/Kasse/Warenkorb/Tracker/Drucker, Gelddaten wegen 404), `rahmen:false` (Seite verbietet Einbettung: Schneider Gartenwerk X-Frame-Options DENY, Kotzolt SAMEORIGIN, wd-t06 vorsorglich wegen CSP) und `login:true`. Im Tab Webseiten oben Link "Zum Zeigen oeffnen". `vercel.json`: Weiterleitung `/zeigen` -> `/zeigen/`. 15 Tests, Service-Worker-Cache v16.
+
+**Offen:** Sportbodenbau Moeller (3D) und die 6 K-und-K-Branch-Vorschauen sind durch die Vercel-Anmeldung (Deployment Protection) geschuetzt und lassen sich ohne Login nicht anzeigen; die Seite zeigt dafuer einen Hinweis. Sie ohne Login zu machen heisst, den Schutz beim jeweiligen Vercel-Projekt abzuschalten (Vorschauen dann oeffentlich per Link): nur nach Marks Entscheidung. Rahmen-Einbettung nur im Browser-Test mit Ranglisten und Visiomedia geprueft; nicht alle Seiten einzeln im Rahmen angesehen.
 ## 2026-11-25 - Webseiten-Tab: Gruppe "Vorschauen und Design-Varianten"
 
 **Was:** Neue Gruppe `vorschauen` in `js/module/webseiten/daten.js` (steht direkt unter den Apps): die 4 Visiomedia-Vorschauen (Uebersicht, A Kinosaal, B Filmstreifen, C Szenen; live 200, nicht mehr als Unterseiten) und 6 K-und-K-Vorschauen: Hero Propeller, Orthese, Lampe, 3D-Tuer sowie zwei Claude-Entwuerfe (Branches `claude/funny-...` und `claude/vibrant-...`). Quelle der K-und-K-Adressen: Vercel-Aliase der Git-Branches (`k-und-k-website-git-<branch>-mkunau-ctrls-projects.vercel.app`). Tests angepasst (11), Service-Worker-Cache v15.

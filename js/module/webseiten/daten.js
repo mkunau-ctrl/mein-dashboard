@@ -2,6 +2,8 @@
 // Neue Seite = Eintrag hier ergänzen (und Test laufen lassen). Gruppen: apps, vorschauen, kunden, weitere.
 // `unterseiten`: weitere Seiten derselben Webseite, `pfad` relativ zur Hauptadresse.
 // Die eingetragenen Unterseiten wurden am 2026-11-25 live geprüft (Antwort 200).
+// Flags: zeigen:false = nicht in der Vorführung (/zeigen/); rahmen:false = Seite verbietet Einbettung (öffnet in neuem Tab);
+// login:true = nur mit Vercel-Anmeldung sichtbar.
 
 export const GRUPPEN = [
   { id: 'apps', titel: 'Apps und eigene Projekte' },
@@ -11,8 +13,8 @@ export const GRUPPEN = [
 ];
 
 export const WEBSEITEN = [
-  { gruppe: 'apps', name: 'Dashboard', url: 'https://portal-start.vercel.app/dashboard', hinweis: 'Dieses Dashboard' },
-  { gruppe: 'apps', name: 'Portal-Startseite', url: 'https://portal-start.vercel.app', hinweis: 'Gemeinsame Adresse für die Unterseiten' },
+  { gruppe: 'apps', name: 'Dashboard', url: 'https://portal-start.vercel.app/dashboard', hinweis: 'Dieses Dashboard', zeigen: false },
+  { gruppe: 'apps', name: 'Portal-Startseite', url: 'https://portal-start.vercel.app', hinweis: 'Gemeinsame Adresse für die Unterseiten', zeigen: false },
   { gruppe: 'apps', name: 'Ranglisten', url: 'https://portal-start.vercel.app/ranglisten/', hinweis: 'Armwrestling-Rangliste' },
   { gruppe: 'apps', name: 'Mister X Jagd', url: 'https://mister-x-jagd.vercel.app', hinweis: 'Standortspiel' },
   { gruppe: 'apps', name: 'Tipptrainer', url: 'https://tipptrainer.vercel.app', hinweis: 'Tipptraining mit KI-Lektionen' },
@@ -24,18 +26,18 @@ export const WEBSEITEN = [
     hinweis: 'Online-Bestellshop Lemgo',
     unterseiten: [
       { name: 'Speisekarte', pfad: '/speisekarte.html' },
-      { name: 'Warenkorb', pfad: '/warenkorb.html' },
-      { name: 'Kasse', pfad: '/checkout.html' },
-      { name: 'Bestellverfolgung', pfad: '/tracker.html' },
+      { name: 'Warenkorb', pfad: '/warenkorb.html', zeigen: false },
+      { name: 'Kasse', pfad: '/checkout.html', zeigen: false },
+      { name: 'Bestellverfolgung', pfad: '/tracker.html', zeigen: false },
       { name: 'Kontakt', pfad: '/kontakt.html' },
       { name: 'Über uns', pfad: '/ueber-uns.html' },
-      { name: 'Bondrucker', pfad: '/drucker.html' },
-      { name: 'Admin', pfad: '/admin.html' },
-      { name: 'Admin: Kunden', pfad: '/admin-customers.html' },
-      { name: 'Admin: Rabatte', pfad: '/admin-discounts.html' },
-      { name: 'Admin: Speisekarte', pfad: '/admin-menu.html' },
-      { name: 'Admin: Einstellungen', pfad: '/admin-settings.html' },
-      { name: 'Admin: Statistik', pfad: '/admin-stats.html' },
+      { name: 'Bondrucker', pfad: '/drucker.html', zeigen: false },
+      { name: 'Admin', pfad: '/admin.html', zeigen: false },
+      { name: 'Admin: Kunden', pfad: '/admin-customers.html', zeigen: false },
+      { name: 'Admin: Rabatte', pfad: '/admin-discounts.html', zeigen: false },
+      { name: 'Admin: Speisekarte', pfad: '/admin-menu.html', zeigen: false },
+      { name: 'Admin: Einstellungen', pfad: '/admin-settings.html', zeigen: false },
+      { name: 'Admin: Statistik', pfad: '/admin-stats.html', zeigen: false },
     ],
   },
   { gruppe: 'apps', name: '3D Halle', url: 'https://3d-halle.vercel.app', hinweis: '3D-Demo' },
@@ -44,12 +46,12 @@ export const WEBSEITEN = [
   { gruppe: 'vorschauen', name: 'Visiomedia – A: Kinosaal', url: 'https://visiomedia-website.vercel.app/vorschau-a-kinosaal.html', hinweis: '3D-Einstieg' },
   { gruppe: 'vorschauen', name: 'Visiomedia – B: Filmstreifen', url: 'https://visiomedia-website.vercel.app/vorschau-b-filmstreifen.html', hinweis: '3D-Einstieg' },
   { gruppe: 'vorschauen', name: 'Visiomedia – C: Szenen', url: 'https://visiomedia-website.vercel.app/vorschau-c-szenen.html', hinweis: '3D-Einstieg' },
-  { gruppe: 'vorschauen', name: 'K und K – Hero Propeller', url: 'https://k-und-k-website-git-hero-propeller-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig' },
-  { gruppe: 'vorschauen', name: 'K und K – Hero Orthese', url: 'https://k-und-k-website-git-hero-orthese-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig' },
-  { gruppe: 'vorschauen', name: 'K und K – Hero Lampe', url: 'https://k-und-k-website-git-hero-lampe-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig' },
-  { gruppe: 'vorschauen', name: 'K und K – Hero 3D-Tür', url: 'https://k-und-k-website-git-hero-3d-tuer-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig' },
-  { gruppe: 'vorschauen', name: 'K und K – Entwurf funny', url: 'https://k-und-k-website-git-claude-funny-f-baefae-mkunau-ctrls-projects.vercel.app', hinweis: 'Claude-Branch, Inhalt nicht geprüft, Anmeldung nötig' },
-  { gruppe: 'vorschauen', name: 'K und K – Entwurf vibrant', url: 'https://k-und-k-website-git-claude-vibrant-5126e0-mkunau-ctrls-projects.vercel.app', hinweis: 'Claude-Branch, Inhalt nicht geprüft, Anmeldung nötig' },
+  { gruppe: 'vorschauen', name: 'K und K – Hero Propeller', url: 'https://k-und-k-website-git-hero-propeller-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig', login: true },
+  { gruppe: 'vorschauen', name: 'K und K – Hero Orthese', url: 'https://k-und-k-website-git-hero-orthese-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig', login: true },
+  { gruppe: 'vorschauen', name: 'K und K – Hero Lampe', url: 'https://k-und-k-website-git-hero-lampe-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig', login: true },
+  { gruppe: 'vorschauen', name: 'K und K – Hero 3D-Tür', url: 'https://k-und-k-website-git-hero-3d-tuer-mkunau-ctrls-projects.vercel.app', hinweis: 'Branch-Vorschau, Vercel-Anmeldung nötig', login: true },
+  { gruppe: 'vorschauen', name: 'K und K – Entwurf funny', url: 'https://k-und-k-website-git-claude-funny-f-baefae-mkunau-ctrls-projects.vercel.app', hinweis: 'Claude-Branch, Inhalt nicht geprüft, Anmeldung nötig', login: true },
+  { gruppe: 'vorschauen', name: 'K und K – Entwurf vibrant', url: 'https://k-und-k-website-git-claude-vibrant-5126e0-mkunau-ctrls-projects.vercel.app', hinweis: 'Claude-Branch, Inhalt nicht geprüft, Anmeldung nötig', login: true },
   {
     gruppe: 'kunden',
     name: 'Visiomedia',
@@ -71,7 +73,7 @@ export const WEBSEITEN = [
       { name: 'Projekt: Volles Leben', pfad: '/projekte/volles-leben.html' },
     ],
   },
-  { gruppe: 'kunden', name: 'Sportbodenbau Möller (3D)', url: 'https://sportbodenbau-moeller-3d.vercel.app', hinweis: '3D-Prototyp' },
+  { gruppe: 'kunden', name: 'Sportbodenbau Möller (3D)', url: 'https://sportbodenbau-moeller-3d.vercel.app', hinweis: '3D-Prototyp', login: true, rahmen: false },
   { gruppe: 'kunden', name: 'K und K', url: 'https://k-und-k-website.vercel.app' },
   {
     gruppe: 'kunden',
@@ -103,7 +105,7 @@ export const WEBSEITEN = [
 
   { gruppe: 'weitere', name: 'Redeker Studium', url: 'https://redeker-studium.vercel.app' },
   { gruppe: 'weitere', name: 'Malerbetrieb Heinze', url: 'https://malerbetrieb-heinze-website.vercel.app' },
-  { gruppe: 'weitere', name: 'Schneider Gartenwerk', url: 'https://schneider-gartenwerk.vercel.app' },
+  { gruppe: 'weitere', name: 'Schneider Gartenwerk', url: 'https://schneider-gartenwerk.vercel.app', rahmen: false },
   {
     gruppe: 'weitere',
     name: 'Tischlerei Kosiek',
@@ -126,12 +128,12 @@ export const WEBSEITEN = [
       { name: 'Kontakt', pfad: '/kontakt.html' },
     ],
   },
-  { gruppe: 'weitere', name: 'Kotzolt Leuchten', url: 'https://kotzolt-leuchten-premium-design.vercel.app' },
+  { gruppe: 'weitere', name: 'Kotzolt Leuchten', url: 'https://kotzolt-leuchten-premium-design.vercel.app', rahmen: false },
   { gruppe: 'weitere', name: 'Inko GmbH', url: 'https://inko-gmbh.vercel.app' },
   { gruppe: 'weitere', name: '3020 Pizza Taxi', url: 'https://3020-pizza-taxi.vercel.app' },
-  { gruppe: 'weitere', name: 'Musterseite wd-t06', url: 'https://wd-t06-musterseite.vercel.app' },
+  { gruppe: 'weitere', name: 'Musterseite wd-t06', url: 'https://wd-t06-musterseite.vercel.app', rahmen: false },
   { gruppe: 'weitere', name: 'Audio-Extractor', url: 'https://audio-extractor-seven.vercel.app' },
-  { gruppe: 'weitere', name: 'Gelddaten', url: 'https://gelddaten.vercel.app' },
+  { gruppe: 'weitere', name: 'Gelddaten', url: 'https://gelddaten.vercel.app', zeigen: false },
   { gruppe: 'weitere', name: 'Spotify von Mark', url: 'https://spotify-von-mark.vercel.app' },
 ];
 
@@ -192,4 +194,23 @@ export function gruppiere(liste = WEBSEITEN, suche = '') {
     return { ...g, eintraege };
   };
   return GRUPPEN.map(ergebnis).filter((g) => g.eintraege.length > 0);
+}
+
+// Auswahl für die Vorführungsseite (/zeigen/): Dropdown-Gruppen mit Webseiten und deren Unterseiten.
+// Nur http/https; Seiten mit zeigen:false fehlen; rahmen/login werden für die Anzeige weitergereicht.
+export function praesentation(liste = WEBSEITEN) {
+  return GRUPPEN.map((g) => {
+    const optionen = [];
+    for (const s of liste) {
+      if (s.gruppe !== g.id || s.zeigen === false || !istSichereUrl(s.url)) continue;
+      const basis = { rahmen: s.rahmen !== false, login: s.login === true };
+      optionen.push({ label: s.name, url: s.url, ...basis });
+      for (const u of s.unterseiten ?? []) {
+        const voll = unterseitenUrl(s.url, u.pfad);
+        if (u.zeigen === false || !voll || !istSichereUrl(voll)) continue;
+        optionen.push({ label: `${s.name} › ${u.name}`, url: voll, ...basis });
+      }
+    }
+    return { id: g.id, titel: g.titel, optionen };
+  }).filter((g) => g.optionen.length > 0);
 }
